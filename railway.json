@@ -3,7 +3,7 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile",
-    "watchPatterns": ["/src", "/open-sse", "/public"]
+    "watchPatterns": ["/src", "/open-sse", "/public", "/Dockerfile", "/package.json", "/package-lock.json", "/railway.json"]
   },
   "deploy": {
     "startCommand": "node /app/custom-server.js",
