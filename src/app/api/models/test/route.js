@@ -9,9 +9,10 @@ export async function POST(request) {
     if (!model) return NextResponse.json({ error: "Model required" }, { status: 400 });
     const baseUrl = new URL(request.url).origin;
     const internalToken = getInternalRequestToken();
+    const sessionCookie = request.headers.get("cookie");
     const result = await pingModelByKind(model, kind || "llm", baseUrl, internalToken
       ? { "x-9r-internal-token": internalToken }
-      : {});
+      : sessionCookie ? { Cookie: sessionCookie } : {});
     return NextResponse.json(result);
   } catch (err) {
     return NextResponse.json({ ok: false, error: err.message }, { status: 500 });

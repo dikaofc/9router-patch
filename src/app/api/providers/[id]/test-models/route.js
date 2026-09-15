@@ -27,7 +27,10 @@ export async function POST(request, { params }) {
 
     const baseUrl = new URL(request.url).origin || `http://127.0.0.1:${process.env.PORT || UPDATER_CONFIG.appPort}`;
     const internalToken = getInternalRequestToken();
-    const internalHeaders = internalToken ? { "x-9r-internal-token": internalToken } : {};
+    const sessionCookie = request.headers.get("cookie");
+    const internalHeaders = internalToken
+      ? { "x-9r-internal-token": internalToken }
+      : sessionCookie ? { Cookie: sessionCookie } : {};
 
     // Compatible providers: fetch live model list
     if (isCompatible && models.length === 0) {

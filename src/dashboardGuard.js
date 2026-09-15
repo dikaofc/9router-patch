@@ -172,6 +172,7 @@ async function canAccessPublicLlmApi(request) {
     if (isLocalRequest(request)) return true;
     if (await hasValidCliToken(request)) return true;
     if (isValidInternalRequestToken(request.headers.get("x-9r-internal-token"))) return true;
+    if (await hasValidToken(request)) return true;
     return await hasValidApiKey(request);
   } catch {
     return false;
