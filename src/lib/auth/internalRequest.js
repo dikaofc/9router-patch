@@ -16,3 +16,7 @@ export function isValidInternalRequestToken(token) {
   if (!expected || typeof token !== "string" || token.length !== expected.length) return false;
   return crypto.timingSafeEqual(Buffer.from(token), Buffer.from(expected));
 }
+
+export function isInternalRequest(request) {
+  return isValidInternalRequestToken(request?.headers?.get("x-9r-internal-token"));
+}
