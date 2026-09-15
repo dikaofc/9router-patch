@@ -3,6 +3,7 @@ import { getSettings, validateApiKey } from "@/lib/localDb";
 import { getConsistentMachineId } from "@/shared/utils/machineId";
 import { verifyDashboardAuthToken } from "@/lib/auth/dashboardSession";
 import { hasTrustedPeerHeaders } from "@/lib/auth/trustedPeer";
+import { isValidInternalRequestToken } from "@/lib/auth/internalRequest";
 
 const CLI_TOKEN_HEADER = "x-9r-cli-token";
 const CLI_TOKEN_SALT = "9r-cli-auth";
@@ -170,6 +171,7 @@ async function canAccessPublicLlmApi(request) {
   try {
     if (isLocalRequest(request)) return true;
     if (await hasValidCliToken(request)) return true;
+    if (isValidInternalRequestToken(request.headers.get("x-9r-internal-token"))) return true;
     return await hasValidApiKey(request);
   } catch {
     return false;

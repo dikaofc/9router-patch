@@ -50,8 +50,8 @@ async function getInternalHeaders() {
   return headers;
 }
 
-export async function pingModelByKind(model, kind, baseUrl = `http://127.0.0.1:${process.env.PORT || UPDATER_CONFIG.appPort}`) {
-  const headers = await getInternalHeaders();
+export async function pingModelByKind(model, kind, baseUrl = `http://127.0.0.1:${process.env.PORT || UPDATER_CONFIG.appPort}`, extraHeaders = {}) {
+  const headers = { ...(await getInternalHeaders()), ...extraHeaders };
   const start = Date.now();
 
   if (kind === "embedding") {

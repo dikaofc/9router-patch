@@ -4,6 +4,7 @@ import { getProviderModels, PROVIDER_ID_TO_ALIAS } from "open-sse/config/provide
 import { isOpenAICompatibleProvider, isAnthropicCompatibleProvider } from "@/shared/constants/providers";
 import { UPDATER_CONFIG } from "@/shared/constants/config";
 import { pingModelByKind } from "@/app/api/models/test/ping";
+import { getInternalRequestToken } from "@/lib/auth/internalRequest";
 
 /**
  * POST /api/providers/[id]/test-models
@@ -25,6 +26,8 @@ export async function POST(request, { params }) {
     let models = getProviderModels(alias);
 
     const baseUrl = new URL(request.url).origin || `http://127.0.0.1:${process.env.PORT || UPDATER_CONFIG.appPort}`;
+    const internalToken = getInternalRequestToken();
+    const internalHeaders = internalToken ? { "x-9r-internal-token": internalToken } : {};
 
     // Compatible providers: fetch live model list
     if (isCompatible && models.length === 0) {
@@ -45,13 +48,13 @@ export async function POST(request, { params }) {
     // This prevents race condition where multiple requests concurrently refresh the same token.
     const [first, ...rest] = models;
     const firstKind = first.kind || first.type || "llm";
-    const firstResult = await pingModelByKind(`${alias}/${first.id}`, firstKind, baseUrl);
+    const firstResult = await pingModelByKind(`${alias}/${first.id}`, firstKind, baseUrl, internalHeaders);
     const results = [{ modelId: first.id, name: first.name || first.id, ...firstResult }];
 
     if (rest.length > 0) {
       const restResults = await Promise.all(
         rest.map(async (model) => {
-          const result = await pingModelByKind(`${alias}/${model.id}`, model.kind || model.type || "llm", baseUrl);
+          const result = await pingModelByKind(`${alias}/${model.id}`, model.kind || model.type || "llm", baseUrl, internalHeaders);
           return { modelId: model.id, name: model.name || model.id, ...result };
         })
       );
