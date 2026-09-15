@@ -8,6 +8,7 @@
 2. **Create Repl** → **Import from GitHub**
 3. Pilih repo
 4. Set **Secrets** (🔒): `JWT_SECRET`, `INITIAL_PASSWORD`
+	Untuk akses agent/API, tambahkan `API_KEYS` dengan API key yang dipakai client.
 5. Click **Run**
 
 ---

@@ -22,6 +22,8 @@ Netlify Dashboard → Site → Build & Deploy → Environment
 | `INITIAL_PASSWORD` | password |
 | `UPSTASH_REDIS_REST_URL` | dari Upstash (untuk persistence) |
 | `UPSTASH_REDIS_REST_TOKEN` | dari Upstash |
+| `API_KEYS` | API key 9Router yang harus tetap valid lintas invocation |
+| `API_KEY_SECRET` | Secret untuk key yang dibuat oleh 9Router |
 
 ---
 

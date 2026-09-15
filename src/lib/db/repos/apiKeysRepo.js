@@ -69,6 +69,12 @@ export async function deleteApiKey(id) {
 
 export async function validateApiKey(key) {
   try {
+    const configuredKeys = [
+      process.env.API_KEY_SECRET,
+      ...(process.env.API_KEYS || "").split(/[\s,]+/),
+    ].filter(Boolean);
+    if (configuredKeys.includes(key)) return true;
+
     const db = await getAdapter();
     const row = db.get(`SELECT isActive FROM apiKeys WHERE key = ?`, [key]);
     if (!row) return false;
