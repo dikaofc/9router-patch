@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { getAdapter } from "../driver.js";
+import { getDeploymentApiKey } from "@/shared/utils/apiKey";
 
 function rowToKey(row) {
   if (!row) return null;
@@ -16,7 +17,19 @@ function rowToKey(row) {
 export async function getApiKeys() {
   const db = await getAdapter();
   const rows = db.all(`SELECT * FROM apiKeys ORDER BY createdAt ASC`);
-  return rows.map(rowToKey);
+  const keys = rows.map(rowToKey);
+  const deploymentKey = getDeploymentApiKey();
+  if (deploymentKey && !keys.some((key) => key.key === deploymentKey)) {
+    keys.unshift({
+      id: "deployment-api-key",
+      key: deploymentKey,
+      name: "Current deployment API key",
+      machineId: null,
+      isActive: true,
+      createdAt: new Date(0).toISOString(),
+    });
+  }
+  return keys;
 }
 
 export async function getApiKeyById(id) {
@@ -73,7 +86,7 @@ export async function validateApiKey(key) {
       process.env.API_KEY_SECRET,
       ...(process.env.API_KEYS || "").split(/[\s,]+/),
     ].filter(Boolean);
-    if (configuredKeys.includes(key)) return true;
+    if (configuredKeys.includes(key) || key === getDeploymentApiKey()) return true;
 
     const db = await getAdapter();
     const row = db.get(`SELECT isActive FROM apiKeys WHERE key = ?`, [key]);

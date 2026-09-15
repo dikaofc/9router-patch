@@ -1,6 +1,13 @@
 import crypto from "crypto";
 
 const API_KEY_SECRET = process.env.API_KEY_SECRET || "endpoint-proxy-api-key-secret";
+const DEPLOYMENT_ID = process.env.VERCEL_GIT_COMMIT_SHA
+  || process.env.VERCEL_DEPLOYMENT_ID
+  || process.env.REPL_ID
+  || process.env.RENDER_GIT_COMMIT
+  || process.env.RAILWAY_GIT_COMMIT_SHA
+  || process.env.COMMIT_REF
+  || null;
 
 /**
  * Generate 6-char random keyId
@@ -36,6 +43,17 @@ export function generateApiKeyWithMachine(machineId) {
   const crc = generateCrc(machineId, keyId);
   const key = `sk-${machineId}-${keyId}-${crc}`;
   return { key, keyId };
+}
+
+// Serverless deployments have no durable local database. Derive one key from
+// the deployment identity so every invocation accepts the same key, while a
+// new deployment gets a different key without requiring an environment secret.
+export function getDeploymentApiKey() {
+  if (!DEPLOYMENT_ID) return null;
+  const machineId = crypto.createHash("sha256").update(`9router:${DEPLOYMENT_ID}`).digest("hex").slice(0, 16);
+  const keyId = crypto.createHash("sha256").update(`9router-key:${DEPLOYMENT_ID}`).digest("hex").slice(0, 6);
+  const crc = generateCrc(machineId, keyId);
+  return `sk-${machineId}-${keyId}-${crc}`;
 }
 
 /**
