@@ -34,6 +34,10 @@ function getSecret() {
   return _secret;
 }
 
+export function getDashboardAuthSecret() {
+  return getSecret();
+}
+
 export function shouldUseSecureCookie(request) {
   const forceSecureCookie = process.env.AUTH_COOKIE_SECURE === "true";
   const forwardedProto = request?.headers?.get?.("x-forwarded-proto");

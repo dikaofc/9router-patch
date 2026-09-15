@@ -1,10 +1,10 @@
 import crypto from "node:crypto";
+import { getDashboardAuthSecret } from "./dashboardSession";
 
 const INTERNAL_TOKEN_LABEL = "9router-internal-model-test";
 
 export function getInternalRequestToken() {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) return null;
+  const secret = getDashboardAuthSecret();
   return crypto
     .createHmac("sha256", secret)
     .update(INTERNAL_TOKEN_LABEL)
