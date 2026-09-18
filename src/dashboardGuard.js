@@ -171,7 +171,13 @@ async function canAccessPublicLlmApi(request) {
   try {
     if (isLocalRequest(request)) return true;
     if (await hasValidCliToken(request)) return true;
-    if (isValidInternalRequestToken(request.headers.get("x-9r-internal-token"))) return true;
+    // Isolated: a failure here (e.g. mocked dashboardSession in tests,
+    // read-only FS on serverless) must not block API-key auth below.
+    try {
+      if (isValidInternalRequestToken(request.headers.get("x-9r-internal-token"))) return true;
+    } catch {
+      // fail-closed for this check only — continue to JWT / API key
+    }
     if (await hasValidToken(request)) return true;
     return await hasValidApiKey(request);
   } catch {
