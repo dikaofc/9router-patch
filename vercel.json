@@ -7,17 +7,14 @@
   "regions": ["iad1"],
   "functions": {
     "src/app/api/**/*.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     },
     "src/app/api/v1/**/*.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     },
     "src/app/api/v1beta/**/*.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     }
-  },
-  "env": {
-    "NEXT_DISABLE_TURBOPACK": "true"
   },
   "headers": [
     {

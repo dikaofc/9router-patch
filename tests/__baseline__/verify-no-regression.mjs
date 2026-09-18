@@ -1,6 +1,13 @@
 // Gate: so kết quả test hiện tại với baseline known-fails.
 // PASS nếu KHÔNG có test nào pass(baseline) → fail(now). Test mới được phép.
-// Usage: node tests/__baseline__/verify-no-regression.mjs <current-results.json>
+//
+// Usage:
+//   cd tests && npx vitest run --reporter=json --outputFile=/tmp/current.json
+//   node __baseline__/verify-no-regression.mjs /tmp/current.json
+//
+// known-fails.txt keys look like "tests/unit/foo.test.js :: full test name".
+// vitest's json reporter reports absolute file paths, so normalise whatever the
+// checkout root is (CI used to run from /app, contributors run from anywhere).
 import { readFileSync } from "fs";
 
 const knownFails = new Set(
@@ -11,10 +18,16 @@ const knownFails = new Set(
 const resultsPath = process.argv[2];
 if (!resultsPath) { console.error("Missing results.json path"); process.exit(2); }
 
+// Absolute vitest path → repo-relative "tests/..." path.
+const toRepoRelative = (filePath) => {
+  const marker = filePath.lastIndexOf("/tests/");
+  return marker >= 0 ? filePath.slice(marker + 1) : filePath;
+};
+
 const r = JSON.parse(readFileSync(resultsPath, "utf8"));
 const nowFails = r.testResults.flatMap(f =>
   f.assertionResults.filter(a => a.status === "failed")
-    .map(a => f.name.split("/app/")[1] + " :: " + a.fullName)
+    .map(a => toRepoRelative(f.name) + " :: " + a.fullName)
 );
 
 // Regression = fail bây giờ NHƯNG không có trong baseline known-fails

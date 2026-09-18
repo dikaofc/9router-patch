@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Card, Button } from "@/shared/components";
+import { APP_CONFIG } from "@/shared/constants/config";
 
 export default function App() {
   const [copied, setCopied] = useState(false);
@@ -62,7 +63,7 @@ export default function App() {
               <span className="material-symbols-outlined text-[28px]">memory</span>
             </div>
             <div className="min-w-0">
-              <h2 className="text-lg font-semibold text-text-main">9Router v0.5.55</h2>
+              <h2 className="text-lg font-semibold text-text-main">9Router v{APP_CONFIG.version}</h2>
               <p className="text-sm text-text-muted mt-1 leading-relaxed">
                 Universal AI Router built by <b>decolua</b> &amp; community contributors. Supports 40+ LLM
                 providers with automatic fallback routing and RTK token optimization.

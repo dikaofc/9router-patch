@@ -6,7 +6,7 @@ import {
   decodeCompletionChunk,
   default as WindsurfExecutor,
 } from "open-sse/executors/windsurf.js";
-import { PROVIDERS } from "open-sse/config/providers.js";
+import windsurfRegistry from "../../open-sse/providers/registry/windsurf.js";
 
 // ─── Protobuf helpers for building expected wire bytes in tests ──────────────
 
@@ -161,11 +161,13 @@ describe("decodeCompletionChunk", () => {
 });
 
 describe("WindsurfExecutor class", () => {
-  it("constructor wires config from PROVIDERS.windsurf", () => {
+  it("constructor wires config from the windsurf registry", () => {
     const ex = new WindsurfExecutor();
     expect(ex.provider).toBe("windsurf");
     expect(ex.config).toBeDefined();
-    expect(ex.config.baseUrl).toContain("server.self-serve.windsurf.com");
+    // Registry transport.baseUrl is authoritative (server.codeium.com); the
+    // self-serve host is only the Devin auth1 exchange endpoint.
+    expect(ex.config.baseUrl).toContain("server.codeium.com");
     expect(typeof ex.execute).toBe("function");
   });
 
@@ -187,12 +189,15 @@ describe("WindsurfExecutor class", () => {
 
   it("buildUrl returns the GetChatMessage endpoint", () => {
     const ex = new WindsurfExecutor();
-    expect(ex.buildUrl()).toBe("https://server.self-serve.windsurf.com/exa.language_server_pb.LanguageServerService/GetChatMessage");
+    expect(ex.buildUrl()).toBe("https://server.codeium.com/exa.language_server_pb.LanguageServerService/GetChatMessage");
   });
 
-  it("PROVIDERS.windsurf baseUrl is the chat endpoint (registry in sync)", () => {
-    expect(PROVIDERS.windsurf.baseUrl).toBe(
-      "https://server.self-serve.windsurf.com/exa.language_server_pb.LanguageServerService/GetChatMessage"
+  // windsurf is intentionally not in the generated PROVIDERS map yet (hidden in
+  // providers/registry/index.js — no tool-calling support), so assert against the
+  // registry module the executor actually reads.
+  it("registry transport.baseUrl is the chat endpoint (registry in sync)", () => {
+    expect(windsurfRegistry.transport.baseUrl).toBe(
+      "https://server.codeium.com/exa.language_server_pb.LanguageServerService/GetChatMessage"
     );
   });
 });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { APP_CONFIG } from "@/shared/constants/config";
 
 function MetricCard({ icon, label, value, sub, color = "primary" }) {
   const colors = {
@@ -75,7 +76,7 @@ export default function SystemStatusPage() {
 
       const sysStatus = {
         uptime: health.uptime || 0,
-        version: health.version || "0.5.81",
+        version: health.version || APP_CONFIG.version,
         nodeEnv: health.nodeEnv || "production",
         nodeVersion: health.nodeVersion || "",
         platform: health.platform || "Vercel Serverless",
@@ -137,7 +138,7 @@ export default function SystemStatusPage() {
       setStatus((prev) => ({
         ...prev,
         uptime: health.uptime || prev?.uptime || 0,
-        version: health.version || prev?.version || "0.5.81",
+        version: health.version || prev?.version || APP_CONFIG.version,
         providers: health.providers || prev?.providers || 0,
         connections: health.connections || prev?.connections || 0,
         apiKeys: health.apiKeys || prev?.apiKeys || 0,
@@ -282,7 +283,7 @@ export default function SystemStatusPage() {
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
           {[
-            { label: "API Server", status: "online", detail: "9Router v" + (status?.version || "0.5.81") },
+            { label: "API Server", status: "online", detail: "9Router v" + (status?.version || APP_CONFIG.version) },
             { label: "Database", status: "online", detail: `${status?.dbDriver || "sql.js"} (${status?.db || "in-memory"})` },
             { label: "Models", status: "online", detail: `${status?.models || 0} loaded` },
             { label: "Providers", status: "online", detail: `${status?.providers || 0} connected` },
@@ -313,7 +314,7 @@ export default function SystemStatusPage() {
             { label: "Runtime", value: status?.nodeEnv || "production" },
             { label: "DB Driver", value: status?.dbDriver || "sql.js" },
             { label: "DB Mode", value: status?.db || "in-memory" },
-            { label: "Version", value: status?.version || "0.5.81" },
+            { label: "Version", value: status?.version || APP_CONFIG.version },
             { label: "Timestamp", value: status?.timestamp ? new Date(status.timestamp).toLocaleString() : "N/A" },
           ].map((item) => (
             <div key={item.label} className="flex justify-between bg-white/5 rounded-lg px-3 py-2">

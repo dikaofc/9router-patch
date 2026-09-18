@@ -170,6 +170,7 @@ Punya 3 akun OpenAI? Round-robin otomatis. Limit per akun = 3x lebih banyak.
 | ☁️ VPS | `npm run start:vps` | Auto | Systemd service |
 | 🪟 Windows | `start-windows.bat` | Auto | Native |
 | 📱 Termux | `npm run start:termux` | Low RAM | Android |
+| 🧩 Any platform | `npm run start:platform` | Auto | Auto-detect (Termux/Windows/WSL/VPS/PaaS) |
 | 🚂 Railway | Push to deploy | Auto | Persistent |
 | ▲ Vercel | Push to deploy | Serverless | Edge |
 | 🔷 Netlify | Push to deploy | Serverless | Edge |
@@ -199,6 +200,10 @@ Punya 3 akun OpenAI? Round-robin otomatis. Limit per akun = 3x lebih banyak.
 ├── cli/                   # npm package (9router CLI)
 ├── tests/                 # Vitest test suite
 ├── custom-server.js       # HTTP server wrapper (IP sanitization)
+├── start-platform.js      # Cross-platform launcher (Termux/Windows/VPS/PaaS)
+├── start-vps.sh           # Linux VPS / systemd
+├── start-windows.bat      # Windows
+├── start-termux.sh        # Android Termux
 ├── Dockerfile             # Docker build
 └── next.config.mjs        # Next.js config
 ```
@@ -218,7 +223,9 @@ REQUIRE_API_KEY=true                   # Enforce API key
 PORT=20128                            # Default port
 DATA_DIR=/var/lib/9router             # Data directory
 
-# Provider keys (tambah yang kamu punya)
+# Provider keys (tambah yang kamu punya) — untuk install lokal/Docker/VPS.
+# Di Vercel/Netlify, JANGAN taruh provider key di env: tambahkan lewat
+# dashboard (Settings → Providers) supaya ikut tersimpan ke Upstash/Supabase.
 PROVIDER_OPENAI_API_KEY=sk-...
 PROVIDER_ANTHROPIC_API_KEY=sk-ant-...
 PROVIDER_GROQ_API_KEY=gsk_...

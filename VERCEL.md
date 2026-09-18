@@ -8,11 +8,12 @@
 |------|----------|
 | API proxy (/v1) | Token refresh (butuh persistent process) |
 | Dashboard | MITM/TLS proxy |
-| Provider connections (dari env) | Cloudflare tunnel |
-| OAuth login | SAML SSO |
-| | File persistence (kecuali pakai Upstash) |
+| Provider connections (dari dashboard) | Cloudflare tunnel |
+| OAuth login | Background scheduler (quota auto-ping, warm-up) |
+| SAML SSO (stateless) | |
+| Persistence via Upstash / Supabase | File SQLite lokal (ephemeral disk) |
 
-**Kesimpulan:** Vercel cocok untuk **API proxy + dashboard**. Kalau butuh fitur lengkap (MITM, token refresh), pakai Railway/VPS.
+**Kesimpulan:** Vercel cocok untuk **API proxy + dashboard**. Kalau butuh fitur lengkap (MITM, token refresh, background scheduler), pakai Railway/VPS.
 
 ---
 
@@ -21,8 +22,8 @@
 ### 1. Push ke GitHub
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/9router.git
-cd 9router
+git clone https://github.com/dikaofc/9router-patch.git
+cd 9router-patch
 git push origin main
 ```
 
@@ -58,6 +59,14 @@ Buka Vercel Dashboard → Project → Settings → Environment Variables
 | `UPSTASH_REDIS_REST_URL` | dari Upstash dashboard |
 | `UPSTASH_REDIS_REST_TOKEN` | dari Upstash dashboard |
 
+Persistence juga jalan pakai **Supabase** (fallback kedua): set `SUPABASE_URL` +
+`SUPABASE_SERVICE_ROLE_KEY` (atau nama Vercel Supabase integration:
+`SUPABASE_ANON_KEY` → read-only, tidak cukup untuk menyimpan).
+
+> ⚠️ **Provider key JANGAN ditaruh di env Vercel.** Tambahkan lewat dashboard
+> (Settings → Providers); env `PROVIDER_*_API_KEY` tidak lagi di-seed otomatis.
+> Lihat `.env.example.vercel` untuk daftar lengkap.
+
 ### 4. Deploy
 
 Push ke main branch. Vercel auto-build & deploy.
@@ -92,8 +101,8 @@ Settings → Models → Advanced:
 ## Cold Start
 
 Vercel free tier punya cold start ~1-3 detik. Untuk minimize:
-- Pakai `PROVIDER_*_API_KEY` env vars (skip dashboard seeding)
-- Pakai Upstash untuk persistence
+- Pakai Upstash (atau Supabase) supaya config/usage di-load sekali, bukan di-seed ulang
+- Tambahkan provider key di dashboard, bukan di env (biar ikut tersimpan antar instance)
 
 ---
 
@@ -101,7 +110,7 @@ Vercel free tier punya cold start ~1-3 detik. Untuk minimize:
 
 | Error | Solusi |
 |-------|--------|
-| "No active credentials" | Set `PROVIDER_*_API_KEY` di env vars |
-| "Unauthorized" | Set `API_KEY_SECRET` dan pakai key yang sama |
-| Dashboard kosong | Normal di cold start. Pakai env vars untuk persist. |
-| Build gagal | Cek build logs di Vercel Dashboard |
+| "No active credentials" | Tambah koneksi provider di dashboard (Settings → Providers) |
+| "Unauthorized" | Set `API_KEY_SECRET` / `API_KEYS` dan pakai key yang sama di client |
+| Dashboard kosong / data balik ke default | Persistence belum aktif — set Upstash atau Supabase |
+| Build gagal | Cek build logs di Vercel Dashboard (`npm ci && npm run build`) |

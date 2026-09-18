@@ -21,7 +21,7 @@
 1. Buka https://app.koyeb.com
 2. Login GitHub
 3. **"Create Service"** → **"Git"**
-4. Pilih repo `9router-patch`
+4. Pilih repo `dikaofc/9router-patch`
 5. Build: `npm install && npm run build`
 6. Start: `node custom-server.js`
 7. Set env vars → Deploy
@@ -43,7 +43,7 @@ Koyeb Dashboard → Service → Environment
 |----------|-------|
 | `JWT_SECRET` | random string |
 | `INITIAL_PASSWORD` | password |
-| `PORT` | `8080` (Koyeb inject PORT otomatis) |
+| `PORT` | di-inject Koyeb otomatis — jangan hardcode |
 
 ---
 

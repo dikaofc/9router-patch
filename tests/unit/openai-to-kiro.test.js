@@ -11,7 +11,15 @@ import { openaiToKiroRequest } from "../../open-sse/translator/request/openai-to
 
 const contentOf = (result) =>
   result.conversationState.currentMessage.userInputMessage.content;
-const systemPromptOf = (result) => result.systemPrompt || "";
+// Since the CodeWhisperer 400 REQUEST_BODY_INVALID fix (v0.5.75) the Kiro wire
+// payload carries no top-level `systemPrompt`: the thinking/agentic system text
+// is prefixed onto the current user turn, ahead of the `[Context: Current time]`
+// marker. Read the system text from there.
+const systemPromptOf = (result) => {
+  const content = result?.conversationState?.currentMessage?.userInputMessage?.content || "";
+  const cut = content.indexOf("[Context: Current time is");
+  return (cut >= 0 ? content.slice(0, cut) : content).trim();
+};
 
 describe("openaiToKiroRequest", () => {
   describe("basic message conversion", () => {
@@ -568,7 +576,7 @@ describe("openaiToKiroRequest", () => {
       expect(systemPromptOf(result)).toContain("<max_thinking_length>16000</max_thinking_length>");
     });
 
-    it("keeps top-level systemPrompt stable across turns", () => {
+    it("keeps the system prefix stable across turns", () => {
       const first = openaiToKiroRequest(
         "claude-sonnet-4.6-thinking",
         { messages: [{ role: "user", content: "first" }] },
@@ -582,8 +590,8 @@ describe("openaiToKiroRequest", () => {
         {}
       );
 
-      expect(first.systemPrompt).toBe(second.systemPrompt);
-      expect(first.systemPrompt).not.toContain("Current time");
+      expect(systemPromptOf(first)).toBe(systemPromptOf(second));
+      expect(systemPromptOf(first)).not.toContain("Current time");
       expect(first.conversationState.currentMessage.userInputMessage.content).toContain("Current time");
     });
 

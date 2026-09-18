@@ -23,7 +23,9 @@ const SPECIALIZED = new Set([
   "xiaomi-tokenplan", "mimo-free",
 ]);
 
-// Sanitize header: khử token + field thời gian động (kimi X-Msh-Device-Id) để snapshot ổn định.
+// Sanitize header: khử token + field thời gian động (kimi X-Msh-Device-Id) và
+// mọi số version (9Router/<ver>, X-CLIENT-VERSION, X-CORE-VERSION, X-Msh-Version,
+// Node runtime) để snapshot không phải regenerate mỗi lần bump version.
 function sanitize(headers) {
   const out = {};
   for (const [k, v] of Object.entries(headers)) {
@@ -31,6 +33,7 @@ function sanitize(headers) {
       ? v.replace(/Bearer .+/, "Bearer <TOK>")
           .replace(/sk-test-APIKEY|tok-test-ACCESS/g, "<CRED>")
           .replace(/kimi-\d{10,}/g, "kimi-<TS>")
+          .replace(/\d+\.\d+\.\d+/g, "<VER>")
       : v;
   }
   return out;

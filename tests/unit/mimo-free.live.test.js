@@ -1,9 +1,11 @@
 /**
  * Live repro for issue #1933: MiMo Code Free returns HTTP 502 "MiMo bootstrap failed: 403".
  * Root cause: upstream gates on Chrome-like User-Agent. Without UA → 403 "Illegal access".
- * Hits real endpoints — no mocks. Free provider, safe to call.
+ * Hits real endpoints — no mocks. Opt-in only (needs network): RUN_LIVE_TESTS=1.
  */
 import { describe, it, expect } from "vitest";
+
+const RUN_LIVE = process.env.RUN_LIVE_TESTS === "1" || process.env.RUN_REAL === "1";
 import { proxyAwareFetch } from "../../open-sse/utils/proxyFetch.js";
 import { __test__ } from "../../open-sse/executors/mimo-free.js";
 
@@ -43,7 +45,7 @@ async function chatWith(jwt, ua) {
   return proxyAwareFetch(CHAT_URL, { method: "POST", headers, body: JSON.stringify(body) });
 }
 
-describe("MiMo Free bootstrap (live)", () => {
+describe.skipIf(!RUN_LIVE)("MiMo Free bootstrap (live)", () => {
   it("bootstrap returns 200 with JWT", async () => {
     const { status, jwt } = await bootstrapWith(CHROME_UA);
     expect(status).toBe(200);
@@ -51,7 +53,7 @@ describe("MiMo Free bootstrap (live)", () => {
   });
 });
 
-describe("MiMo Free anti-abuse gate (live)", () => {
+describe.skipIf(!RUN_LIVE)("MiMo Free anti-abuse gate (live)", () => {
   it("chat WITH Chrome User-Agent → 200", async () => {
     const { jwt } = await bootstrapWith(CHROME_UA);
     const r = await chatWith(jwt, CHROME_UA);

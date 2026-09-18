@@ -193,7 +193,16 @@ describe("openaiToClaudeResponse", () => {
       }]
     };
 
-    const result = openaiToClaudeResponse(chunk, state);
+    // Tool arguments are flushed when the stream closes the tool call (the
+    // openai → claude response translator buffers deltas and emits the
+    // sanitized JSON on the finishing chunk), so feed both chunks.
+    const start = openaiToClaudeResponse(chunk, state);
+    expect(start.find(event => event.delta?.type === "input_json_delta")).toBeUndefined();
+
+    const result = openaiToClaudeResponse(
+      { id: "chatcmpl-test", model: "gpt-test", choices: [{ delta: {}, finish_reason: "tool_calls" }] },
+      state
+    );
     const inputDelta = result.find(event => event.delta?.type === "input_json_delta");
 
     expect(inputDelta).toBeDefined();

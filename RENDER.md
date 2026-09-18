@@ -10,9 +10,12 @@
 2. **New** → **Web Service**
 3. Import GitHub repo
 4. Isi:
-   - **Build:** `npm install && npm run build`
+   - **Build:** `npm ci && NODE_OPTIONS=--max-old-space-size=384 npm run build`
    - **Start:** `node custom-server.js`
 5. Set env vars → Deploy
+
+> Repo ini sudah menyertakan `render.yaml`, jadi Render bisa **Blueprint → New**
+> dan membaca build/start command otomatis (`healthCheckPath: /api/health`).
 
 ---
 
@@ -23,6 +26,8 @@
 | `JWT_SECRET` | random string |
 | `INITIAL_PASSWORD` | password |
 | `NODE_ENV` | production |
+| `DATA_DIR` | `/tmp/.9router` (disk Render ephemeral) |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | opsional — biar config survive restart/sleep |
 
 ---
 

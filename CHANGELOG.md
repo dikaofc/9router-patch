@@ -1,3 +1,33 @@
+# v0.5.82 (2026-09-18)
+
+Local patch layer on top of v0.5.81 — deployment/portability work, dashboard
+restyle, and security hardening. Version is now single-sourced from
+`package.json` (no more hardcoded literals in the dashboard).
+
+## Features
+- **Deploy**: serverless Vercel patch layer (per-deployment API key, shared dashboard secret, internal-request authorization, deployment-origin model tests, fail-open middleware) plus Railway, Render, Netlify, Cloud Run, Koyeb, Zeabur, Glitch and Replit hosting support
+- **Platform**: cross-platform launcher (`start-platform.js`) with Termux/Windows/Linux/macOS detection, memory tuning, and a `start:termux` script
+- **Persistence**: Supabase blob adapter and Vercel KV / Upstash sync — flush-before-freeze, per-request re-sync, no-clobber on load failure, and real persistence status in the dashboard
+- **Providers**: Pollinations AI, OVHcloud AI Endpoints, and free no-key providers (Vireonix, Cehpoint, BlockRun)
+- **Combos**: auto-create a combo on the first provider connection, free-first combo seeding, and capacity-based auto-switch routing
+- **Dashboard**: 35 theme variants with light/dark support, themes page, iOS-style sheet sidebar, credits page, System Status page, and a PWA service worker for home-screen install
+- **RTK / Rate limits**: smarter token saver (JSON minify, stack-trace and URL collapse, base64 truncation, CSV/table compaction) and hierarchical rate-limit handling (state, cooldown, circuit breaker, scoring)
+- **Smart IP**: multi-region relay deployment with prefilled/persisted target URL and regions
+- **CLI**: Pi Agent integration support
+
+## Fixes
+- **Vercel**: externalize `node-forge` and `@node-saml/node-saml` from the serverless bundle; per-route `maxDuration` and security headers; force webpack + disable standalone output; `v1` function glob no longer 504s
+- **Auth**: SAML metadata route is awaited and its expiry check isolated; internal-token check can no longer block API-key auth; deterministic JWT secret and machineId on serverless (fixes login redirect loop); `REQUIRE_API_KEY` / `API_KEYS` honoured across cold starts
+- **Stream**: emit the finish chunk before the `[DONE]` sentinel and inject a terminal `finish_reason` on abort/stall so clients stop retrying
+- **DB**: stop stale serverless instances clobbering saved settings, guard savepoint double-release, and import `node:fs` correctly in ESM scope
+- **Security**: address 15 findings across two audit passes (CSP header, OAuth `redirect_uri` guard, handler-level API-key checks), bump DOMPurify via `monaco-editor`, and redact storage secrets in the settings API
+- **Dashboard**: hide tunnel/tailscale correctly on Vercel, `force-dynamic` on DB-read GET routes to kill stale cache snapshots, and real server-side counts on System Status
+- **Build/CI**: low-memory build profile (exit 137 fix), committed `package-lock.json` for CI caching, and restored build deps
+
+## Chores
+- Remove dead modules and one-off scripts (`responsesHandler.js`, `SupabaseSettingsCard.js`, `AnimatedBackground.js`, `authUtils.js`, `settingsStore.js`, `claudeToolTypeSelfCheck.mjs`, `scripts/translate-readme.js`, `scripts/test-combo-autoswitch.mjs`)
+- Version bump to **0.5.82** for the dashboard, CLI package and lockfile
+
 # v0.5.81 (2026-09-18)
 
 ## Features
@@ -17,6 +47,13 @@
 - **Auth**: do not cool down an account for request-scoped 4xx errors
 - **Usage**: improve DeepSeek credit balance display as currency credit instead of 0/total quota bar
 - **Model Catalog**: scope synced catalog to gateways and declare vision capabilities for DeepSeek V4.1-Flash IDs
+
+# v0.5.79 (2026-09-18)
+
+Interim tag released the same day as v0.5.81. Its commits are the ones listed
+under **v0.5.81** below (Xiaomi MiMo dual auth, Claude Code 1M-context toggle,
+DeepSeek-V4.1-Flash, OpenCode/OpenCode-Go fixes, Kiro tool-name and image
+fixes, in-band stream abort reporting, Zed OAuth lifecycle, Persian i18n).
 
 # v0.5.75 (2026-09-10)
 
@@ -208,6 +245,29 @@
 - **UI**: wait for the Material Symbols font itself before revealing icons —
   `document.fonts.ready` resolved before the 4MB woff2 even started loading,
   leaving icons blank until a second load
+
+# v0.5.56 (2026-08-24)
+
+Local patch-layer release on top of v0.5.55 — the Vercel/serverless work that is
+consolidated in **v0.5.82** above.
+
+## Features
+- **Themes**: 35 theme variants with SVG icons, light/dark support, and a dedicated topics page (later folded into the themes dashboard)
+- **PWA**: offline-caching service worker so the dashboard installs on Android/iOS home screens
+- **Platform**: `start:termux` script and cross-platform launcher groundwork; `.gitignore`/`.dockerignore` cleanup for Android/Termux
+- **Provider**: Pollinations AI (free, no auth)
+- **CLI tools**: Pi Agent integration support
+- **Vercel**: full serverless compatibility pass — lighter build, fixed `v1` function globs (504 timeouts), `API_KEYS`/`REQUIRE_API_KEY` honoured from env, free-tier persistence via KV/Upstash, model-test and suggested-models self-calls
+
+## Fixes
+- **Security**: audit hardening pass (internal-token isolation, OAuth redirect guard, CSP header, dependency bump)
+- **Vercel**: stable JWT secret and machineId across cold starts (login redirect loop), INITIAL_PASSWORD no longer stored as a plain-text setting, DB seeded after migration (`no such table`), invalid `@vercel_url` secret reference removed from `vercel.json`
+- **Translator**: five bug-hunt fixes (body mutation, header race, dead code, pruning tie-break)
+- **Token Saver**: all features default ON
+
+## Chores
+- Remove the vendored `gitbook/` project and its pages workflow
+- Add the CI build workflow; drop heavy unused dependencies
 
 # v0.5.55 (2026-08-14)
 
