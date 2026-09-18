@@ -15,7 +15,8 @@
  * re-trigger upstream complaints about missing reasoning on the next
  * turn.
  */
-import { describe, it } from "node:test";
+// Ported from node:test — vitest never collected node:test files.
+import { describe, it } from "vitest";
 import assert from "node:assert/strict";
 
 import KimchiExecutor, { stripReasoningContent } from "../../open-sse/executors/kimchi.js";

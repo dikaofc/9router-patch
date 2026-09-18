@@ -70,7 +70,14 @@ export function estimateAnthropicInputTokens(body = {}) {
 }
 
 /**
- * POST /v1/messages/count_tokens - Mock token count response
+ * POST /v1/messages/count_tokens — input-token estimate for the Anthropic
+ * token-counting API.
+ *
+ * `estimateAnthropicInputTokens` counts characters across system/tools/messages
+ * and divides by 4. That is a heuristic, not the provider tokenizer: it returns
+ * a fast local estimate (no upstream round trip, no per-call cost) and is what
+ * Claude Code uses it for — sizing a prompt before sending it. Numbers are
+ * therefore approximate, and deliberately so.
  */
 export async function POST(request) {
   let body;

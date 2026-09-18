@@ -23,6 +23,12 @@ afterAll(() => {
   else process.env.DATA_DIR = originalDataDir;
 });
 
+// saveRequestUsage() deliberately drops exact duplicates (same timestamp +
+// provider + model + connection + apiKey + token counts) so a streaming request
+// that reports usage twice is counted once. Parallel *distinct* requests must
+// all land, so each row below gets its own millisecond.
+const uniqueTs = (i) => new Date(Date.now() + i).toISOString();
+
 describe("DB Concurrency — atomic safety", () => {
   it("100 parallel saveRequestUsage → no count loss", async () => {
     const N = 100;
@@ -30,6 +36,7 @@ describe("DB Concurrency — atomic safety", () => {
     for (let i = 0; i < N; i++) {
       promises.push(db.saveRequestUsage({
         provider: "openai", model: "gpt-4", connectionId: "c1",
+        timestamp: uniqueTs(i),
         tokens: { prompt_tokens: 10, completion_tokens: 5 },
         endpoint: "/v1/chat", status: "ok",
       }));
@@ -71,6 +78,7 @@ describe("DB Concurrency — atomic safety", () => {
     for (let i = 0; i < 50; i++) {
       ops.push(db.saveRequestUsage({
         provider: "anthropic", model: `m-${i % 3}`, connectionId: "c2",
+        timestamp: uniqueTs(i),
         tokens: { prompt_tokens: 20 }, status: "ok",
       }));
       ops.push(db.setModelAlias(`a-${i}`, `target-${i}`));
@@ -155,6 +163,7 @@ describe("DB Concurrency — atomic safety", () => {
     for (let i = 0; i < N; i++) {
       promises.push(db.saveRequestUsage({
         provider: "google", model: "gemini-pro", connectionId: "cG",
+        timestamp: uniqueTs(i),
         tokens: { prompt_tokens: 100, completion_tokens: 50 },
         status: "ok",
       }));

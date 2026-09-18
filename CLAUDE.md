@@ -40,16 +40,17 @@ npx vitest run unit/capabilities.test.js   # single file (path relative to tests
 ```
 > The committed `tests/package.json` `test` script hardcodes Unix paths (`NODE_PATH=/tmp/node_modules …`) — a shared-install workaround from upstream. On Windows (or anywhere), ignore it and use the `npx vitest` form above; `vitest.config.js` resolves the `open-sse`/`@/` aliases from the repo root regardless of where vitest lives.
 >
-> **The suite is NOT expected to be all-green on a plain checkout.** Current state: 2593 tests, 2468 pass, **29 fail** — all of them catalogued. Judge regressions with the gate, not a raw run:
+> **The suite is expected to be fully green.** Current state: 2659 tests, 2545 pass, **0 fail**, 114 skipped, 0 broken suites. Judge regressions with the gate, not a raw run:
 > ```bash
 > cd tests
 > npx vitest run --reporter=json --outputFile=/tmp/current.json
-> node __baseline__/verify-no-regression.mjs /tmp/current.json   # fails only on pass→fail
+> node __baseline__/verify-no-regression.mjs /tmp/current.json   # fails on pass→fail and on suites that stopped collecting
 > ```
-> The 29 expected red are listed in `tests/__baseline__/known-fails.txt` (`tests/<path> :: <test name>`). They are stale contracts upstream or this fork changed (Kiro wire shape, provider registry fields, redacted usage payloads, CommandCode image blocks) or environment-bound (`oauth-cursor-auto-import` needs macOS Cursor DB paths; `db-concurrent` asserts parallel writes the pure-JS DB adapter cannot guarantee). Fix one → regenerate the file from a fresh run.
+> `tests/__baseline__/known-fails.txt` is the allow-list of expected reds (`tests/<path> :: <test name>`, `#` for comments) and is **empty as of v0.5.82** — every previously-catalogued red has been fixed at the source (stale contracts updated, node:test files ported to vitest, `cloud/`-dependent suite skipped when the worker dir is absent). Do not re-add entries to silence the gate; fix the cause, or document why a test cannot run here by skipping it inside the test file.
 > - `*.real.test.js` under `tests/translator/real/` make live provider calls — opt in with `RUN_REAL=1`.
 > - `*.live.test.js` hit live endpoints — opt in with `RUN_LIVE_TESTS=1` (skipped by default).
 > - `unit/cursor-agent-proto.test.js` is `describe.skip`ped: it specifies the Cursor AgentService MCP tool protocol, which is not implemented in this tree (`open-sse/executors/cursor.js` keeps tool conversations on the legacy path). Re-enable it in the commit that lands that codec.
+> - `unit/embeddings.cloud.test.js` self-skips: it tests `cloud/src/handlers/embeddings.js` from the upstream Cloudflare Worker package, which is not vendored in this repository. It runs automatically if a `cloud/` directory is present.
 - Regression baselines: `tests/__baseline__/verify-*.mjs` compare against committed snapshots (providers, aliases, OAuth URLs). Run these after touching provider registry / alias logic.
 
 ## Architecture

@@ -116,12 +116,20 @@ describe("commandcode-to-openai — finish", () => {
 });
 
 describe("commandcode-to-openai — error event", () => {
-  it("stringifies object errors so client sees readable message", () => {
-    const { chunks } = feed([
-      { type: "error", error: { type: "server_error", message: "Boom" } },
-    ]);
-    const text = chunks[0].choices[0].delta.content;
-    expect(text).toContain("Boom");
-    expect(text).not.toContain("[object Object]");
+  it("surfaces an object error as a readable thrown error, not as content", () => {
+    // The CommandCode API reports failures as a `type:"error"` event inside an
+    // HTTP 200 NDJSON stream. Emitting it as assistant text hid the failure from
+    // the client (and skipped combo/account fallback), so the translator throws
+    // and the stream handler turns it into a real error.
+    expect(() =>
+      feed([{ type: "error", error: { type: "server_error", message: "Boom" } }])
+    ).toThrow(/Boom/);
+
+    try {
+      feed([{ type: "error", error: { type: "server_error", message: "Boom" } }]);
+    } catch (err) {
+      expect(err.message).toContain("Boom");
+      expect(err.message).not.toContain("[object Object]");
+    }
   });
 });

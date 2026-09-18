@@ -29,12 +29,14 @@ so vitest can live in `tests/node_modules`. The `npm test` script in
 `tests/package.json` hardcodes Unix `NODE_PATH` paths (a shared-install
 workaround) — ignore it and use the `npx vitest` form above.
 
-## Expected state (not all-green by design)
+## Expected state (green)
 
-This fork carries a local patch layer on top of upstream, so a plain checkout has
-a small, catalogued set of red tests — usually stale contracts that upstream
-changed (Kiro wire shape, registry fields, redacted payloads) or
-environment-dependent tests (macOS paths, live network).
+As of v0.5.82 a plain checkout is **fully green**: 2659 tests, 2545 pass, 0 fail,
+114 skipped. The previously-catalogued reds were fixed at the source — stale
+contracts updated, the four `node:test`-style files ported to vitest, and the
+`cloud/`-dependent suite turned into a self-skip.
+
+Skipped tests fall into three buckets, all opt-in:
 
 | Kind | How to run |
 |------|------------|
@@ -52,10 +54,12 @@ npx vitest run --reporter=json --outputFile=/tmp/current.json
 node __baseline__/verify-no-regression.mjs /tmp/current.json
 ```
 
-`__baseline__/known-fails.txt` lists every test that is red in this fork as
-`tests/<path>::<full test name>` (one per line). The gate fails only when a test
-that used to pass now fails, so *adding* red tests is the only way to trip it.
-When a red test is intentionally fixed, regenerate the file from a fresh run.
+`__baseline__/known-fails.txt` is the allow-list of expected reds, written as
+`tests/<path>::<full test name>` (one per line; blank lines and `#` comments are
+ignored). It is **empty as of v0.5.82**, so today the gate trips on any failure —
+including a suite that stops collecting (a missing module no longer hides behind
+"no failed assertions"). Add entries only when a red is genuinely unfixable here,
+and say why in the file; when a catalogued red is fixed, delete its line.
 
 Other baselines compare deterministic snapshots rather than test results and
 should be run after touching the provider registry or OAuth URL logic:

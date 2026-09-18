@@ -4,6 +4,11 @@ import { parseJson, stringifyJson } from "../helpers/jsonCol.js";
 const DEFAULT_MITM_ROUTER_BASE = "http://localhost:20128";
 const DEFAULT_HEADROOM_URL = process.env.HEADROOM_URL || "http://localhost:8787";
 
+// Serverless deployments force the API-key gate on (db/adapters/vercelAdapter.js):
+// a public URL plus an open relay is how these get abused, so the env override
+// below deliberately does not apply there.
+const IS_VERCEL = !!(process.env.VERCEL || process.env.VERCEL_ENV || process.env.VERCEL_REGION);
+
 const DEFAULT_SETTINGS = {
   cloudEnabled: false,
   tunnelEnabled: false,
@@ -103,6 +108,16 @@ export function mergeWithDefaults(raw) {
       }
     }
   }
+
+  // REQUIRE_API_KEY (documented in .env.example and the READMEs) overrides the
+  // stored dashboard value; unset/blank keeps it. Ignored on Vercel, which
+  // force-enables the gate to avoid an open relay.
+  const envRequireApiKey = String(process.env.REQUIRE_API_KEY ?? "").trim().toLowerCase();
+  if (envRequireApiKey && !IS_VERCEL) {
+    if (["true", "1", "yes", "on"].includes(envRequireApiKey)) merged.requireApiKey = true;
+    else if (["false", "0", "no", "off"].includes(envRequireApiKey)) merged.requireApiKey = false;
+  }
+
   return merged;
 }
 

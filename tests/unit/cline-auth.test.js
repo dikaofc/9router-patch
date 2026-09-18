@@ -1,4 +1,6 @@
-import test from "node:test";
+// Ported from node:test — vitest never collected node:test files, so this
+// suite was silently absent from the run.
+import { it as test } from "vitest";
 import assert from "node:assert/strict";
 import {
   getClineAccessToken,

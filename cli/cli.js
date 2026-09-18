@@ -165,8 +165,10 @@ Commands:
   }
 }
 
-// Auto-relaunch after update: detached process has no TTY → fallback to tray
-if (skipUpdate && !trayMode && !process.stdin.isTTY) {
+// Auto-relaunch after update: detached process has no TTY → fallback to tray.
+// NO_TRAY=1 (Termux / headless hosts, exported by start-termux.sh) opts out:
+// there is no desktop tray to attach to.
+if (skipUpdate && !trayMode && !process.stdin.isTTY && process.env.NO_TRAY !== "1") {
   trayMode = true;
   process.env.TRAY_MODE = "1";
 }

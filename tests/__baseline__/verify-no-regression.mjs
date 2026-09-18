@@ -12,7 +12,8 @@ import { readFileSync } from "fs";
 
 const knownFails = new Set(
   readFileSync(new URL("./known-fails.txt", import.meta.url), "utf8")
-    .split("\n").map(s => s.trim()).filter(Boolean)
+    .split("\n").map(s => s.trim())
+    .filter(s => s && !s.startsWith("#"))
 );
 
 const resultsPath = process.argv[2];
@@ -30,12 +31,22 @@ const nowFails = r.testResults.flatMap(f =>
     .map(a => toRepoRelative(f.name) + " :: " + a.fullName)
 );
 
+// A suite that fails to *collect* (missing module, bad import) has no failed
+// assertions at all — the old gate could not see it, so a file silently
+// dropping out of the run looked like a pass. Track those too.
+const nowBrokenSuites = r.testResults
+  .filter(f => f.status === "failed" && !(f.assertionResults || []).some(a => a.status === "failed"))
+  .map(f => toRepoRelative(f.name) + " :: <suite failed to collect>");
+
 // Regression = fail bây giờ NHƯNG không có trong baseline known-fails
-const regressions = nowFails.filter(f => !knownFails.has(f));
+const regressions = [...nowFails, ...nowBrokenSuites].filter(f => !knownFails.has(f));
 
 if (regressions.length) {
   console.error(`\n❌ REGRESSION: ${regressions.length} test pass→fail:\n`);
   regressions.forEach(f => console.error("  - " + f));
   process.exit(1);
 }
-console.log(`✅ No regression. (now fails=${nowFails.length}, baseline known=${knownFails.size}, all known)`);
+console.log(
+  `✅ No regression. (now fails=${nowFails.length}, broken suites=${nowBrokenSuites.length}, `
+  + `baseline known=${knownFails.size})`
+);

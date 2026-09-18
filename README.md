@@ -223,13 +223,9 @@ REQUIRE_API_KEY=true                   # Enforce API key
 PORT=20128                            # Default port
 DATA_DIR=/var/lib/9router             # Data directory
 
-# Provider keys (tambah yang kamu punya) — untuk install lokal/Docker/VPS.
-# Di Vercel/Netlify, JANGAN taruh provider key di env: tambahkan lewat
-# dashboard (Settings → Providers) supaya ikut tersimpan ke Upstash/Supabase.
-PROVIDER_OPENAI_API_KEY=sk-...
-PROVIDER_ANTHROPIC_API_KEY=sk-ant-...
-PROVIDER_GROQ_API_KEY=gsk_...
-PROVIDER_DEEPSEEK_API_KEY=sk-...
+# Provider keys: SELALU lewat dashboard (Settings → Providers), di semua deploy.
+# Tidak ada kontrak env PROVIDER_*_API_KEY — jalur seeding-nya sudah dihapus,
+# jadi key yang ditaruh di env tidak akan terbaca.
 
 # Persistence (untuk Vercel/Netlify)
 UPSTASH_REDIS_REST_URL=https://xxx.upstash.io

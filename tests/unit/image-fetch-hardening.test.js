@@ -21,9 +21,13 @@ function mockFetchOnce(bytes, ok = true) {
   globalThis.fetch = vi.fn(async () => ({ ok, body }));
 }
 
+// resolvePinnedIps() resolves with { all: true }, so the guard sees an array of
+// records (and rejects when ANY of them is private).
+const records = (address, family = address.includes(":") ? 6 : 4) => [{ address, family }];
+
 beforeEach(() => {
   lookupMock.mockReset();
-  lookupMock.mockResolvedValue({ address: "93.184.216.34" }); // public by default
+  lookupMock.mockResolvedValue(records("93.184.216.34")); // public by default
 });
 afterEach(() => { vi.restoreAllMocks(); });
 
@@ -34,12 +38,20 @@ describe("fetchImageAsBase64 hardening", () => {
   });
 
   it("SSRF: rejects private IP (10.x)", async () => {
-    lookupMock.mockResolvedValue({ address: "10.0.0.5" });
+    lookupMock.mockResolvedValue(records("10.0.0.5"));
     expect(await fetchImageAsBase64("http://internal.example/x.png")).toBeNull();
   });
 
+  it("SSRF: rejects a host that resolves to a mix of public and private IPs", async () => {
+    lookupMock.mockResolvedValue([
+      { address: "93.184.216.34", family: 4 },
+      { address: "10.0.0.5", family: 4 },
+    ]);
+    expect(await fetchImageAsBase64("http://mixed.example/x.png")).toBeNull();
+  });
+
   it("SSRF: rejects cloud metadata 169.254.169.254", async () => {
-    lookupMock.mockResolvedValue({ address: "169.254.169.254" });
+    lookupMock.mockResolvedValue(records("169.254.169.254"));
     expect(await fetchImageAsBase64("http://metadata/x.png")).toBeNull();
   });
 
@@ -48,7 +60,7 @@ describe("fetchImageAsBase64 hardening", () => {
   });
 
   it("SSRF: rejects IPv6 loopback", async () => {
-    lookupMock.mockResolvedValue({ address: "::1" });
+    lookupMock.mockResolvedValue(records("::1"));
     expect(await fetchImageAsBase64("http://x/y.png")).toBeNull();
   });
 

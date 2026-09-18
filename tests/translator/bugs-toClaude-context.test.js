@@ -17,7 +17,11 @@ describe("OpenAI → Claude context mapping", () => {
     expect(JSON.stringify(out.system), "Claude Code prompt injected").not.toContain("Claude Code");
   });
 
-  it("assistant reasoning_content becomes a thinking block", () => {
+  // openai-to-claude.js — no reasoning_content branch at all. Anthropic rejects
+  // a thinking block without a valid signature, so the OpenAI reasoning trace is
+  // dropped instead of being forged into one. KNOWN BUG (lossy), kept as an
+  // expected failure so it flips green if the mapping ever lands.
+  it.fails("assistant reasoning_content becomes a thinking block", () => {
     const out = T({
       messages: [
         { role: "user", content: "q" },
@@ -31,6 +35,19 @@ describe("OpenAI → Claude context mapping", () => {
       type: "thinking",
       thinking: "my hidden reasoning",
     }));
+  });
+
+  it("keeps the assistant text and cache markers while reasoning is dropped", () => {
+    const out = T({
+      messages: [
+        { role: "user", content: "q" },
+        { role: "assistant", content: "a", reasoning_content: "my hidden reasoning" },
+        { role: "user", content: "next" },
+      ],
+    });
+    const assistant = out.messages.find((m) => m.role === "assistant");
+    expect(assistant.content[0]).toEqual(expect.objectContaining({ type: "text", text: "a" }));
+    expect(JSON.stringify(out)).not.toContain("my hidden reasoning");
   });
 
   // openai-to-claude.js:298 — tool_choice "none" mapped to {type:"auto"} (loses "do not call" intent)

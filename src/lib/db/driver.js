@@ -106,6 +106,17 @@ async function initAdapter() {
   let adapter = await tryUpstashAdapter();
   if (!adapter) adapter = await trySupabaseAdapter();
   if (!adapter) adapter = await tryVercelAdapter();
+
+  // USE_SQLJS=1 forces the pure-JS driver instead of trying the native ones.
+  // Termux/Android (and any host without native build tools) cannot load
+  // better-sqlite3, and a packaged Node on Android may predate node:sqlite —
+  // start-termux.sh exports this. Falls back to the normal chain if sql.js
+  // itself fails to load, so a typo can never leave the app without a DB.
+  if (!adapter && /^(1|true|yes)$/i.test(process.env.USE_SQLJS || "")) {
+    adapter = await trySqlJs();
+    if (!adapter) console.warn("[DB] USE_SQLJS is set but sql.js failed to load — using the native chain");
+  }
+
   if (!adapter) {
     // Order per runtime:
     //   Bun:  bun:sqlite → sql.js

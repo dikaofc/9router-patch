@@ -704,13 +704,17 @@ describe("Kiro terminal integrity recovery", () => {
     expect(body).not.toContain("must stay private");
   });
 
+  // 401/403/404 are Kiro endpoint-fallback statuses, so the integrity retry
+  // walks every remaining surface before it gives up. Each surface must answer,
+  // otherwise the mock runs dry and BaseExecutor burns its retry backoff.
+  function rejectEverySurface(body) {
+    return () => new Response(body, { status: 401, statusText: "Unauthorized" });
+  }
+
   it("surfaces retry HTTP failures as SSE after heartbeat commits headers", async () => {
     fetchMock
       .mockResolvedValueOnce(response([]))
-      .mockResolvedValueOnce(new Response("unauthorized", {
-        status: 401,
-        statusText: "Unauthorized"
-      }));
+      .mockImplementation(rejectEverySurface("unauthorized"));
 
     const result = await execute();
     const body = await result.response.text();
@@ -718,15 +722,14 @@ describe("Kiro terminal integrity recovery", () => {
     expect(result.response.status).toBe(200);
     expect(body).toContain("kiro_integrity_retry_upstream_error");
     expect(body).toContain("unauthorized");
+    // Initial attempt + one fetch per fallback surface.
+    expect(fetchMock.mock.calls.length).toBeGreaterThan(2);
   });
 
   it("bounds the retry HTTP error body", async () => {
     fetchMock
       .mockResolvedValueOnce(response([]))
-      .mockResolvedValueOnce(new Response(`error-start-${"x".repeat(10_000)}-error-tail`, {
-        status: 401,
-        statusText: "Unauthorized"
-      }));
+      .mockImplementation(rejectEverySurface(`error-start-${"x".repeat(10_000)}-error-tail`));
 
     const body = await (await execute()).response.text();
 

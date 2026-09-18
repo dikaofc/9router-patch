@@ -180,12 +180,20 @@ function openBrowser(url) {
   try { spawn(cmd, { shell: true, detached: true, stdio: "ignore" }).unref(); } catch { /* ignore */ }
 }
 
-// Wait until app port is listening (server alive again), then open dashboard
+// Wait until app port is listening (server alive again), then open dashboard.
+// NO_BROWSER=1 (Termux / `--no-browser`) means there is no display to open it
+// on, so the URL is logged instead of spawning an opener.
+const NO_BROWSER = /^(1|true|yes)$/i.test(process.env.NO_BROWSER || "");
+
 async function waitForAppAndOpenBrowser() {
   const deadline = Date.now() + 30000;
   while (Date.now() < deadline) {
     const busy = await isAppPortBusy();
     if (busy) {
+      if (NO_BROWSER) {
+        pushLog(`[updater] app ready at http://localhost:${appPort}/dashboard`);
+        return;
+      }
       openBrowser(`http://localhost:${appPort}/dashboard`);
       pushLog(`[updater] app ready, opened dashboard`);
       return;

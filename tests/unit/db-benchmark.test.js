@@ -1,5 +1,11 @@
-// Benchmark: SQLite vs lowdb on equivalent workloads.
-// Run: cd app/tests && npm test -- db-benchmark
+// Benchmark: SQLite persistence layer vs the legacy JSON-file store.
+//
+// The legacy store was lowdb (`Low` + `JSONFile`): every write serialised the
+// whole object to disk and every read parsed it back. lowdb is no longer a
+// dependency, so the baseline here is the same two primitives reimplemented with
+// node:fs — which is exactly what lowdb did, minus the package.
+//
+// Run: cd tests && npx vitest run unit/db-benchmark.test.js
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -9,14 +15,14 @@ const N_ITEMS = 500;
 const N_QUERIES = 200;
 
 const originalDataDir = process.env.DATA_DIR;
-let tempSqlite, tempLowdb;
-let sqliteDb, lowDb;
+let tempSqlite, tempBaseline;
+let sqliteDb;
+let baseline; // { read, write, data }
 
 function fmt(ms) { return `${ms.toFixed(2)}ms`; }
 
 async function bench(label, fn) {
-  // warmup
-  await fn();
+  await fn(); // warmup
   const t0 = performance.now();
   await fn();
   const dt = performance.now() - t0;
@@ -24,32 +30,40 @@ async function bench(label, fn) {
   return dt;
 }
 
+function createJsonStore(dir) {
+  const file = path.join(dir, "db.json");
+  fs.writeFileSync(file, JSON.stringify({ providerConnections: [], usageHistory: [] }));
+  const store = {
+    data: { providerConnections: [], usageHistory: [] },
+    async read() {
+      store.data = JSON.parse(fs.readFileSync(file, "utf8"));
+    },
+    async write() {
+      fs.writeFileSync(file, JSON.stringify(store.data));
+    },
+  };
+  return store;
+}
+
 beforeAll(async () => {
-  // SQLite setup
   tempSqlite = fs.mkdtempSync(path.join(os.tmpdir(), "9router-bench-sqlite-"));
   process.env.DATA_DIR = tempSqlite;
   vi.resetModules();
   sqliteDb = await import("@/lib/db/index.js");
   await sqliteDb.initDb();
 
-  // Lowdb setup — direct lowdb usage (mimics legacy behavior)
-  tempLowdb = fs.mkdtempSync(path.join(os.tmpdir(), "9router-bench-lowdb-"));
-  const { Low } = await import("lowdb");
-  const { JSONFile } = await import("lowdb/node");
-  const dbFile = path.join(tempLowdb, "db.json");
-  fs.writeFileSync(dbFile, JSON.stringify({ providerConnections: [], usageHistory: [] }));
-  lowDb = new Low(new JSONFile(dbFile), { providerConnections: [], usageHistory: [] });
-  await lowDb.read();
+  tempBaseline = fs.mkdtempSync(path.join(os.tmpdir(), "9router-bench-json-"));
+  baseline = createJsonStore(tempBaseline);
 });
 
 afterAll(() => {
   if (tempSqlite) fs.rmSync(tempSqlite, { recursive: true, force: true });
-  if (tempLowdb) fs.rmSync(tempLowdb, { recursive: true, force: true });
+  if (tempBaseline) fs.rmSync(tempBaseline, { recursive: true, force: true });
   if (originalDataDir === undefined) delete process.env.DATA_DIR;
   else process.env.DATA_DIR = originalDataDir;
 });
 
-describe("DB Benchmark — SQLite vs Lowdb", () => {
+describe("DB Benchmark — SQLite vs legacy JSON store", () => {
   it(`INSERT ${N_ITEMS} provider connections`, async () => {
     console.log(`\n[INSERT ${N_ITEMS}]`);
 
@@ -62,19 +76,19 @@ describe("DB Benchmark — SQLite vs Lowdb", () => {
       }
     });
 
-    const lowdbTime = await bench("Lowdb push + write", async () => {
+    const baselineTime = await bench("JSON read + push + write", async () => {
+      await baseline.read();
       for (let i = 0; i < N_ITEMS; i++) {
-        lowDb.data.providerConnections.push({
+        baseline.data.providerConnections.push({
           id: `id-${i}`, provider: `bench-p${i % 5}`, authType: "apikey",
           name: `name-${i}`, apiKey: `k-${i}`, priority: i + 1, isActive: true,
           createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
         });
-        await lowDb.write();
+        await baseline.write();
       }
     });
 
-    const speedup = (lowdbTime / sqliteTime).toFixed(2);
-    console.log(`  → SQLite is ${speedup}x faster`);
+    console.log(`  → SQLite is ${(baselineTime / sqliteTime).toFixed(2)}x faster`);
   }, 60000);
 
   it(`READ ${N_QUERIES} filtered queries`, async () => {
@@ -86,37 +100,35 @@ describe("DB Benchmark — SQLite vs Lowdb", () => {
       }
     });
 
-    const lowdbTime = await bench("Lowdb read + filter", async () => {
+    const baselineTime = await bench("JSON read + filter", async () => {
       for (let i = 0; i < N_QUERIES; i++) {
-        await lowDb.read();
-        lowDb.data.providerConnections.filter((c) => c.provider === `bench-p${i % 5}`);
+        await baseline.read();
+        baseline.data.providerConnections.filter((c) => c.provider === `bench-p${i % 5}`);
       }
     });
 
-    const speedup = (lowdbTime / sqliteTime).toFixed(2);
-    console.log(`  → SQLite is ${speedup}x faster`);
+    console.log(`  → SQLite is ${(baselineTime / sqliteTime).toFixed(2)}x faster`);
   }, 60000);
 
   it(`READ ${N_QUERIES} by id (point lookup)`, async () => {
     console.log(`\n[READ ${N_QUERIES} by id]`);
 
-    const sqliteAll = await sqliteDb.getProviderConnections();
-    const ids = sqliteAll.slice(0, N_QUERIES).map((c) => c.id);
+    const all = await sqliteDb.getProviderConnections();
+    const ids = all.slice(0, N_QUERIES).map((c) => c.id);
 
     const sqliteTime = await bench("SQLite getProviderConnectionById", async () => {
       for (const id of ids) await sqliteDb.getProviderConnectionById(id);
     });
 
-    const lowdbIds = lowDb.data.providerConnections.slice(0, N_QUERIES).map((c) => c.id);
-    const lowdbTime = await bench("Lowdb find by id", async () => {
-      for (const id of lowdbIds) {
-        await lowDb.read();
-        lowDb.data.providerConnections.find((c) => c.id === id);
+    const baselineIds = baseline.data.providerConnections.slice(0, N_QUERIES).map((c) => c.id);
+    const baselineTime = await bench("JSON find by id", async () => {
+      for (const id of baselineIds) {
+        await baseline.read();
+        baseline.data.providerConnections.find((c) => c.id === id);
       }
     });
 
-    const speedup = (lowdbTime / sqliteTime).toFixed(2);
-    console.log(`  → SQLite is ${speedup}x faster`);
+    console.log(`  → SQLite is ${(baselineTime / sqliteTime).toFixed(2)}x faster`);
   }, 60000);
 
   it(`saveRequestUsage ${N_ITEMS} entries`, async () => {
@@ -132,34 +144,34 @@ describe("DB Benchmark — SQLite vs Lowdb", () => {
       }
     });
 
-    const lowdbTime = await bench("Lowdb push history + write", async () => {
-      lowDb.data.usageHistory = [];
+    const baselineTime = await bench("JSON push history + write", async () => {
+      await baseline.read();
+      baseline.data.usageHistory = [];
       for (let i = 0; i < N_ITEMS; i++) {
-        lowDb.data.usageHistory.push({
+        baseline.data.usageHistory.push({
           timestamp: new Date().toISOString(), provider: "openai", model: `m-${i % 10}`,
           connectionId: `c-${i % 5}`, tokens: { prompt_tokens: 100 + i, completion_tokens: 50 + i },
           endpoint: "/v1/chat/completions", status: "ok", cost: 0,
         });
-        await lowDb.write();
+        await baseline.write();
       }
     });
 
-    const speedup = (lowdbTime / sqliteTime).toFixed(2);
-    console.log(`  → SQLite is ${speedup}x faster`);
+    console.log(`  → SQLite is ${(baselineTime / sqliteTime).toFixed(2)}x faster`);
   }, 120000);
 
-  it(`getUsageStats(24h) repeat 50x`, async () => {
-    console.log(`\n[getUsageStats(24h) x 50]`);
+  it("getUsageStats(24h) repeat 50x", async () => {
+    console.log("\n[getUsageStats(24h) x 50]");
 
     const sqliteTime = await bench("SQLite getUsageStats(24h)", async () => {
       for (let i = 0; i < 50; i++) await sqliteDb.getUsageStats("24h");
     });
 
-    const lowdbTime = await bench("Lowdb read + aggregate", async () => {
+    const baselineTime = await bench("JSON read + aggregate", async () => {
       for (let i = 0; i < 50; i++) {
-        await lowDb.read();
+        await baseline.read();
         const cutoff = Date.now() - 86400000;
-        const hist = lowDb.data.usageHistory.filter((h) => new Date(h.timestamp).getTime() >= cutoff);
+        const hist = baseline.data.usageHistory.filter((h) => new Date(h.timestamp).getTime() >= cutoff);
         const stats = { byProvider: {}, byModel: {} };
         for (const e of hist) {
           if (!stats.byProvider[e.provider]) stats.byProvider[e.provider] = { requests: 0 };
@@ -168,7 +180,6 @@ describe("DB Benchmark — SQLite vs Lowdb", () => {
       }
     });
 
-    const speedup = (lowdbTime / sqliteTime).toFixed(2);
-    console.log(`  → SQLite is ${speedup}x faster`);
+    console.log(`  → SQLite is ${(baselineTime / sqliteTime).toFixed(2)}x faster`);
   }, 60000);
 });

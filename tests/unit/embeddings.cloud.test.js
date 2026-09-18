@@ -58,11 +58,34 @@ vi.mock("../../cloud/src/services/storage.js", () => ({
 
 // ─── Imports (after mocks) ────────────────────────────────────────────────────
 
-import { handleEmbeddings } from "../../cloud/src/handlers/embeddings.js";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// The `cloud/` Cloudflare Worker package is not part of this repository
+// (upstream-only). Without it there is nothing to import, so the whole file
+// skips instead of failing collection with ERR_MODULE_NOT_FOUND.
+const CLOUD_EMBEDDINGS = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../cloud/src/handlers/embeddings.js"
+);
+const hasCloudWorker = fs.existsSync(CLOUD_EMBEDDINGS);
+const describeCloud = hasCloudWorker ? describe : describe.skip;
+
+// Every cloud/* import must stay dynamic for the same reason: a static import
+// is resolved (and rejected) even when vi.mock would replace it.
+const handleEmbeddings = hasCloudWorker
+  ? (await import("../../cloud/src/handlers/embeddings.js")).handleEmbeddings
+  : undefined;
+const { parseApiKey, extractBearerToken } = hasCloudWorker
+  ? await import("../../cloud/src/utils/apiKey.js")
+  : {};
+const { getMachineData, saveMachineData } = hasCloudWorker
+  ? await import("../../cloud/src/services/storage.js")
+  : {};
+
 import { getModelInfoCore } from "../../open-sse/services/model.js";
 import { handleEmbeddingsCore } from "../../open-sse/handlers/embeddingsCore.js";
-import { parseApiKey, extractBearerToken } from "../../cloud/src/utils/apiKey.js";
-import { getMachineData, saveMachineData } from "../../cloud/src/services/storage.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -115,7 +138,7 @@ function makeRequest(method = "POST", body = null, authHeader = `Bearer ${VALID_
 
 // ─── Tests: CORS OPTIONS ──────────────────────────────────────────────────────
 
-describe("handleEmbeddings — CORS OPTIONS", () => {
+describeCloud("handleEmbeddings — CORS OPTIONS", () => {
   it("OPTIONS request → 200 with Access-Control-Allow-Origin: *", async () => {
     const req = makeRequest("OPTIONS", null, null);
     const res = await handleEmbeddings(req, makeEnv(), {});
@@ -135,7 +158,7 @@ describe("handleEmbeddings — CORS OPTIONS", () => {
 
 // ─── Tests: Authentication ────────────────────────────────────────────────────
 
-describe("handleEmbeddings — authentication", () => {
+describeCloud("handleEmbeddings — authentication", () => {
   beforeEach(() => {
     vi.mocked(extractBearerToken).mockReturnValue(null);
     vi.mocked(parseApiKey).mockResolvedValue(null);
@@ -230,7 +253,7 @@ describe("handleEmbeddings — authentication", () => {
 
 // ─── Tests: Body validation ───────────────────────────────────────────────────
 
-describe("handleEmbeddings — body validation", () => {
+describeCloud("handleEmbeddings — body validation", () => {
   beforeEach(() => {
     vi.mocked(extractBearerToken).mockReturnValue(VALID_API_KEY);
     vi.mocked(parseApiKey).mockResolvedValue({ machineId: MACHINE_ID, keyId: "key01", isNewFormat: true });
@@ -289,7 +312,7 @@ describe("handleEmbeddings — body validation", () => {
 
 // ─── Tests: Happy path — valid request ────────────────────────────────────────
 
-describe("handleEmbeddings — valid request (happy path)", () => {
+describeCloud("handleEmbeddings — valid request (happy path)", () => {
   beforeEach(() => {
     vi.mocked(extractBearerToken).mockReturnValue(VALID_API_KEY);
     vi.mocked(parseApiKey).mockResolvedValue({ machineId: MACHINE_ID, keyId: "key01", isNewFormat: true });
@@ -377,7 +400,7 @@ describe("handleEmbeddings — valid request (happy path)", () => {
 
 // ─── Tests: Rate limiting ──────────────────────────────────────────────────────
 
-describe("handleEmbeddings — rate limit fallback", () => {
+describeCloud("handleEmbeddings — rate limit fallback", () => {
   beforeEach(() => {
     vi.mocked(extractBearerToken).mockReturnValue(VALID_API_KEY);
     vi.mocked(parseApiKey).mockResolvedValue({ machineId: MACHINE_ID, keyId: "key01", isNewFormat: true });
@@ -470,7 +493,7 @@ describe("handleEmbeddings — rate limit fallback", () => {
 
 // ─── Tests: machineId-override (old-format URL path) ─────────────────────────
 
-describe("handleEmbeddings — machineId override path", () => {
+describeCloud("handleEmbeddings — machineId override path", () => {
   beforeEach(() => {
     // When machineId is provided via URL, no apiKey parsing needed for machineId
     vi.mocked(getMachineData).mockResolvedValue(makeMachineData());

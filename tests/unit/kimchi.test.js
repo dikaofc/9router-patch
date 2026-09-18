@@ -1,34 +1,49 @@
-import { describe, it, before } from "node:test";
-import assert from "node:assert/strict";
+// Kimchi provider + OAuth service + model catalogue.
+//
+// Ported from node:test (vitest never collected those files) and de-cloned:
+// earlier revisions tested hand-copied "pure-function clones" because node:test
+// could not resolve the `@/`/`open-sse` aliases. vitest does resolve them, so
+// these suites now import the shipped modules.
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
 
-// Load the registry entry once for the suite so a load failure is reported
-// next to the failing test instead of cascading as "undefined" in every
-// later assertion.
-let kimchiEntry;
+import kimchiEntry from "../../open-sse/providers/registry/kimchi.js";
+import {
+  buildKimchiAuthUrl,
+  generateState,
+  getResolvedSession,
+  KimchiService,
+} from "../../src/lib/oauth/services/kimchi.js";
+import {
+  buildKimchiModelsUrl,
+  clearKimchiCatalog,
+  getCachedKimchiModelMetadata,
+  normalizeKimchiModel,
+  resolveKimchiModels,
+} from "../../open-sse/services/kimchiModels.js";
 
 describe("kimchi registry entry", () => {
-  before(async () => {
-    kimchiEntry = (await import("../../open-sse/providers/registry/kimchi.js")).default;
-  });
-
-  it("is an oauth provider auto-listed via byCategory", () => {
-    assert.equal(kimchiEntry.id, "kimchi");
-    assert.equal(kimchiEntry.category, "oauth");
+  it("is a freeTier provider that also supports OAuth", () => {
+    expect(kimchiEntry.id).toBe("kimchi");
+    expect(kimchiEntry.category).toBe("freeTier");
+    expect(kimchiEntry.hasOAuth).toBe(true);
+    expect(kimchiEntry.authModes).toEqual(["oauth", "apikey"]);
   });
 
   it("points at the OpenAI-compatible gateway with an authenticated UA", () => {
-    assert.equal(
-      kimchiEntry.transport.baseUrl,
-      "https://llm.kimchi.dev/openai/v1/chat/completions",
+    expect(kimchiEntry.transport.baseUrl).toBe(
+      "https://llm.kimchi.dev/openai/v1/chat/completions"
     );
     // UA must be a non-empty string the gateway can identify; the value
     // itself is owned by the Kimchi CLI release and may change upstream.
     const ua = kimchiEntry.transport.headers["User-Agent"];
-    assert.ok(typeof ua === "string" && ua.length > 0, `User-Agent missing: ${ua}`);
+    expect(typeof ua === "string" && ua.length > 0).toBe(true);
   });
 
   it("uses Bearer auth", () => {
-    assert.deepEqual(kimchiEntry.transport.auth, {
+    expect(kimchiEntry.transport.auth).toEqual({
       combined: true,
       header: "Authorization",
       scheme: "bearer",
@@ -37,198 +52,279 @@ describe("kimchi registry entry", () => {
 
   it("exposes the upstream static models", () => {
     const ids = kimchiEntry.models.map((m) => m.id);
-    assert.ok(ids.includes("kimi-k2.7"));
-    assert.ok(ids.includes("minimax-m3"));
-    assert.ok(ids.includes("nemotron-3-ultra-fp4"));
-    assert.ok(ids.length >= 5, `expected >= 5 static models, got ${ids.length}`);
+    expect(ids).toContain("kimi-k2.7");
+    expect(ids).toContain("minimax-m3");
+    expect(ids).toContain("nemotron-3-ultra-fp4");
+    expect(ids.length).toBeGreaterThanOrEqual(5);
   });
 
   it("passes through models not in the static list", () => {
-    assert.equal(kimchiEntry.passthroughModels, true);
+    expect(kimchiEntry.passthroughModels).toBe(true);
   });
 });
 
-// ── Pure-function clones of the service logic (tested in isolation so
-//     node --test works without resolving the Next.js Webpack "open-sse"
-//     alias that src/lib/oauth/services/kimchi.js's dependency imports). ──
-
-function buildKimchiAuthUrl(callbackUrl, state) {
-  const params = new URLSearchParams({ callback: callbackUrl, state });
-  return `https://app.kimchi.dev/cli-auth?${params.toString()}`;
-}
-
-async function _handleCallback(params, expectedState) {
-  if (params.error) {
-    throw new Error(params.error_description || params.error);
-  }
-  const candidate = params.state;
-  if (!candidate || candidate !== expectedState) {
-    throw new Error(
-      "This request isn't valid. Please restart the Kimchi login flow.",
-    );
-  }
-  const token = params.token;
-  if (!token) {
-    throw new Error("No token was returned by the Kimchi authentication server");
-  }
-  return { token };
-}
-
-describe("kimchi oauth", () => {
+describe("kimchi oauth — buildKimchiAuthUrl / state", () => {
   it("builds the cli-auth URL with encoded callback + state", () => {
-    const url = buildKimchiAuthUrl("http://127.0.0.1:4321/callback", "abc123");
-    const parsed = new URL(url);
-    assert.equal(parsed.origin, "https://app.kimchi.dev");
-    assert.equal(parsed.pathname, "/cli-auth");
-    assert.equal(parsed.searchParams.get("callback"), "http://127.0.0.1:4321/callback");
-    assert.equal(parsed.searchParams.get("state"), "abc123");
+    const url = new URL(buildKimchiAuthUrl("http://127.0.0.1:4321/callback", "abc123"));
+    expect(url.origin).toBe("https://app.kimchi.dev");
+    expect(url.pathname).toBe("/cli-auth");
+    expect(url.searchParams.get("callback")).toBe("http://127.0.0.1:4321/callback");
+    expect(url.searchParams.get("state")).toBe("abc123");
   });
 
+  it("generateState returns a fresh 256-bit hex state each call", () => {
+    const a = generateState();
+    const b = generateState();
+    expect(a).toMatch(/^[0-9a-f]{64}$/);
+    expect(a).not.toBe(b);
+  });
+
+  it("getResolvedSession returns null for an unknown state", () => {
+    expect(getResolvedSession("nope")).toBeNull();
+  });
+});
+
+describe("kimchi oauth — _handleCallback", () => {
+  // The callback handler validates the token against the upstream service;
+  // stub that single method so the state/token decision logic is what's tested.
+  function service() {
+    const svc = new KimchiService();
+    svc.validateToken = async () => ({ valid: true });
+    return svc;
+  }
+
   it("rejects a callback whose state does not match", async () => {
-    await assert.rejects(
-      () => _handleCallback({ token: "castai_v1_x", state: "wrong" }, "expected"),
-      /restart/i,
-    );
+    await expect(
+      service()._handleCallback({ token: "castai_v1_x", state: "wrong" }, "expected")
+    ).rejects.toThrow(/restart/i);
+  });
+
+  it("rejects a callback with no token", async () => {
+    await expect(
+      service()._handleCallback({ state: "match" }, "match")
+    ).rejects.toThrow(/No token/i);
+  });
+
+  it("surfaces an upstream error_description", async () => {
+    await expect(
+      service()._handleCallback({ error: "access_denied", error_description: "denied by user" }, "match")
+    ).rejects.toThrow("denied by user");
+  });
+
+  it("rejects a token the upstream validator refuses", async () => {
+    const svc = new KimchiService();
+    svc.validateToken = async () => ({ valid: false, error: "Kimchi token invalid or expired" });
+    await expect(
+      svc._handleCallback({ token: "castai_v1_x", state: "match" }, "match")
+    ).rejects.toThrow(/invalid or expired/i);
   });
 
   it("accepts a callback with matching state and returns the token", async () => {
-    const res = await _handleCallback({ token: "castai_v1_x", state: "match" }, "match");
-    assert.equal(res.token, "castai_v1_x");
+    const res = await service()._handleCallback({ token: "castai_v1_x", state: "match" }, "match");
+    expect(res.token).toBe("castai_v1_x");
   });
 });
 
-// ── kimchiModels service (pure mapping logic, tested in isolation) ──
+describe("kimchi oauth — validateToken (status → decision)", () => {
+  const originalFetch = globalThis.fetch;
 
-// Clone of the metadata→model mapper so node --test resolves without the
-// open-sse/Webpack alias chain the real module imports.
-function mapKimchiMetadata(raw) {
-  if (!Array.isArray(raw)) return [];
-  return raw.map((m) => ({
-    id: m.slug,
-    name: m.display_name || m.slug,
-    contextLength: m.limits?.context_window || null,
-    maxOutputTokens: m.limits?.max_output_tokens || null,
-    isReasoning: m.reasoning === true,
-  }));
-}
+  function stubStatus(status) {
+    globalThis.fetch = vi.fn(async () => new Response("{}", { status }));
+  }
 
-describe("kimchiModels", () => {
-  it("maps Kimchi metadata entries to 9router model shape", () => {
-    const raw = [{
+  beforeEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  afterAll(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  it("200 → valid", async () => {
+    stubStatus(200);
+    await expect(new KimchiService().validateToken("t")).resolves.toEqual({ valid: true });
+  });
+
+  it("401 → invalid, expired message", async () => {
+    stubStatus(401);
+    const r = await new KimchiService().validateToken("t");
+    expect(r.valid).toBe(false);
+    expect(r.error).toMatch(/invalid or expired/i);
+  });
+
+  it("403 → invalid, scope message", async () => {
+    stubStatus(403);
+    const r = await new KimchiService().validateToken("t");
+    expect(r.valid).toBe(false);
+    expect(r.error).toMatch(/scope/i);
+  });
+
+  it("unknown status and network errors → fail-open valid", async () => {
+    stubStatus(500);
+    await expect(new KimchiService().validateToken("t")).resolves.toEqual({ valid: true });
+
+    globalThis.fetch = vi.fn(async () => { throw new Error("ECONNRESET"); });
+    await expect(new KimchiService().validateToken("t")).resolves.toEqual({ valid: true });
+  });
+});
+
+describe("kimchiModels — catalogue parsing", () => {
+  beforeEach(() => clearKimchiCatalog());
+
+  it("maps Kimchi metadata entries to the 9router model shape", () => {
+    const model = normalizeKimchiModel({
       slug: "glm-5.2-fp8",
       display_name: "GLM 5.2",
+      provider: "anthropic",
       reasoning: true,
+      input_modalities: ["text", "image"],
       limits: { context_window: 1048576, max_output_tokens: 1048576 },
-    }];
-    const models = mapKimchiMetadata(raw);
-    assert.equal(models.length, 1);
-    assert.deepEqual(models[0], {
-      id: "glm-5.2-fp8",
-      name: "GLM 5.2",
-      contextLength: 1048576,
-      maxOutputTokens: 1048576,
-      isReasoning: true,
     });
+
+    expect(model.id).toBe("glm-5.2-fp8");
+    expect(model.name).toBe("GLM 5.2");
+    expect(model.contextLength).toBe(1048576);
+    expect(model.maxOutputTokens).toBe(1048576);
+    expect(model.reasoning).toBe(true);
+    expect(model.kind).toBe("imageToText");
+    expect(model.compat).toEqual({ supportsReasoningEffort: false, cacheControlFormat: "anthropic" });
   });
 
-  it("falls back to slug as name when display_name is empty", () => {
-    const models = mapKimchiMetadata([{ slug: "kimi-k2.7", display_name: "", reasoning: false, limits: {} }]);
-    assert.equal(models[0].name, "kimi-k2.7");
-    assert.equal(models[0].contextLength, null);
-    assert.equal(models[0].isReasoning, false);
+  it("falls back to the slug for name and omits unknown limits", () => {
+    const model = normalizeKimchiModel({ slug: "kimi-k2.7", display_name: "", reasoning: false, limits: {} });
+    expect(model.name).toBe("kimi-k2.7");
+    expect(model.contextLength).toBeUndefined();
+    expect(model.maxOutputTokens).toBeUndefined();
+    expect(model.reasoning).toBe(false);
+    expect(model.kind).toBe("llm");
   });
 
-  it("returns empty array for non-array input", () => {
-    assert.deepEqual(mapKimchiMetadata(null), []);
-    assert.deepEqual(mapKimchiMetadata({}), []);
+  it("returns null for unusable entries", () => {
+    expect(normalizeKimchiModel(null)).toBeNull();
+    expect(normalizeKimchiModel({})).toBeNull();
+    expect(normalizeKimchiModel({ slug: "   " })).toBeNull();
   });
-});
 
-// ── validateToken logic (pure decision over a status code) ──
+  it("builds the metadata URL from the configured endpoint", () => {
+    expect(buildKimchiModelsUrl()).toBe("https://llm.kimchi.dev/v1/models/metadata?include_in_cli=true");
+    expect(buildKimchiModelsUrl("https://kimchi.internal///")).toBe(
+      "https://kimchi.internal/v1/models/metadata?include_in_cli=true"
+    );
+  });
 
-// Mirrors the decision in KimchiService.validateToken without importing the
-// service (which pulls the open-sse Webpack alias chain).
-function decideValidity(status) {
-  if (status === 200) return { valid: true };
-  if (status === 401) return { valid: false, error: "Kimchi token invalid or expired" };
-  if (status === 403) return { valid: false, error: "Kimchi token lacks required scope" };
-  return { valid: true }; // fail-open on unknown / network error
-}
+  it("resolveKimchiModels returns null without a token", async () => {
+    await expect(resolveKimchiModels({})).resolves.toBeNull();
+  });
 
-describe("kimchi validateToken", () => {
-  it("200 → valid", () => {
-    assert.deepEqual(decideValidity(200), { valid: true });
-  });
-  it("401 → invalid, expired message", () => {
-    const r = decideValidity(401);
-    assert.equal(r.valid, false);
-    assert.match(r.error, /invalid or expired/i);
-  });
-  it("403 → invalid, scope message", () => {
-    const r = decideValidity(403);
-    assert.equal(r.valid, false);
-    assert.match(r.error, /scope/i);
-  });
-  it("unknown / network error → fail-open valid", () => {
-    assert.equal(decideValidity(500).valid, true);
-    assert.equal(decideValidity(0).valid, true);
-  });
-});
+  it("resolveKimchiModels parses the catalogue and caches it per credential", async () => {
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({
+      models: [
+        { slug: "kimi-k2.7", display_name: "Kimi K2.7", reasoning: true, limits: { context_window: 262144 } },
+        { slug: "", display_name: "broken" },
+      ],
+    }), { status: 200, headers: { "content-type": "application/json" } }));
 
-// ── OAuth dedup logic (pure clone of connectionsRepo matcher) ──
-// Mimics the find() predicate in createProviderConnection for OAuth
-// connections, so we can test the IdP-collision fix in isolation.
-function findExistingOAuth(all, incoming) {
-  const incomingEmail = incoming.email;
-  const incomingUsername = incoming.providerSpecificData?.username;
-  const incomingWs = incoming.providerSpecificData?.chatgptAccountId;
-  return all.find((c) => {
-    if (c.authType !== "oauth" || c.email !== incomingEmail) return false;
-    const existingWs = c.providerSpecificData?.chatgptAccountId;
-    if (incomingWs && existingWs) return incomingWs === existingWs;
-    if (incomingWs && !existingWs) return false;
-    if (!incomingWs && existingWs) return false;
-    const existingUsername = c.providerSpecificData?.username;
-    if (incomingUsername && existingUsername) {
-      return incomingUsername === existingUsername;
+    vi.resetModules();
+    vi.doMock("../../open-sse/utils/proxyFetch.js", () => ({ proxyAwareFetch: fetchMock }));
+    try {
+      const mod = await import("../../open-sse/services/kimchiModels.js");
+      const credentials = { accessToken: "castai_v1_x", providerSpecificData: { userId: "u-1" } };
+
+      const entry = await mod.resolveKimchiModels(credentials);
+      expect(fetchMock).toHaveBeenCalledOnce();
+      expect(entry.models.map((m) => m.id)).toEqual(["kimi-k2.7"]);
+
+      // Second call is served from the in-process cache.
+      await mod.resolveKimchiModels(credentials);
+      expect(fetchMock).toHaveBeenCalledOnce();
+
+      // Metadata is addressable by model id afterwards (used by /v1/models).
+      expect(mod.getCachedKimchiModelMetadata("kimchi/kimi-k2.7")?.id).toBe("kimi-k2.7");
+    } finally {
+      vi.doUnmock("../../open-sse/utils/proxyFetch.js");
+      vi.resetModules();
     }
-    if (incomingUsername || existingUsername) return false;
-    return true;
-  });
-}
-
-describe("kimchi OAuth dedup", () => {
-  const google = { authType: "oauth", email: "x@y.com", providerSpecificData: { username: "google-oauth2|123" } };
-  const hf = { authType: "oauth", email: "x@y.com", providerSpecificData: { username: "huggingface|456" } };
-  const legacy = { authType: "oauth", email: "x@y.com", providerSpecificData: {} };
-  const other = { authType: "oauth", email: "z@y.com", providerSpecificData: { username: "google-oauth2|789" } };
-
-  it("different email never matches", () => {
-    assert.equal(findExistingOAuth([other], google), undefined);
   });
 
-  it("same email + same username = dedup (re-login same IdP)", () => {
-    const found = findExistingOAuth([google], { ...google });
-    assert.equal(found, google);
+  it("getCachedKimchiModelMetadata returns null for an unknown id", () => {
+    expect(getCachedKimchiModelMetadata("nope")).toBeNull();
+    expect(getCachedKimchiModelMetadata("")).toBeNull();
+  });
+});
+
+// ── OAuth dedup — real connectionsRepo against a scratch SQLite file ──
+
+describe("kimchi OAuth dedup (createProviderConnection)", () => {
+  const originalDataDir = process.env.DATA_DIR;
+  let tempDir;
+  let db;
+
+  beforeAll(async () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "9router-kimchi-"));
+    process.env.DATA_DIR = tempDir;
+    vi.resetModules();
+    db = await import("@/lib/db/index.js");
+    await db.initDb();
   });
 
-  it("same email + different username = NO match (cross-IdP, the bug)", () => {
-    assert.equal(findExistingOAuth([google], hf), undefined);
+  afterAll(() => {
+    if (tempDir) fs.rmSync(tempDir, { recursive: true, force: true });
+    if (originalDataDir === undefined) delete process.env.DATA_DIR;
+    else process.env.DATA_DIR = originalDataDir;
   });
 
-  it("legacy row without username matches incoming without username (backward compat)", () => {
-    assert.equal(findExistingOAuth([legacy], { ...legacy }), legacy);
+  const oauth = (username) => ({
+    provider: "kimchi",
+    authType: "oauth",
+    email: "x@y.com",
+    accessToken: "castai_v1_x",
+    providerSpecificData: { username },
   });
 
-  it("incoming without username does not match legacy row with username", () => {
-    assert.equal(findExistingOAuth([google], { ...legacy }), undefined);
+  it("re-login with the same username updates the existing row", async () => {
+    const first = await db.createProviderConnection(oauth("google-oauth2|123"));
+    const second = await db.createProviderConnection(oauth("google-oauth2|123"));
+
+    expect(second.id).toBe(first.id);
+    const rows = await db.getProviderConnections({ provider: "kimchi" });
+    expect(rows.map((r) => r.id)).toEqual([first.id]);
   });
 
-  it("workspaces still dedupe on workspace ID when both sides have one", () => {
-    const ws1 = { authType: "oauth", email: "a@b.com", providerSpecificData: { chatgptAccountId: "ws1" } };
-    const ws1dup = { authType: "oauth", email: "a@b.com", providerSpecificData: { chatgptAccountId: "ws1" } };
-    const ws2 = { authType: "oauth", email: "a@b.com", providerSpecificData: { chatgptAccountId: "ws2" } };
-    assert.equal(findExistingOAuth([ws1], ws1dup), ws1);
-    assert.equal(findExistingOAuth([ws1], ws2), undefined);
+  it("same email from a different IdP is a distinct account", async () => {
+    const before = (await db.getProviderConnections({ provider: "kimchi" })).length;
+    await db.createProviderConnection(oauth("huggingface|456"));
+
+    const rows = await db.getProviderConnections({ provider: "kimchi" });
+    expect(rows.length).toBe(before + 1);
+    const usernames = rows.map((r) => r.providerSpecificData?.username);
+    expect(usernames).toContain("google-oauth2|123");
+    expect(usernames).toContain("huggingface|456");
+  });
+
+  it("workspaces dedupe on workspace ID, not username", async () => {
+    const ws1 = {
+      provider: "kimchi", authType: "oauth", email: "a@b.com", accessToken: "t",
+      providerSpecificData: { chatgptAccountId: "ws1" },
+    };
+    const firstWs = await db.createProviderConnection(ws1);
+    const sameWs = await db.createProviderConnection(ws1);
+    expect(sameWs.id).toBe(firstWs.id);
+
+    const otherWs = await db.createProviderConnection({
+      ...ws1, providerSpecificData: { chatgptAccountId: "ws2" },
+    });
+    expect(otherWs.id).not.toBe(firstWs.id);
+  });
+
+  it("api-key connections dedupe by name, oauth access tokens never dedupe", async () => {
+    const key = { provider: "kimchi", authType: "apikey", name: "work", apiKey: "k-1" };
+    const a = await db.createProviderConnection(key);
+    const b = await db.createProviderConnection({ ...key, apiKey: "k-2" });
+    expect(b.id).toBe(a.id);
+    expect(b.apiKey).toBe("k-2");
+
+    const t1 = await db.createProviderConnection({ provider: "kimchi", authType: "access_token", name: "tok" });
+    const t2 = await db.createProviderConnection({ provider: "kimchi", authType: "access_token", name: "tok" });
+    expect(t2.id).not.toBe(t1.id);
   });
 });

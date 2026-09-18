@@ -57,6 +57,11 @@ export async function getSamlRuntimeConfig() {
  * @param {string} origin
  * @returns {SAML}
  */
+// Constructor-only placeholder: `@node-saml/node-saml` rejects an empty idpCert,
+// so a syntactically valid but non-functional PEM keeps the instance
+// constructible while SAML is half-configured. Every caller gates on
+// isSamlConfigured() (entryPoint + real cert) first, so this value is never
+// used to verify an assertion — a login cannot succeed against it.
 const DUMMY_FALLBACK_CERT =
   "-----BEGIN CERTIFICATE-----\nMIIC...DUMMY...\n-----END CERTIFICATE-----";
 

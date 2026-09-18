@@ -10,6 +10,7 @@ const originalDataDir = process.env.DATA_DIR;
 beforeEach(() => {
   tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "9router-chain-"));
   process.env.DATA_DIR = tempDir;
+  delete process.env.USE_SQLJS;
   delete global._dbAdapter;
   vi.resetModules();
 });
@@ -17,6 +18,7 @@ beforeEach(() => {
 afterEach(() => {
   try { global._dbAdapter?.instance?.close?.(); } catch {}
   delete global._dbAdapter;
+  delete process.env.USE_SQLJS;
   if (tempDir) fs.rmSync(tempDir, { recursive: true, force: true });
   if (originalDataDir === undefined) delete process.env.DATA_DIR;
   else process.env.DATA_DIR = originalDataDir;
@@ -55,5 +57,21 @@ describe("Driver fallback chain", () => {
     const { getAdapter } = await import("@/lib/db/driver.js");
     const db = await getAdapter();
     expect(db.driver).toBe("sql.js");
+  });
+
+  // USE_SQLJS=1 is exported by start-termux.sh (Android has no native build
+  // tools). It must win over the native drivers on any host that has them.
+  it.each(["1", "true", "yes"])("USE_SQLJS=%s forces the pure-JS driver", async (value) => {
+    process.env.USE_SQLJS = value;
+    const { getAdapter } = await import("@/lib/db/driver.js");
+    const db = await getAdapter();
+    expect(db.driver).toBe("sql.js");
+  });
+
+  it("USE_SQLJS=0 does not force the pure-JS driver", async () => {
+    process.env.USE_SQLJS = "0";
+    const { getAdapter } = await import("@/lib/db/driver.js");
+    const db = await getAdapter();
+    expect(["better-sqlite3", "node:sqlite"]).toContain(db.driver);
   });
 });
