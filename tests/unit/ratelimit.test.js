@@ -95,7 +95,11 @@ describe("RateLimitManager", () => {
     expect(mgr.isConnBlocked(connAfter, { provider: "oc", model: MODEL, now: T })).toBe(true);
     const expired = new Date(T - 10000).toISOString();
     const connExpired = { ...connAfter, [`modelLock_${MODEL}`]: expired, providerCooldownUntil: expired, providerModelCooldownUntil: expired };
-    expect(mgr.isConnBlocked(connExpired, { provider: "oc", model: MODEL, now: T })).toBe(false);
+    // Expiry of the durable fields is evaluated on a fresh manager: `mgr`
+    // still holds the just-written in-memory provider/provider+model
+    // cooldowns (correctly — the provider IS still cooling in this process),
+    // which would keep isConnBlocked() true regardless of durable fields.
+    expect(new RateLimitManager(T).isConnBlocked(connExpired, { provider: "oc", model: MODEL, now: T })).toBe(false);
 
     const r2 = mgr.markFailure({ provider: "oc", conn, model: MODEL, status: 400, errorText: "bad", now: T });
     expect(r2.shouldFallback).toBe(false);

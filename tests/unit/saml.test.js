@@ -57,13 +57,15 @@ describe("SAML 2.0 Auth Engine Utilities", () => {
   });
 
   describe("generateSamlMetadata", () => {
-    it("generates valid SP XML metadata with Entity ID and ACS binding", () => {
+    it("generates valid SP XML metadata with Entity ID and ACS binding", async () => {
       const settings = {
         samlEntryPoint: "https://idp.example.com/sso",
         samlIssuer: "urn:9router:sp",
         samlCert: "MIIC123456789012345678901234567890123456789012345678901234567890",
       };
-      const xml = generateSamlMetadata("https://localhost:20127", settings);
+      // generateSamlMetadata is async (lazy-loads @node-saml so serverless
+      // bundles without the optional dep don't crash on import).
+      const xml = await generateSamlMetadata("https://localhost:20127", settings);
       expect(xml).toContain('entityID="urn:9router:sp"');
       expect(xml).toContain('Location="https://localhost:20127/api/auth/saml/acs"');
       expect(xml).toContain('WantAssertionsSigned="true"');

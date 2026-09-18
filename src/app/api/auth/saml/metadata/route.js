@@ -5,7 +5,7 @@ export async function GET(request) {
   try {
     const settings = await getSettings();
     const origin = new URL(request.url).origin;
-    const metadataXml = generateSamlMetadata(origin, settings);
+    const metadataXml = await generateSamlMetadata(origin, settings);
 
     return new Response(metadataXml, {
       status: 200,
