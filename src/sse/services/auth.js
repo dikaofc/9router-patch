@@ -68,28 +68,28 @@ export async function getProviderCredentials(provider, excludeConnectionIds = nu
         // A real user token exists — fall through to the normal stored-connection
         // selection below instead of the virtual `public` connection.
       } else {
-      const override = (noAuthSettings.providerStrategies || {})[providerId] || {};
-      const strategy = override.rotateStrategy || "none";
-      let pickedId = override.proxyPoolId || null;
-      if (strategy !== "none") {
-        const allPools = await getProxyPools({ isActive: true });
-        const poolIds = allPools.filter(p => p.proxyUrl).map(p => p.id);
-        pickedId = pickProxyPoolId(poolIds, strategy, providerId);
-      }
-      const resolvedProxy = await resolveConnectionProxyConfig({ proxyPoolId: pickedId || "" });
-      return {
-        id: "noauth",
-        connectionName: "Public",
-        isActive: true,
-        accessToken: "public",
-        providerSpecificData: {
-          connectionProxyEnabled: resolvedProxy.connectionProxyEnabled,
-          connectionProxyUrl: resolvedProxy.connectionProxyUrl,
-          connectionNoProxy: resolvedProxy.connectionNoProxy,
-          connectionProxyPoolId: resolvedProxy.proxyPoolId || null,
-          vercelRelayUrl: resolvedProxy.vercelRelayUrl || "",
-        },
-      };
+        const override = (noAuthSettings.providerStrategies || {})[providerId] || {};
+        const strategy = override.rotateStrategy || "none";
+        let pickedId = override.proxyPoolId || null;
+        if (strategy !== "none") {
+          const allPools = await getProxyPools({ isActive: true });
+          const poolIds = allPools.filter(p => p.proxyUrl).map(p => p.id);
+          pickedId = pickProxyPoolId(poolIds, strategy, providerId);
+        }
+        const resolvedProxy = await resolveConnectionProxyConfig({ proxyPoolId: pickedId || "" });
+        return {
+          id: "noauth",
+          connectionName: "Public",
+          isActive: true,
+          accessToken: "public",
+          providerSpecificData: {
+            connectionProxyEnabled: resolvedProxy.connectionProxyEnabled,
+            connectionProxyUrl: resolvedProxy.connectionProxyUrl,
+            connectionNoProxy: resolvedProxy.connectionNoProxy,
+            connectionProxyPoolId: resolvedProxy.proxyPoolId || null,
+            vercelRelayUrl: resolvedProxy.vercelRelayUrl || "",
+          },
+        };
       }
     }
 
