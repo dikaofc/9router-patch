@@ -63,37 +63,15 @@ describe("OpenCode Free Muse Spark thinking", () => {
     expect(out.max_tokens).toBeUndefined();
   });
 
-  it("routes Union Alpha through Anthropic Messages", () => {
-    const caps = getCapabilitiesForModel(PROVIDER, "union-alpha");
-    expect(caps.vision).toBe(true);
-    expect(caps.contextWindow).toBe(262144);
-    expect(caps.maxOutput).toBe(131072);
-
+  it("no longer offers retired Union Alpha (upstream 401 Model not supported)", () => {
+    // union-alpha was retired upstream — requesting it returns
+    // 401 `ModelError: Model union-alpha is not supported`. The registry must
+    // not offer it, and the executor must not route anything to /messages.
+    expect(PROVIDER_MODELS.oc?.some((model) => model.id === "union-alpha")).toBe(false);
     const executor = new OpenCodeExecutor();
-
-    expect(getModelTargetFormat("oc", "union-alpha")).toBe(FORMATS.CLAUDE);
-    const url = executor.buildUrl("union-alpha");
-    expect(url).toBe("https://opencode.ai/zen/v1/messages");
-    expect(executor.buildHeaders({}, true, url)).toMatchObject({
-      "anthropic-version": "2023-06-01",
-    });
+    expect(executor.buildUrl("union-alpha")).toBe("https://opencode.ai/zen/v1/chat/completions");
     expect(executor.buildHeaders({}, true, executor.buildUrl("big-pickle")))
       .not.toHaveProperty("anthropic-version");
-
-    const translated = translateRequest(
-      FORMATS.OPENAI,
-      FORMATS.CLAUDE,
-      "union-alpha",
-      { messages: [{ role: "user", content: "ping" }], max_tokens: 1 },
-      false,
-      {},
-      PROVIDER,
-    );
-    expect(translated).toMatchObject({
-      model: "union-alpha",
-      messages: [{ role: "user", content: [{ type: "text", text: "ping" }] }],
-      max_tokens: 1,
-    });
   });
 
   it("leaves the other free models on Chat Completions", () => {

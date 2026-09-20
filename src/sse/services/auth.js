@@ -43,9 +43,32 @@ export async function getProviderCredentials(provider, excludeConnectionIds = nu
     const providerId = resolveProviderId(provider);
 
     // Inject a virtual connection for no-auth free providers (with optional proxy pool from settings)
+    // Exception: opencode accepts an optional user token (from `opencode /login`).
+    // When the user saved a real connection with a key, use it — the anonymous
+    // `public` pool is UA/IP-gated upstream and can 403 with FreeTierError while
+    // a logged-in token still works. Only fall back to the virtual `public`
+    // connection when no stored key exists.
     if (FREE_PROVIDERS[providerId]?.noAuth) {
-      const settings = await getSettings();
-      const override = (settings.providerStrategies || {})[providerId] || {};
+      const noAuthSettings = await getSettings();
+      let skipVirtual = false;
+      if (providerId === "opencode") {
+        try {
+          const stored = await getProviderConnections({ provider: providerId, isActive: true });
+          skipVirtual = (stored || []).some((c) => {
+            if (excludeSet.has(c.id)) return false;
+            if (isModelLockActive(c, model)) return false;
+            const key = c.apiKey || c.accessToken;
+            return typeof key === "string" && key.trim() && key.trim() !== "public";
+          });
+        } catch {
+          // DB failure → fall through to the virtual public connection (fail-open)
+        }
+      }
+      if (skipVirtual) {
+        // A real user token exists — fall through to the normal stored-connection
+        // selection below instead of the virtual `public` connection.
+      } else {
+      const override = (noAuthSettings.providerStrategies || {})[providerId] || {};
       const strategy = override.rotateStrategy || "none";
       let pickedId = override.proxyPoolId || null;
       if (strategy !== "none") {
@@ -67,6 +90,7 @@ export async function getProviderCredentials(provider, excludeConnectionIds = nu
           vercelRelayUrl: resolvedProxy.vercelRelayUrl || "",
         },
       };
+      }
     }
 
     const connections = await getProviderConnections({ provider: providerId, isActive: true });

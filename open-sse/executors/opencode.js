@@ -14,7 +14,22 @@ import {
   coerceResponsesOutput,
 } from "../translator/formats/responsesApi.js";
 
-const OPENCODE_UA = "opencode/1.18.31";
+export const OPENCODE_UA = "opencode/1.18.31";
+// Upstream auth: anonymous pool uses `Bearer public`. When the user saved their
+// own OpenCode token on the connection (from `opencode /login`), prefer it —
+// the anonymous pool is UA/IP-gated and can 403 with FreeTierError while a
+// logged-in token still works.
+export function resolveOpencodeAuthToken(credentials) {
+  const apiKey = credentials?.apiKey;
+  if (typeof apiKey === "string" && apiKey.trim() && apiKey.trim() !== "public") {
+    return apiKey.trim();
+  }
+  const accessToken = credentials?.accessToken;
+  if (typeof accessToken === "string" && accessToken.trim() && accessToken.trim() !== "public") {
+    return accessToken.trim();
+  }
+  return "public";
+}
 const MAX_SESSION_LENGTH = 256;
 const MAX_TOOL_NAME_LEN = 128;
 const SESSION_HEADER = "x-opencode-session";
@@ -98,7 +113,10 @@ const RESPONSES_MODELS = new Set([
   "muse-spark-1.2-contributor-free",
   "muse-spark-1.3-contributor-free",
 ]);
-const MESSAGES_MODELS = new Set(["union-alpha"]);
+// `union-alpha` was retired upstream (401 Model not supported) and removed from
+// the registry — no model currently needs the Messages endpoint. Kept as an
+// (empty) routing hook so a future Messages-only free model has a place to land.
+const MESSAGES_MODELS = new Set([]);
 
 let lastTimestamp = 0;
 let counter = 0;
@@ -533,7 +551,7 @@ export class OpenCodeExecutor extends BaseExecutor {
 
     const headers = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer public",
+      "Authorization": `Bearer ${resolveOpencodeAuthToken(credentials)}`,
       "User-Agent": isOpencodeDownstream ? downstreamUa : OPENCODE_UA,
       "x-opencode-client": lower["x-opencode-client"] || "desktop",
       "x-opencode-session": session,

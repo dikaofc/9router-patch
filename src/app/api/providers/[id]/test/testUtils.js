@@ -752,10 +752,19 @@ async function testApiKeyConnection(connection, effectiveProxy = null) {
         return { valid, error: valid ? null : "Session expired — re-paste cookie" };
       }
       case "opencode": {
+        // GET /models only proves connectivity — the anonymous free pool can
+        // still gate chat with 403 FreeTierError, so surface that explicitly.
+        // A user-saved token (from `opencode /login`) is preferred over `public`.
+        const userKey = connection.apiKey || connection.accessToken;
+        const token = typeof userKey === "string" && userKey.trim() ? userKey.trim() : "public";
         const res = await fetchWithConnectionProxy("https://opencode.ai/zen/v1/models", {
-          headers: { Authorization: "Bearer public", "User-Agent": "opencode/1.18.31" },
+          headers: { Authorization: `Bearer ${token}`, "User-Agent": "opencode/1.18.31" },
         }, effectiveProxy);
-        return { valid: res.ok, error: res.ok ? null : "OpenCode free tier unavailable" };
+        if (!res.ok) return { valid: false, error: "OpenCode free tier unavailable" };
+        if (token === "public") {
+          return { valid: true, warning: "Connected (anonymous pool). If chat returns 403 FreeTierError, run /login in OpenCode and save your token on this connection.", error: null };
+        }
+        return { valid: true, error: null };
       }
       case "opencode-go": {
         const res = await fetchWithConnectionProxy("https://opencode.ai/zen/go/v1/chat/completions", {

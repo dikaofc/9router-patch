@@ -66,6 +66,12 @@ export const ERROR_RULES = [
   { text: "quota exceeded",           backoff: true },
   { text: "capacity",                 backoff: true },
   { text: "overloaded",               backoff: true },
+  // OpenCode anonymous-pool gate: the request reached upstream but was refused
+  // as non-OpenCode traffic (403 FreeTierError). Retrying the same anonymous
+  // request is pointless — cool the connection down so a BYO token (or the
+  // next combo model) gets tried instead of looping on the same 403.
+  { text: "freetiererror",            cooldownMs: COOLDOWN.long },
+  { text: "can only be used from within", cooldownMs: COOLDOWN.long },
 
   // --- Status-based rules (fallback when text doesn't match) ---
   { status: 401, cooldownMs: COOLDOWN.long },
