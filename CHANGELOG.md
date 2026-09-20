@@ -1,6 +1,7 @@
 # Unreleased (on top of v0.5.82)
 
 ## Fixes
+- **Build without native modules**: `betterSqliteAdapter` lazy-loads via `webpackIgnore` dynamic import (+ `await` in driver chain so the catch holds); cursor auto-import Strategy 1 rewritten to built-in `node:sqlite` — `npm run build` now succeeds where `better-sqlite3` was never installed
 - **Tests (fully green 2667/2553/0)**: `db-driver-chain` — `vi.doMock` leaked past `vi.resetModules`, fixed with per-test `vi.doUnmock`; `request-details-tab` backup test falls back to built-in `node:sqlite` when optional `better-sqlite3` is absent
 - **OpenCode Free**: `union-alpha` retired upstream (401 `Model not supported`) — removed from registry, routing and capabilities; `deepseek-v4-flash-free` removed (400 `Model is unavailable`); free list synced to the live zen catalog
 - **OpenCode Free gate**: anonymous `public` pool is UA/IP-gated upstream (403 `FreeTierError`) — executor/auth/test now prefer a user-saved token from `opencode /login`, `FreeTierError` classified as fallback-eligible with long cooldown

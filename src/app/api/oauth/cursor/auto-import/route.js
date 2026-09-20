@@ -73,15 +73,26 @@ const normalize = (value) => {
 };
 
 /**
- * Extract tokens via better-sqlite3 (bundled dependency).
- * This is the preferred strategy — no external CLI required.
+ * Extract tokens via built-in node:sqlite (no native deps, no external CLI).
+ * This is the preferred strategy. better-sqlite3 was deliberately NOT used
+ * here: it is an OPTIONAL dependency, and any reference to it makes webpack
+ * hard-fail `npm run build` where it was never installed. node:sqlite ships
+ * with Node ≥22.5; older runtimes fall through to the CLI strategy.
  */
-function extractTokensViaBetterSqlite(dbPath) {
-  // Dynamic require so the route stays importable even if native bindings fail
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const Database = require("better-sqlite3");
-  const db = new Database(dbPath, { readonly: true, fileMustExist: true });
-
+async function extractTokensViaNodeSqlite(dbPath) {
+  let DatabaseSync;
+  try {
+    ({ DatabaseSync } = await import("node:sqlite"));
+  } catch {
+    return { accessToken: null, machineId: null };
+  }
+  let db;
+  try {
+    db = new DatabaseSync(dbPath, { readOnly: true });
+  } catch {
+    return { accessToken: null, machineId: null };
+  }
+  try {
   const query = (key) => {
     const row = db.prepare("SELECT value FROM itemTable WHERE key=? LIMIT 1").get(key);
     return row?.value || null;
@@ -108,9 +119,12 @@ function extractTokensViaBetterSqlite(dbPath) {
     const raw = query(key);
     if (raw) { machineId = normalize(raw); break; }
   }
-
-  db.close();
   return { accessToken, machineId };
+  } catch {
+    return { accessToken: null, machineId: null };
+  } finally {
+    try { db.close(); } catch { /* ignore */ }
+  }
 }
 
 /**
@@ -218,9 +232,9 @@ export async function GET() {
       }
     }
 
-    // Strategy 1: better-sqlite3 (bundled — no external tools required)
+    // Strategy 1: node:sqlite (built-in — no external tools required)
     try {
-      const tokens = extractTokensViaBetterSqlite(dbPath);
+      const tokens = await extractTokensViaNodeSqlite(dbPath);
       if (tokens.accessToken && tokens.machineId) {
         return NextResponse.json({
           found: true,

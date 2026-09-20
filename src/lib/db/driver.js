@@ -65,7 +65,9 @@ async function tryBetterSqlite() {
   if (nodeMajor >= 24) return null;
   try {
     const { createBetterSqliteAdapter } = await import("./adapters/betterSqliteAdapter.js");
-    return createBetterSqliteAdapter(DATA_FILE);
+    // await INSIDE try: the factory is async (lazy native import), so a bare
+    // `return` would let its rejection bypass this catch and break the chain.
+    return await createBetterSqliteAdapter(DATA_FILE);
   } catch (e) {
     console.warn(`[DB] better-sqlite3 unavailable: ${e.message}`);
     return null;
