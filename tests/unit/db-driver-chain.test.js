@@ -12,6 +12,12 @@ beforeEach(() => {
   process.env.DATA_DIR = tempDir;
   delete process.env.USE_SQLJS;
   delete global._dbAdapter;
+  // vi.doMock() registrations survive vi.resetModules() — without doUnmock,
+  // the nodeSqliteAdapter mock from an earlier test leaks into later tests
+  // (e.g. USE_SQLJS=0) and forces sql.js. (vi.unmock does NOT clear doMock;
+  // doUnmock is its counterpart — see kiro-external-idp.test.js.)
+  vi.doUnmock("@/lib/db/adapters/betterSqliteAdapter.js");
+  vi.doUnmock("@/lib/db/adapters/nodeSqliteAdapter.js");
   vi.resetModules();
 });
 

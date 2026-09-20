@@ -1,6 +1,7 @@
 # Unreleased (on top of v0.5.82)
 
 ## Fixes
+- **Tests (fully green 2667/2553/0)**: `db-driver-chain` — `vi.doMock` leaked past `vi.resetModules`, fixed with per-test `vi.doUnmock`; `request-details-tab` backup test falls back to built-in `node:sqlite` when optional `better-sqlite3` is absent
 - **OpenCode Free**: `union-alpha` retired upstream (401 `Model not supported`) — removed from registry, routing and capabilities; `deepseek-v4-flash-free` removed (400 `Model is unavailable`); free list synced to the live zen catalog
 - **OpenCode Free gate**: anonymous `public` pool is UA/IP-gated upstream (403 `FreeTierError`) — executor/auth/test now prefer a user-saved token from `opencode /login`, `FreeTierError` classified as fallback-eligible with long cooldown
 - **Tests**: kimi golden header snapshot normalizes `X-Msh-Device-Name` (hostname) so it no longer redrifts per machine; provider/alias baselines re-snapshotted for the 5 intentional free providers (blockrun, cehpoint, ovhcloud, pollinations, vireonix)

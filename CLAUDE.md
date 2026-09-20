@@ -48,7 +48,7 @@ npx vitest run unit/capabilities.test.js   # single file (path relative to tests
 ```
 > The committed `tests/package.json` `test` script hardcodes Unix paths (`NODE_PATH=/tmp/node_modules …`) — a shared-install workaround from upstream. On Windows (or anywhere), ignore it and use the `npx vitest` form above; `vitest.config.js` resolves the `open-sse`/`@/` aliases from the repo root regardless of where vitest lives.
 >
-> **The suite is near-green.** Current state (2026-09-20): 2667 tests, 2551 pass, **2 fail**, 114 skipped, 0 broken suites. Both reds are environment-only and fail identically on a clean tree (`db-driver-chain` needs native `better-sqlite3`; `request-details-tab` backup shape). Judge regressions with the gate, not a raw run:
+> **The suite is fully green.** Current state (2026-09-20): 2667 tests, 2553 pass, **0 fail**, 114 skipped, 0 broken suites. Judge regressions with the gate, not a raw run:
 > ```bash
 > cd tests
 > npx vitest run --reporter=json --outputFile=/tmp/current.json

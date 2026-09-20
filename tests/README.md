@@ -31,13 +31,12 @@ workaround) — ignore it and use the `npx vitest` form above.
 
 ## Expected state (green)
 
-As of 2026-09-20 a plain checkout is **near-green**: 2667 tests, 2551 pass,
-2 fail, 114 skipped. The 2 reds are environment-only and fail on a clean tree
-too (`db-driver-chain` needs the native `better-sqlite3` build; `request-details-tab`
-backup shape) — judge regressions with the gate below, not a raw run. The
-previously-catalogued reds were fixed at the source — stale
-contracts updated, the four `node:test`-style files ported to vitest, and the
-`cloud/`-dependent suite turned into a self-skip.
+As of 2026-09-20 a plain checkout is **fully green**: 2667 tests, 2553 pass,
+0 fail, 114 skipped (opt-in live/real only). The last reds were fixed at the
+source — stale contracts updated, the four `node:test`-style files ported to vitest,
+the `cloud/`-dependent suite turned into a self-skip, the kimi golden snapshot
+normalizes hostnames, `doMock` leaks are unmocked per-test, and the backup test
+falls back to built-in `node:sqlite`.
 
 Skipped tests fall into three buckets, all opt-in:
 

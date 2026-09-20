@@ -250,7 +250,7 @@ npx vitest run
 npx vitest run unit/capabilities.test.js
 ```
 
-> Suite ini 2667 test, 2551 pass, 2 fail, 114 skip pada plain checkout (diukur 2026-09-20; 2 fail hanya masalah environment dan gagal juga di tree bersih). Pakai `tests/__baseline__/verify-no-regression.mjs` untuk cek regression, bukan raw run.
+> Suite ini 2667 test, 2553 pass, 0 fail, 114 skip pada plain checkout (diukur 2026-09-20, fully green). Pakai `tests/__baseline__/verify-no-regression.mjs` untuk cek regression, bukan raw run.
 
 ---
 
