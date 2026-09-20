@@ -19,7 +19,12 @@
     "build:bun": "bun --bun next build --webpack",
     "start:bun": "bun ./.next/standalone/custom-server.js",
     "cli:pack": "npm --prefix cli run pack:cli",
-    "cli:publish": "npm --prefix cli run publish:cli"
+    "cli:publish": "npm --prefix cli run publish:cli",
+    "graph:index": "graphify extract . --code-only",
+    "graph:update": "graphify update .",
+    "graph:query": "graphify query",
+    "graph:explain": "graphify explain",
+    "graph:path": "graphify path"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -12,6 +12,14 @@ Two published artifacts live in this one repo:
 
 The code lives in `src/` (Next.js app + dashboard/compat APIs), `open-sse/` (the provider-agnostic routing/translation engine), `cli/` (the launcher package), and `tests/`.
 
+## Knowledge graph (read this before grepping)
+
+This repo ships a Graphify knowledge graph so agents don't read files one by one:
+- `graphify-out/GRAPH_REPORT.md` (committed, 63KB) — read this FIRST for any architecture/codebase question. 7092 nodes, 19380 edges, god-node map.
+- `graphify query "<question>" --budget N` / `graphify path "<A>" "<B>"` / `graphify explain "<X>"` — scoped subgraph answers, but require `graphify-out/graph.json` locally. It's gitignored (10MB); build it free with `npm run graph:index` (local AST, zero tokens), refresh with `npm run graph:update` after edits.
+- `AGENTS.md` + `.opencode/plugins/graphify.js` enforce the same query-first flow for OpenCode sessions.
+- Only rebuild semantics via LLM (`graphify extract` without `--code-only`) when docs/PDFs change — code-only covers JS.
+
 ## Commands
 
 Dashboard/gateway (run from repo root):

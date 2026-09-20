@@ -80,8 +80,12 @@ gitbook/README.md
 
 # Refactor backup reference (do not bundle/lint)
 open-sse.old/
-.graphifyignore
+# graphify knowledge graph: commit the human-readable report so agents get
+# orientation without reading raw files; graph.json/cache are regenerable
+# free via `npm run graph:index` and stay out of the repo (10MB+).
 graphify-out/*
+!graphify-out/GRAPH_REPORT.md
+!graphify-out/.graphify_root
 
 # Local-only working dirs (notes, vendored repos, scripts, skills)
 .claude/

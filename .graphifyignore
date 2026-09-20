@@ -1,0 +1,21 @@
+# graphify extraction scope — keep the graph focused on shippable code.
+# (.gitignore is respected automatically; this adds graph-specific trims)
+.next/
+node_modules/
+tests/node_modules/
+coverage/
+out/
+build/
+.next-cli-build/
+public/
+images/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.ico
+*.woff*
+*.ttf
+package-lock.json
+*.map
