@@ -1021,7 +1021,7 @@ docker stop 9router && docker rm 9router
 |----------|---------|-------------|
 | `JWT_SECRET` | Автогенерация (`~/.9router/jwt-secret`) | Секрет подписи JWT для cookie аутентификации панели (задайте для общего доступа между инстансами) |
 | `INITIAL_PASSWORD` | `123456` | Пароль первого входа при отсутствии сохранённого хеша |
-| `DATA_DIR` | `~/.9router` | Расположение основной БД приложения (`db.json`) |
+| `DATA_DIR` | `~/.9router` | Расположение основной БД приложения (SQLite: `db/data.sqlite`) |
 | `PORT` | framework default | Порт сервиса (`20128` в примерах) |
 | `HOSTNAME` | framework default | Bind host (Docker по умолчанию `0.0.0.0`) |
 | `NODE_ENV` | runtime default | Установите `production` для развёртывания |
@@ -1044,7 +1044,7 @@ docker stop 9router && docker rm 9router
 
 ### Runtime-файлы и хранилище
 
-- Основное состояние приложения: `${DATA_DIR}/db.json` (провайдеры, комбо, alias, ключи, настройки), управляется `src/lib/localDb.js`.
+- Основное состояние приложения: `${DATA_DIR}/db/data.sqlite` (SQLite: провайдеры, комбо, alias, ключи, настройки), управляется `src/lib/db/` (`src/lib/localDb.js` — лишь shim совместимости).
 - История использования и логи: `~/.9router/usage.json` и `~/.9router/log.txt`, управляется `src/lib/usageDb.js`.
 - Опциональные логи запросов/транслятора: `<repo>/logs/...` при `ENABLE_REQUEST_LOGS=true`.
 - Хранилище использования следует логике пути `~/.9router` и независимо от `DATA_DIR`.

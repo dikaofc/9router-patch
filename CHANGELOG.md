@@ -1,3 +1,17 @@
+# Unreleased (on top of v0.5.82)
+
+## Fixes
+- **OpenCode Free**: `union-alpha` retired upstream (401 `Model not supported`) — removed from registry, routing and capabilities; `deepseek-v4-flash-free` removed (400 `Model is unavailable`); free list synced to the live zen catalog
+- **OpenCode Free gate**: anonymous `public` pool is UA/IP-gated upstream (403 `FreeTierError`) — executor/auth/test now prefer a user-saved token from `opencode /login`, `FreeTierError` classified as fallback-eligible with long cooldown
+- **Tests**: kimi golden header snapshot normalizes `X-Msh-Device-Name` (hostname) so it no longer redrifts per machine; provider/alias baselines re-snapshotted for the 5 intentional free providers (blockrun, cehpoint, ovhcloud, pollinations, vireonix)
+
+## Features
+- **Graphify**: queryable code knowledge graph (`graphify-out/GRAPH_REPORT.md` committed; `graph.json` rebuilds free via `npm run graph:index`), `AGENTS.md` + OpenCode plugin enforce query-first flow, npm `graph:*` scripts, `.graphifyignore` scope
+
+## Docs
+- `docs/ARCHITECTURE.md`, `README.zh-CN.md`, `i18n/` (vi, ja-JP, ru, zh-CN): SQLite (`db/data.sqlite`) instead of stale `db.json`
+- Test counts updated to measured 2667/2551/2 (env-only reds) in `README.md`, `tests/README.md`, `CLAUDE.md`
+
 # v0.5.82 (2026-09-18)
 
 Local patch layer on top of v0.5.81 — deployment/portability work, dashboard

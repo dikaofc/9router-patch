@@ -1037,5 +1037,34 @@
       "preserveCacheControl": true
     },
     "format": "openai"
+  },
+  "blockrun": {
+    "baseUrl": "https://blockrun.ai/api/v1/chat/completions",
+    "noAuth": true,
+    "format": "openai"
+  },
+  "cehpoint": {
+    "baseUrl": "https://ai-api.cehpoint.co.in/v1/chat/completions",
+    "noAuth": true,
+    "format": "openai"
+  },
+  "ovhcloud": {
+    "baseUrl": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions",
+    "noAuth": true,
+    "format": "openai"
+  },
+  "pollinations": {
+    "baseUrl": "https://text.pollinations.ai/openai/v1/chat/completions",
+    "noAuth": true,
+    "validateUrl": "https://text.pollinations.ai/openai/v1/models",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (compatible; 9Router/1.0)"
+    },
+    "format": "openai"
+  },
+  "vireonix": {
+    "baseUrl": "https://vireonix.ai/v1/chat/completions",
+    "noAuth": true,
+    "format": "openai"
   }
 }

@@ -1018,7 +1018,7 @@ docker stop 9router && docker rm 9router
 |------|-----------|------|
 | `JWT_SECRET` | 自動生成（`~/.9router/jwt-secret`） | ダッシュボード認証クッキーのJWT署名シークレット（複数インスタンス間で共有する場合に設定） |
 | `INITIAL_PASSWORD` | `123456` | 保存されたハッシュがない場合の初回ログインパスワード |
-| `DATA_DIR` | `~/.9router` | メインアプリのデータベース格納場所（`db.json`） |
+| `DATA_DIR` | `~/.9router` | メインアプリのデータベース格納場所（SQLite：`db/data.sqlite`） |
 | `PORT` | フレームワークデフォルト | サービスポート（例では`20128`） |
 | `HOSTNAME` | フレームワークデフォルト | バインドホスト（Dockerデフォルトは`0.0.0.0`） |
 | `NODE_ENV` | ランタイムデフォルト | デプロイ時は`production`に設定 |
@@ -1041,7 +1041,7 @@ docker stop 9router && docker rm 9router
 
 ### ランタイムファイルとストレージ
 
-- メインアプリ状態: `${DATA_DIR}/db.json`（プロバイダー、コンボ、エイリアス、キー、設定）、`src/lib/localDb.js` で管理。
+- メインアプリ状態: `${DATA_DIR}/db/data.sqlite`（SQLite。プロバイダー、コンボ、エイリアス、キー、設定）、`src/lib/db/` で管理（`src/lib/localDb.js` は互換シム）。
 - 使用履歴とログ: `~/.9router/usage.json` と `~/.9router/log.txt`、`src/lib/usageDb.js` で管理。
 - オプションのリクエスト/トランスレーターログ: `ENABLE_REQUEST_LOGS=true` 時に `<repo>/logs/...`。
 - 使用状況ストレージは現在 `~/.9router` パスロジックに従い、`DATA_DIR` とは独立しています。

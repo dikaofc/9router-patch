@@ -15,7 +15,7 @@ The code lives in `src/` (Next.js app + dashboard/compat APIs), `open-sse/` (the
 ## Knowledge graph (read this before grepping)
 
 This repo ships a Graphify knowledge graph so agents don't read files one by one:
-- `graphify-out/GRAPH_REPORT.md` (committed, 63KB) — read this FIRST for any architecture/codebase question. 7092 nodes, 19380 edges, god-node map.
+- `graphify-out/GRAPH_REPORT.md` (committed) — read this FIRST for any architecture/codebase question. ~8k nodes / ~20k edges, god-node map. Refresh locally with `npm run graph:update` after edits.
 - `graphify query "<question>" --budget N` / `graphify path "<A>" "<B>"` / `graphify explain "<X>"` — scoped subgraph answers, but require `graphify-out/graph.json` locally. It's gitignored (10MB); build it free with `npm run graph:index` (local AST, zero tokens), refresh with `npm run graph:update` after edits.
 - `AGENTS.md` + `.opencode/plugins/graphify.js` enforce the same query-first flow for OpenCode sessions.
 - Only rebuild semantics via LLM (`graphify extract` without `--code-only`) when docs/PDFs change — code-only covers JS.
@@ -48,7 +48,7 @@ npx vitest run unit/capabilities.test.js   # single file (path relative to tests
 ```
 > The committed `tests/package.json` `test` script hardcodes Unix paths (`NODE_PATH=/tmp/node_modules …`) — a shared-install workaround from upstream. On Windows (or anywhere), ignore it and use the `npx vitest` form above; `vitest.config.js` resolves the `open-sse`/`@/` aliases from the repo root regardless of where vitest lives.
 >
-> **The suite is expected to be fully green.** Current state: 2659 tests, 2545 pass, **0 fail**, 114 skipped, 0 broken suites. Judge regressions with the gate, not a raw run:
+> **The suite is near-green.** Current state (2026-09-20): 2667 tests, 2551 pass, **2 fail**, 114 skipped, 0 broken suites. Both reds are environment-only and fail identically on a clean tree (`db-driver-chain` needs native `better-sqlite3`; `request-details-tab` backup shape). Judge regressions with the gate, not a raw run:
 > ```bash
 > cd tests
 > npx vitest run --reporter=json --outputFile=/tmp/current.json
