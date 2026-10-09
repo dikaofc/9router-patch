@@ -286,7 +286,7 @@ export async function proxy(request) {
             const tunnelHost = settings.tunnelUrl ? new URL(settings.tunnelUrl).hostname.toLowerCase() : "";
             const tailscaleHost = settings.tailscaleUrl ? new URL(settings.tailscaleUrl).hostname.toLowerCase() : "";
             if ((tunnelHost && host === tunnelHost) || (tailscaleHost && host === tailscaleHost)) {
-              return NextResponse.redirect(new URL("/login", request.url));
+              return NextResponse.redirect(new URL("/login?error=tunnel_access_disabled", request.url));
             }
           }
         }

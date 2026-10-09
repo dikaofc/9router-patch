@@ -30,16 +30,23 @@ export default function LoginPage() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
       const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+      const tunnelAccessDisabled =
+        typeof window !== "undefined" &&
+        new URLSearchParams(window.location.search).get("error") === "tunnel_access_disabled";
+      if (tunnelAccessDisabled) {
+        setError("Dashboard access is disabled for this network. Open 9Router from the host or enable tunnel dashboard access in Settings.");
+      }
 
       try {
         const res = await fetch(`${baseUrl}/api/auth/status`, {
           signal: controller.signal,
+          cache: "no-store",
         });
         clearTimeout(timeoutId);
 
         if (res.ok) {
           const data = await res.json();
-          if (data.authenticated === true || data.requireLogin === false) {
+          if (!tunnelAccessDisabled && (data.authenticated === true || data.requireLogin === false)) {
             window.location.assign("/dashboard");
             return;
           }

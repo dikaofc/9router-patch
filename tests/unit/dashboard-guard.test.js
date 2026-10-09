@@ -287,6 +287,37 @@ describe("dashboard guard local-only access", () => {
   });
 });
 
+describe("dashboard guard dashboard access", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    process.env.NINEROUTER_PEER_TOKEN = PEER_TOKEN;
+    mocks.getSettings.mockResolvedValue({ requireLogin: false, tunnelDashboardAccess: true });
+    mocks.validateApiKey.mockResolvedValue(false);
+    mocks.getConsistentMachineId.mockResolvedValue("cli-token");
+    mocks.verifyDashboardAuthToken.mockResolvedValue(false);
+  });
+
+  it("allows dashboard access when login is disabled", async () => {
+    const response = await proxy(request("/dashboard", { host: "router.example.com" }));
+
+    expect(response).toBe(mocks.nextResponse);
+  });
+
+  it("does not redirect a tunnel-blocked dashboard to a login loop", async () => {
+    mocks.getSettings.mockResolvedValue({
+      requireLogin: false,
+      tunnelDashboardAccess: false,
+      tunnelUrl: "https://router.example.com",
+    });
+
+    const response = await proxy(request("/dashboard", { host: "router.example.com" }));
+
+    expect(response.status).toBe(307);
+    expect(response.url.pathname).toBe("/login");
+    expect(response.url.searchParams.get("error")).toBe("tunnel_access_disabled");
+  });
+});
+
 describe("dashboard guard helpers", () => {
   it("extracts bearer API keys before x-api-key", () => {
     const apiRequest = request("/v1/chat/completions", {

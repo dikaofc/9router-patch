@@ -5,6 +5,10 @@ import { isOidcConfigured } from "@/lib/auth/oidc";
 import { isSamlConfigured } from "@/lib/auth/saml.js";
 import { getDashboardAuthSession } from "@/lib/auth/dashboardSession";
 
+const AUTH_STATUS_HEADERS = {
+  "Cache-Control": "private, no-store, max-age=0",
+};
+
 export async function GET() {
   try {
     const settings = await getSettings();
@@ -45,7 +49,7 @@ export async function GET() {
       samlName: samlName || null,
       samlEmail: samlEmail || null,
       samlLogin: !!session?.saml,
-    });
+    }, { headers: AUTH_STATUS_HEADERS });
   } catch {
     return NextResponse.json({
       requireLogin: true,
@@ -65,6 +69,6 @@ export async function GET() {
       samlName: null,
       samlEmail: null,
       samlLogin: false,
-    });
+    }, { headers: AUTH_STATUS_HEADERS });
   }
 }
