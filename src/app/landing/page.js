@@ -11,7 +11,7 @@ import Footer from "./components/Footer";
 export default function LandingPage() {
   const router = useRouter();
   return (
-    <div className="relative text-white font-sans overflow-x-hidden antialiased selection:bg-brand-500/20 selection:text-white">
+    <div className="liquid-landing relative text-white font-sans overflow-x-hidden antialiased selection:bg-brand-500/20 selection:text-white">
       {/* Background */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-[#161616]">
         <div className="absolute inset-0 opacity-[0.03]" style={{

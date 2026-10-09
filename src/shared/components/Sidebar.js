@@ -98,7 +98,7 @@ export default function Sidebar({ onClose }) {
 
   return (
     <>
-      <aside className="flex w-60 flex-col border-r border-border-subtle bg-surface transition-colors duration-200 min-h-full">
+      <aside className="glass-sidebar flex w-60 flex-col border-r border-border-subtle bg-surface transition-colors duration-200 min-h-full">
         {/* Logo */}
         <div className="px-4 py-4 flex flex-col gap-1.5">
           <Link href="/dashboard" className="flex items-center gap-2.5">

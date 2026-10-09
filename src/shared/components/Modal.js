@@ -54,7 +54,7 @@ export default function Modal({
       {/* Modal content */}
       <div
         className={cn(
-          "relative w-full bg-surface",
+          "glass-card relative w-full bg-surface",
           "border border-border-subtle",
           "rounded-[12px] shadow-[var(--shadow-elev)]",
           "fade-in",

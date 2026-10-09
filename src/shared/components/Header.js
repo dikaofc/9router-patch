@@ -215,7 +215,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
   };
 
   return (
-    <header className="shrink-0 flex items-center justify-between gap-3 px-4 lg:px-6 pt-2.5 pb-2 border-b border-border-subtle bg-surface/50 backdrop-blur-xl lg:bg-transparent lg:backdrop-blur-none z-20">
+    <header className="dashboard-header shrink-0 flex items-center justify-between gap-3 px-4 lg:px-6 pt-2.5 pb-2 border-b border-border-subtle z-20">
       {/* Mobile menu button */}
       <div className="flex items-center gap-2 lg:hidden shrink-0">
         {showMenuButton && (

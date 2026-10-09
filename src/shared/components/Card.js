@@ -26,11 +26,9 @@ export default function Card({
   return (
     <div
       className={cn(
-        glass
+        glass || elev
           ? "glass-card glass-in"
-          : elev
-            ? "bg-surface border border-border-subtle rounded-[12px] shadow-[var(--shadow-elev)]"
-            : "bg-surface border border-border-subtle rounded-[12px] shadow-[var(--shadow-soft)]",
+          : "glass-card",
         hover && "hover:shadow-[var(--shadow-warm)] hover:border-brand-500/20 transition-all cursor-pointer",
         paddings[padding],
         className

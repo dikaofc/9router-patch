@@ -146,7 +146,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg p-4 relative overflow-hidden">
+    <div className="liquid-auth-page min-h-screen flex items-center justify-center bg-bg p-4 relative overflow-hidden">
       <div className="landing-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
       <div className="relative z-10 w-full max-w-sm">
         <div className="text-center mb-6">
