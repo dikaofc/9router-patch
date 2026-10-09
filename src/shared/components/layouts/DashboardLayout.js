@@ -86,7 +86,7 @@ export default function DashboardLayout({ children }) {
         aria-hidden={!sidebarOpen}
         tabIndex={sidebarOpen ? 0 : -1}
         onClick={() => setSidebarOpen(false)}
-        className={`mobile-sidebar-backdrop fixed inset-0 z-40 lg:hidden ${
+        className={`mobile-sidebar-backdrop fixed inset-0 z-[60] lg:hidden ${
           sidebarOpen ? "is-open" : "pointer-events-none"
         }`}
       />
@@ -100,7 +100,7 @@ export default function DashboardLayout({ children }) {
       <div
         aria-hidden={!sidebarOpen}
         inert={!sidebarOpen}
-        className={`mobile-sidebar-drawer fixed inset-y-0 left-0 z-50 w-[min(18rem,calc(100vw-1rem))] lg:hidden ${
+        className={`mobile-sidebar-drawer fixed inset-y-0 left-0 z-[70] w-[min(18rem,calc(100vw-1rem))] lg:hidden ${
           sidebarOpen ? "is-open" : ""
         }`}
       >

@@ -1103,10 +1103,11 @@ select {
   }
 
   .mobile-sidebar-backdrop {
-    background: rgba(18, 22, 30, 0.24);
+    border: 0;
+    background: rgba(18, 22, 30, 0.38);
     opacity: 0;
-    backdrop-filter: saturate(135%) blur(0);
-    -webkit-backdrop-filter: saturate(135%) blur(0);
+    backdrop-filter: saturate(145%) blur(0);
+    -webkit-backdrop-filter: saturate(145%) blur(0);
     transition:
       opacity 320ms var(--motion-apple),
       backdrop-filter 420ms var(--motion-apple),
@@ -1115,8 +1116,10 @@ select {
 
   .mobile-sidebar-backdrop.is-open {
     opacity: 1;
-    backdrop-filter: saturate(145%) blur(16px);
-    -webkit-backdrop-filter: saturate(145%) blur(16px);
+    background: rgba(18, 22, 30, 0.38);
+    backdrop-filter: saturate(150%) blur(24px);
+    -webkit-backdrop-filter: saturate(150%) blur(24px);
+    pointer-events: auto;
   }
 
   .mobile-sidebar-drawer {
@@ -1133,6 +1136,43 @@ select {
     margin: 8px;
     min-height: calc(100% - 16px);
     border-radius: 22px;
+  }
+}
+
+@media (max-width: 767px) {
+  .dashboard-shell main > .dashboard-header {
+    margin: 8px 8px 0;
+    padding-inline: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .dashboard-shell main > div.flex-1[class*="sm:p-5"] {
+    padding: 0.875rem;
+  }
+
+  .dashboard-shell main [class*="grid-cols-3"],
+  .dashboard-shell main [class*="grid-cols-4"],
+  .dashboard-shell main [class*="grid-cols-5"],
+  .dashboard-shell main [class*="grid-cols-6"],
+  .dashboard-shell main [class*="grid-cols-7"],
+  .dashboard-shell main [class*="grid-cols-8"],
+  .dashboard-shell main [class*="grid-cols-9"],
+  .dashboard-shell main [class*="grid-cols-10"],
+  .dashboard-shell main [class*="grid-cols-11"],
+  .dashboard-shell main [class*="grid-cols-12"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .dashboard-shell main :where([class*="grid"], [class*="flex"]) > * {
+    min-width: 0;
+  }
+
+  .dashboard-shell main :where(.overflow-x-auto, pre) {
+    max-width: 100%;
+  }
+
+  .dashboard-shell main :where(table) {
+    max-width: 100%;
   }
 }
 
@@ -1173,6 +1213,19 @@ select {
 
   .dashboard-shell :where(input, textarea, select) {
     max-width: 100%;
+  }
+
+  .dashboard-shell main [class*="grid-cols-3"],
+  .dashboard-shell main [class*="grid-cols-4"],
+  .dashboard-shell main [class*="grid-cols-5"],
+  .dashboard-shell main [class*="grid-cols-6"],
+  .dashboard-shell main [class*="grid-cols-7"],
+  .dashboard-shell main [class*="grid-cols-8"],
+  .dashboard-shell main [class*="grid-cols-9"],
+  .dashboard-shell main [class*="grid-cols-10"],
+  .dashboard-shell main [class*="grid-cols-11"],
+  .dashboard-shell main [class*="grid-cols-12"] {
+    grid-template-columns: minmax(0, 1fr) !important;
   }
 }
 
