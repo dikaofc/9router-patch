@@ -874,7 +874,7 @@ export default function TokenSaverClient() {
             <div className="flex flex-col gap-1">
               <p className="text-sm font-medium">Install then click Start:</p>
               <div className="flex items-center gap-2">
-                <pre className="flex-1 rounded bg-black/5 dark:bg-white/5 p-2 text-xs font-mono overflow-x-auto">
+                <pre className="min-w-0 flex-1 overflow-x-auto rounded-xl border border-border-subtle bg-surface-2/70 p-3 font-mono text-xs text-text-main">
                   {`pip install "headroom-ai[proxy]"`}
                 </pre>
                 <Button
