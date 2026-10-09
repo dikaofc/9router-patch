@@ -882,7 +882,7 @@ export default function BasicChatPageClient() {
 
                 return (
                   <div key={message.id} className={`flex w-full ${isUser ? "justify-end" : "justify-start"} mb-6`}>
-                    <div className={`max-w-[min(88%,42rem)] ${isUser ? "rounded-3xl border border-primary/15 bg-primary/10 px-5 py-3.5 text-text-main shadow-sm" : "text-text-main"}`}>
+                    <div className={`max-w-[min(88%,42rem)] transition ${isUser ? "rounded-2xl border border-blue-500/15 bg-blue-500/10 px-5 py-3.5 text-text-main shadow-sm" : "text-text-main"}`}>
                       <div className="mb-1 flex items-center justify-between gap-3">
                         <span className="text-xs font-semibold">{isUser ? "You" : activeModel?.name || "Assistant"}</span>
                       </div>
@@ -944,7 +944,7 @@ export default function BasicChatPageClient() {
 
                   <div className="flex items-center gap-2">
                     {isSending ? (
-                      <button type="button" onClick={handleStop} className="flex size-10 items-center justify-center rounded-full bg-surface-2 text-text-main transition hover:bg-surface-3">
+                      <button type="button" onClick={handleStop} className="flex size-10 items-center justify-center rounded-full bg-surface-2 text-text-main transition hover:bg-surface-2">
                         <span className="material-symbols-outlined text-[16px]">stop</span>
                       </button>
                     ) : null}

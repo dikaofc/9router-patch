@@ -785,7 +785,7 @@ export default function ProfilePage() {
                   type="button"
                   onClick={() => setTheme(option)}
                   className={cn(
-                    "flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md font-medium transition-all flex-1 sm:flex-initial",
+                    "flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg font-medium transition-all flex-1 sm:flex-initial",
                     theme === option
                       ? "bg-white dark:bg-white/10 text-text-main shadow-sm"
                       : "text-text-muted hover:text-text-main"
@@ -979,7 +979,7 @@ export default function ProfilePage() {
                     type="button"
                     onClick={() => setSsoTypeTab("saml")}
                     className={cn(
-                      "flex-1 py-1.5 px-3 rounded-md font-medium text-xs sm:text-sm transition-all text-center",
+                      "flex-1 py-1.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-center",
                       ssoTypeTab === "saml"
                         ? "bg-white dark:bg-white/10 text-text-main shadow-sm"
                         : "text-text-muted hover:text-text-main"
@@ -991,7 +991,7 @@ export default function ProfilePage() {
                     type="button"
                     onClick={() => setSsoTypeTab("oidc")}
                     className={cn(
-                      "flex-1 py-1.5 px-3 rounded-md font-medium text-xs sm:text-sm transition-all text-center",
+                      "flex-1 py-1.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-center",
                       ssoTypeTab === "oidc"
                         ? "bg-white dark:bg-white/10 text-text-main shadow-sm"
                         : "text-text-muted hover:text-text-main"

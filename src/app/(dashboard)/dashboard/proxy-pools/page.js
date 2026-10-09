@@ -790,7 +790,7 @@ export default function ProxyPoolsPage() {
               value={batchImportText}
               onChange={(e) => setBatchImportText(e.target.value)}
               placeholder={"http://user:pass@127.0.0.1:7897\n127.0.0.1:7897:user:pass"}
-              className="min-h-[180px] w-full rounded-xl border border-border-subtle bg-surface/70 px-3 py-2 text-sm text-text-main transition-all focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/15"
+              className="min-h-[180px] w-full rounded-xl border border-border-subtle bg-surface/70 px-3 py-2 text-sm text-text-main transition-all focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             />
             <p className="text-xs text-text-muted mt-1">
               Supported formats: protocol://user:pass@host:port, host:port:user:pass
