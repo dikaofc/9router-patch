@@ -8,8 +8,22 @@
 .fonts-loaded .material-symbols-outlined { opacity: 1; transition: opacity .12s ease-out; }
 
 /* ============================================================
-   9Router — Liquid Glass design system
-   Translucent surfaces, soft light and fluid depth
+   Apple system typography and native-feeling interaction timing
+   ============================================================ */
+:root {
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --motion-apple: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-apple-spring: cubic-bezier(0.2, 0.85, 0.25, 1.15);
+}
+
+@theme inline {
+  --font-sans: var(--font-system);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+/* ============================================================
+   9Router — 3D Liquid Glass design system
+   Sculpted translucent layers, prismatic light and tactile depth
    ============================================================ */
 :root {
   /* Brand — muted terracotta */
@@ -52,10 +66,10 @@
   --color-info: #4a8fd4;
 
   /* Glass / Bento */
-  --glass-bg: rgba(255,255,255,0.62);
-  --glass-border: rgba(255,255,255,0.72);
-  --glass-blur: 24px;
-  --bento-radius: 18px;
+  --glass-bg: rgba(255,255,255,0.56);
+  --glass-border: rgba(255,255,255,0.82);
+  --glass-blur: 30px;
+  --bento-radius: 22px;
   --bento-gap: 12px;
 
   /* Radius */
@@ -67,9 +81,10 @@
   --shadow-warm: 0 2px 8px -2px rgba(168, 115, 93, 0.08);
   --shadow-elevated: 0 8px 24px -6px rgba(0, 0, 0, 0.06);
   --shadow-elev:
-    inset 0 1px 0 0 rgba(255,255,255,0.9),
-    0 2px 6px rgba(31,41,55,0.04),
-    0 18px 48px -24px rgba(50,58,72,0.22);
+    inset 0 2px 0 rgba(255,255,255,0.95),
+    inset 0 -1px 0 rgba(255,255,255,0.32),
+    0 3px 8px rgba(31,41,55,0.07),
+    0 24px 60px -24px rgba(50,58,72,0.34);
   --shadow-focus: 0 0 0 3px rgba(168, 115, 93, 0.12);
 
   color-scheme: light;
@@ -110,19 +125,20 @@
   --color-warning: #e5a823;
   --color-info: #5ea3e0;
 
-  --glass-bg: rgba(31, 35, 43, 0.66);
-  --glass-border: rgba(255,255,255,0.12);
-  --glass-blur: 24px;
-  --bento-radius: 18px;
+  --glass-bg: rgba(35, 41, 52, 0.62);
+  --glass-border: rgba(255,255,255,0.2);
+  --glass-blur: 30px;
+  --bento-radius: 22px;
   --bento-gap: 12px;
 
   --shadow-soft: 0 1px 2px rgba(0,0,0,0.2);
   --shadow-warm: 0 2px 8px -2px rgba(192, 141, 120, 0.12);
   --shadow-elevated: 0 8px 24px -6px rgba(0, 0, 0, 0.3);
   --shadow-elev:
-    inset 0 1px 0 0 rgba(255,255,255,0.12),
-    0 2px 8px rgba(0,0,0,0.16),
-    0 20px 56px -24px rgba(0,0,0,0.7);
+    inset 0 2px 0 rgba(255,255,255,0.22),
+    inset 0 -1px 0 rgba(255,255,255,0.08),
+    0 4px 10px rgba(0,0,0,0.25),
+    0 26px 64px -24px rgba(0,0,0,0.8);
   --shadow-focus: 0 0 0 3px rgba(192, 141, 120, 0.15);
 
   color-scheme: dark;
@@ -137,10 +153,41 @@ body {
     radial-gradient(ellipse at 12% 10%, rgba(229, 178, 157, 0.16), transparent 34%),
     radial-gradient(ellipse at 90% 44%, rgba(151, 185, 220, 0.12), transparent 36%);
   color: var(--color-text-main);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+  font-family: var(--font-system);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  font-feature-settings: "kern", "liga", "clig", "calt";
+  text-rendering: optimizeLegibility;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-system);
+}
+
+button,
+a,
+input,
+textarea,
+select,
+summary,
+[role="button"],
+[role="switch"],
+[role="tab"] {
+  -webkit-tap-highlight-color: transparent;
+  transition-timing-function: var(--motion-apple) !important;
+  transition-duration: 260ms !important;
+}
+
+button:not(:disabled),
+a,
+[role="button"]:not([aria-disabled="true"]),
+summary,
+select {
+  touch-action: manipulation;
 }
 .dark body {
   background-image:
@@ -253,6 +300,36 @@ input, textarea {
   border-radius: var(--bento-radius);
   box-shadow: var(--shadow-elev);
   position: relative;
+  transform-style: preserve-3d;
+  transition:
+    transform 420ms var(--motion-apple),
+    box-shadow 420ms var(--motion-apple),
+    border-color 320ms var(--motion-apple),
+    background 420ms var(--motion-apple);
+}
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 1px auto;
+  height: 1px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent 2%, rgba(255,255,255,0.95) 48%, transparent 98%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+.glass-card:hover {
+  transform: translateY(-3px) perspective(900px) rotateX(0.35deg);
+  border-color: color-mix(in srgb, var(--glass-border) 72%, var(--color-primary));
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.94),
+    0 8px 18px rgba(31,41,55,0.09),
+    0 32px 72px -28px rgba(50,58,72,0.42);
+}
+.dark .glass-card:hover {
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.2),
+    0 8px 18px rgba(0,0,0,0.3),
+    0 34px 78px -28px rgba(0,0,0,0.88);
 }
 .bento-grid {
   display: grid;
@@ -359,9 +436,9 @@ button:disabled,
   from { transform: translateY(-8px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-.slide-in-right { animation: slideInFromRight 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.fade-in { animation: fadeIn 0.15s ease-out forwards; }
-.slide-in-top { animation: slideInFromTop 0.15s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.slide-in-right { animation: slideInFromRight 0.42s var(--motion-apple) forwards; }
+.fade-in { animation: fadeIn 0.32s var(--motion-apple) forwards; }
+.slide-in-top { animation: slideInFromTop 0.38s var(--motion-apple) forwards; }
 
 @keyframes pulseGlow {
   0%, 100% { opacity: 0.3; transform: scale(1); }
@@ -507,31 +584,91 @@ select {
 .dashboard-shell {
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(ellipse at 18% 5%, rgba(229, 178, 157, 0.22), transparent 38%),
-    radial-gradient(ellipse at 88% 38%, rgba(151, 185, 220, 0.18), transparent 36%),
-    radial-gradient(ellipse at 44% 100%, rgba(192, 164, 208, 0.14), transparent 42%);
+    radial-gradient(ellipse at 14% 8%, rgba(241, 176, 147, 0.32), transparent 38%),
+    radial-gradient(ellipse at 88% 24%, rgba(130, 184, 238, 0.28), transparent 36%),
+    radial-gradient(ellipse at 42% 100%, rgba(186, 145, 222, 0.23), transparent 42%);
+}
+
+.dashboard-shell.pricing-page {
+  max-width: none;
+  background-color: transparent;
+}
+
+.dashboard-shell.pricing-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 14% 8%, rgba(241, 176, 147, 0.32), transparent 38%),
+    radial-gradient(ellipse at 88% 24%, rgba(130, 184, 238, 0.28), transparent 36%),
+    radial-gradient(ellipse at 42% 100%, rgba(186, 145, 222, 0.23), transparent 42%),
+    var(--color-bg);
 }
 
 .dark .dashboard-shell {
   background-image:
-    radial-gradient(ellipse at 18% 5%, rgba(168, 115, 93, 0.2), transparent 38%),
-    radial-gradient(ellipse at 88% 38%, rgba(88, 119, 157, 0.2), transparent 36%),
-    radial-gradient(ellipse at 44% 100%, rgba(112, 82, 132, 0.16), transparent 42%);
+    radial-gradient(ellipse at 14% 8%, rgba(188, 108, 75, 0.28), transparent 38%),
+    radial-gradient(ellipse at 88% 24%, rgba(67, 130, 195, 0.27), transparent 36%),
+    radial-gradient(ellipse at 42% 100%, rgba(125, 83, 171, 0.2), transparent 42%);
+}
+
+.dark .dashboard-shell.pricing-page::before {
+  background:
+    radial-gradient(ellipse at 14% 8%, rgba(188, 108, 75, 0.28), transparent 38%),
+    radial-gradient(ellipse at 88% 24%, rgba(67, 130, 195, 0.27), transparent 36%),
+    radial-gradient(ellipse at 42% 100%, rgba(125, 83, 171, 0.2), transparent 42%),
+    var(--color-bg);
 }
 
 .dashboard-shell .glass-sidebar {
-  background: color-mix(in srgb, var(--glass-bg) 82%, transparent);
+  margin: 10px 0 10px 10px;
+  min-height: calc(100% - 20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  background:
+    linear-gradient(155deg, color-mix(in srgb, var(--glass-bg) 88%, white 12%), color-mix(in srgb, var(--glass-bg) 66%, transparent));
   border-color: var(--color-border-subtle);
-  backdrop-filter: saturate(160%) blur(var(--glass-blur));
-  -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.82),
+    0 5px 14px rgba(31,41,55,0.08),
+    0 24px 56px -30px rgba(50,58,72,0.5);
+  backdrop-filter: saturate(190%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(190%) blur(var(--glass-blur));
+}
+.dark .dashboard-shell .glass-sidebar {
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.2),
+    0 6px 18px rgba(0,0,0,0.25),
+    0 28px 64px -30px rgba(0,0,0,0.85);
+}
+
+.dashboard-shell .glass-sidebar nav a[class*="bg-primary/8"] {
+  background: linear-gradient(145deg, rgba(255,255,255,0.72), color-mix(in srgb, var(--color-primary) 12%, transparent));
+  border: 1px solid color-mix(in srgb, var(--glass-border) 70%, var(--color-primary));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 4px 10px -7px color-mix(in srgb, var(--color-primary) 65%, transparent);
+}
+.dark .dashboard-shell .glass-sidebar nav a[class*="bg-primary/8"] {
+  background: linear-gradient(145deg, rgba(255,255,255,0.12), color-mix(in srgb, var(--color-primary) 16%, transparent));
+  border-color: rgba(255,255,255,0.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 5px 14px rgba(0,0,0,0.24);
 }
 
 .dashboard-header {
-  min-height: 4.25rem;
-  background: color-mix(in srgb, var(--glass-bg) 72%, transparent);
+  min-height: 3.75rem;
+  margin: 12px 16px 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  background:
+    linear-gradient(110deg, color-mix(in srgb, var(--glass-bg) 94%, white 6%), color-mix(in srgb, var(--glass-bg) 66%, transparent));
   border-color: var(--color-border-subtle);
-  backdrop-filter: saturate(170%) blur(var(--glass-blur));
-  -webkit-backdrop-filter: saturate(170%) blur(var(--glass-blur));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.88),
+    0 6px 18px -10px rgba(31,41,55,0.25);
+  backdrop-filter: saturate(190%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(190%) blur(var(--glass-blur));
 }
 
 .dashboard-content {
@@ -541,14 +678,18 @@ select {
 .dashboard-shell [class~="bg-surface"],
 .dashboard-shell [class*="bg-surface/"] {
   background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--glass-bg) 94%, white 6%),
-    color-mix(in srgb, var(--glass-bg) 76%, transparent)
+    150deg,
+    color-mix(in srgb, var(--glass-bg) 92%, white 8%) 0%,
+    color-mix(in srgb, var(--glass-bg) 68%, transparent) 58%,
+    color-mix(in srgb, var(--glass-bg) 80%, var(--color-primary) 4%) 100%
   );
   border-color: var(--glass-border);
-  box-shadow: var(--shadow-elevated);
-  backdrop-filter: saturate(155%) blur(var(--glass-blur));
-  -webkit-backdrop-filter: saturate(155%) blur(var(--glass-blur));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.88),
+    0 3px 8px rgba(31,41,55,0.05),
+    0 18px 42px -24px rgba(50,58,72,0.32);
+  backdrop-filter: saturate(175%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(175%) blur(var(--glass-blur));
 }
 
 .dashboard-shell [class*="bg-surface-2"] {
@@ -576,17 +717,90 @@ select {
 .dashboard-shell .glass-card,
 .dashboard-shell .glass {
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--glass-bg) 88%, white 12%), var(--glass-bg));
+    linear-gradient(150deg, color-mix(in srgb, var(--glass-bg) 92%, white 8%), color-mix(in srgb, var(--glass-bg) 64%, transparent));
   border-color: var(--glass-border);
   box-shadow: var(--shadow-elev);
-  backdrop-filter: saturate(160%) blur(var(--glass-blur));
-  -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
+  backdrop-filter: saturate(180%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(180%) blur(var(--glass-blur));
+}
+
+.dashboard-shell .border-b,
+.dashboard-shell .border-t,
+.dashboard-shell hr {
+  border-color: color-mix(in srgb, var(--glass-border) 72%, var(--color-border));
+}
+
+.dashboard-shell :is(table, thead, tbody, tr) {
+  border-color: var(--glass-border);
+}
+
+.dashboard-shell :is(th, td) {
+  border-color: color-mix(in srgb, var(--glass-border) 75%, var(--color-border));
+}
+
+.dashboard-shell details[open] > summary {
+  color: var(--color-primary);
+}
+
+.dashboard-shell [role="dialog"] {
+  background: color-mix(in srgb, var(--glass-bg) 84%, transparent);
+  border-color: var(--glass-border);
+  box-shadow: var(--shadow-elev);
+  backdrop-filter: saturate(165%) blur(28px);
+  -webkit-backdrop-filter: saturate(165%) blur(28px);
+}
+
+.dashboard-shell .fixed.inset-0 > .glass-card,
+.dashboard-shell .fixed.inset-0 > [class*="bg-surface"] {
+  transform: perspective(1200px) rotateX(1deg);
 }
 
 .dashboard-shell button:focus-visible,
 .dashboard-shell a:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+.dashboard-shell button[class*="bg-primary"],
+.dashboard-shell button[class*="bg-brand-"],
+.dashboard-shell button[class*="bg-green-"],
+.dashboard-shell button[class*="bg-red-"],
+.dashboard-shell button[class*="bg-blue-"],
+.liquid-landing button[class*="bg-brand-500"],
+.liquid-landing button[class*="bg-[#f97815]"] {
+  border: 1px solid rgba(255,255,255,0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.42),
+    0 4px 0 color-mix(in srgb, var(--color-primary) 58%, #25202a),
+    0 9px 18px -8px color-mix(in srgb, var(--color-primary) 70%, transparent);
+  transform: translateY(-2px);
+  transition: transform 320ms var(--motion-apple-spring), box-shadow 320ms var(--motion-apple), filter 320ms var(--motion-apple) !important;
+}
+
+.dashboard-shell button[class*="bg-primary"]:not(:disabled):hover,
+.dashboard-shell button[class*="bg-brand-"]:not(:disabled):hover,
+.dashboard-shell button[class*="bg-green-"]:not(:disabled):hover,
+.dashboard-shell button[class*="bg-red-"]:not(:disabled):hover,
+.dashboard-shell button[class*="bg-blue-"]:not(:disabled):hover,
+.liquid-landing button[class*="bg-brand-500"]:not(:disabled):hover,
+.liquid-landing button[class*="bg-[#f97815]"]:not(:disabled):hover {
+  filter: brightness(1.05);
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    0 5px 0 color-mix(in srgb, var(--color-primary) 58%, #25202a),
+    0 14px 24px -8px color-mix(in srgb, var(--color-primary) 74%, transparent);
+}
+
+.dashboard-shell button[class*="bg-primary"]:not(:disabled):active,
+.dashboard-shell button[class*="bg-brand-"]:not(:disabled):active,
+.dashboard-shell button[class*="bg-green-"]:not(:disabled):active,
+.dashboard-shell button[class*="bg-red-"]:not(:disabled):active,
+.dashboard-shell button[class*="bg-blue-"]:not(:disabled):active,
+.liquid-landing button[class*="bg-brand-500"]:not(:disabled):active,
+.liquid-landing button[class*="bg-[#f97815]"]:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 0 rgba(0,0,0,0.18);
 }
 
 .dashboard-shell .landing-grid {
@@ -599,18 +813,18 @@ select {
   min-height: 100vh;
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(ellipse at 12% 12%, rgba(229, 178, 157, 0.25), transparent 34%),
-    radial-gradient(ellipse at 88% 44%, rgba(151, 185, 220, 0.2), transparent 34%),
-    radial-gradient(ellipse at 46% 100%, rgba(192, 164, 208, 0.16), transparent 40%);
+    radial-gradient(ellipse at 12% 12%, rgba(241, 176, 147, 0.34), transparent 34%),
+    radial-gradient(ellipse at 88% 44%, rgba(130, 184, 238, 0.3), transparent 34%),
+    radial-gradient(ellipse at 46% 100%, rgba(186, 145, 222, 0.24), transparent 40%);
   color: var(--color-text-main);
 }
 
 .dark .liquid-auth-page,
 .dark .liquid-landing {
   background-image:
-    radial-gradient(ellipse at 12% 12%, rgba(168, 115, 93, 0.24), transparent 34%),
-    radial-gradient(ellipse at 88% 44%, rgba(88, 119, 157, 0.23), transparent 34%),
-    radial-gradient(ellipse at 46% 100%, rgba(112, 82, 132, 0.18), transparent 40%);
+    radial-gradient(ellipse at 12% 12%, rgba(188, 108, 75, 0.3), transparent 34%),
+    radial-gradient(ellipse at 88% 44%, rgba(67, 130, 195, 0.3), transparent 34%),
+    radial-gradient(ellipse at 46% 100%, rgba(125, 83, 171, 0.24), transparent 40%);
 }
 
 .liquid-landing h1,
@@ -685,11 +899,11 @@ select {
 
 .liquid-landing [class*="rounded-xl"][class*="border"],
 .liquid-landing [class*="rounded-2xl"][class*="border"] {
-  background: linear-gradient(145deg, var(--glass-bg), color-mix(in srgb, var(--glass-bg) 78%, transparent));
+  background: linear-gradient(150deg, color-mix(in srgb, var(--glass-bg) 92%, white 8%), color-mix(in srgb, var(--glass-bg) 64%, transparent));
   border-color: var(--glass-border) !important;
-  box-shadow: var(--shadow-elevated);
-  backdrop-filter: saturate(150%) blur(var(--glass-blur));
-  -webkit-backdrop-filter: saturate(150%) blur(var(--glass-blur));
+  box-shadow: var(--shadow-elev);
+  backdrop-filter: saturate(180%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(180%) blur(var(--glass-blur));
 }
 
 .liquid-landing #features [class*="rounded-lg"][class*="bg-"] {
@@ -709,17 +923,43 @@ select {
   color: #f2f2f2 !important;
 }
 
+.liquid-landing #features > div > div:last-child > div {
+  border-radius: 20px;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.76),
+    0 6px 14px rgba(31,41,55,0.06),
+    0 24px 48px -28px rgba(50,58,72,0.38);
+  transition: transform 420ms var(--motion-apple), box-shadow 420ms var(--motion-apple);
+}
+.liquid-landing #features > div > div:last-child > div:hover {
+  transform: translateY(-6px) rotateX(1deg);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.9),
+    0 10px 20px rgba(31,41,55,0.08),
+    0 34px 64px -28px rgba(50,58,72,0.48);
+}
+
 .liquid-auth-page .glass-card {
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--glass-bg) 88%, white 12%), var(--glass-bg));
+    linear-gradient(150deg, color-mix(in srgb, var(--glass-bg) 92%, white 8%), color-mix(in srgb, var(--glass-bg) 64%, transparent));
   border-color: var(--glass-border);
   box-shadow: var(--shadow-elev);
-  backdrop-filter: saturate(165%) blur(28px);
-  -webkit-backdrop-filter: saturate(165%) blur(28px);
+  backdrop-filter: saturate(190%) blur(32px);
+  -webkit-backdrop-filter: saturate(190%) blur(32px);
 }
 
 .liquid-auth-page .landing-grid {
   opacity: 0.025;
+}
+
+.liquid-auth-page > .relative {
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--glass-bg) 68%, white 8%), color-mix(in srgb, var(--glass-bg) 42%, transparent));
+  box-shadow: var(--shadow-elev);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
 }
 
 .liquid-callback-page {
@@ -743,5 +983,38 @@ select {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .glass-card:hover {
+    transform: none;
+  }
+
+  .dashboard-shell button[class*="bg-primary"],
+  .dashboard-shell button[class*="bg-brand-"],
+  .dashboard-shell button[class*="bg-green-"],
+  .dashboard-shell button[class*="bg-red-"],
+  .dashboard-shell button[class*="bg-blue-"],
+  .liquid-landing button[class*="bg-brand-500"],
+  .liquid-landing button[class*="bg-[#f97815]"] {
+    transform: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dashboard-header {
+    margin: 8px 8px 0;
+    border-radius: 16px;
+  }
+
+  .dashboard-shell .glass-sidebar {
+    margin: 8px;
+    min-height: calc(100% - 16px);
+    border-radius: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .glass-card {
+    border-radius: 18px;
   }
 }

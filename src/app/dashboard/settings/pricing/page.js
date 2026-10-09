@@ -49,7 +49,7 @@ export default function PricingSettingsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-5 space-y-5">
+    <div className="dashboard-shell pricing-page relative isolate min-h-screen max-w-6xl mx-auto p-5 space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
