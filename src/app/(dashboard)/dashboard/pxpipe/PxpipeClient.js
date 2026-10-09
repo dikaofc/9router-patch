@@ -135,7 +135,7 @@ export default function PxpipeClient() {
       <Card className="p-4">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
           <h3 className="font-medium">Token savings (estimated)</h3>
-          <div className="flex items-center gap-1 rounded-lg border border-border bg-bg-subtle p-1">
+          <div className="flex items-center gap-1 rounded-xl border border-border-subtle bg-surface/55 p-1">
             {WINDOW_TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -143,7 +143,7 @@ export default function PxpipeClient() {
                 className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
                   windowId === tab.id
                     ? "bg-primary text-white shadow-sm"
-                    : "text-text-muted hover:text-text hover:bg-bg-hover"
+                    : "text-text-muted hover:bg-surface-2 hover:text-text-main"
                 }`}
               >
                 {tab.label}
@@ -271,7 +271,7 @@ export default function PxpipeClient() {
       <Card className="p-4" id="logs">
         <h3 className="font-medium mb-3">PXPIPE Logs</h3>
         {logs?.installLog ? (
-          <pre className="rounded bg-black/5 dark:bg-white/5 p-3 text-xs font-mono overflow-x-auto max-h-64 overflow-y-auto whitespace-pre-wrap">
+          <pre className="max-h-64 overflow-auto whitespace-pre-wrap rounded-xl border border-border-subtle bg-surface-2/70 p-3 font-mono text-xs text-text-main">
             {logs.installLog}
           </pre>
         ) : (

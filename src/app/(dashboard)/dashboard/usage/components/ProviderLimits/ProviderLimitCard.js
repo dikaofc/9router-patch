@@ -92,7 +92,7 @@ export default function ProviderLimitCard({
         <button
           onClick={handleRefresh}
           disabled={refreshing || loading}
-          className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-xl p-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
           title="Refresh quota"
         >
           <span
@@ -109,12 +109,12 @@ export default function ProviderLimitCard({
       {loading && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <div className="h-4 bg-black/5 dark:bg-white/5 rounded animate-pulse" />
-            <div className="h-2 bg-black/5 dark:bg-white/5 rounded animate-pulse" />
+            <div className="h-4 animate-pulse rounded-lg bg-surface-2" />
+            <div className="h-2 animate-pulse rounded-full bg-surface-2" />
           </div>
           <div className="space-y-2">
-            <div className="h-4 bg-black/5 dark:bg-white/5 rounded animate-pulse" />
-            <div className="h-2 bg-black/5 dark:bg-white/5 rounded animate-pulse" />
+            <div className="h-4 animate-pulse rounded-lg bg-surface-2" />
+            <div className="h-2 animate-pulse rounded-full bg-surface-2" />
           </div>
         </div>
       )}

@@ -142,7 +142,7 @@ export default function QuotaTable({
           {sortedQuotas.length} quota{sortedQuotas.length > 1 ? "s" : ""}
         </div>
         {showSortLabel && (
-          <div className="rounded-md border border-black/10 bg-black/[0.02] px-2 py-1 text-[10px] text-text-muted dark:border-white/10 dark:bg-white/[0.03]">
+          <div className="rounded-lg border border-border-subtle bg-surface/55 px-2 py-1 text-[10px] text-text-muted">
             {sortLabel}
           </div>
         )}
@@ -166,7 +166,7 @@ export default function QuotaTable({
           return (
             <div
               key={`${quota.name}-${quota.index}`}
-              className={`flex items-center gap-2 border-b border-black/5 dark:border-white/5 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors ${cellPad}`}
+              className={`flex items-center gap-2 border-b border-border-subtle transition-colors hover:bg-surface/45 ${cellPad}`}
             >
               {/* Name */}
               <div className="flex w-36 min-w-0 items-center gap-1.5">
@@ -180,7 +180,7 @@ export default function QuotaTable({
               <div className={`min-w-0 flex-1 ${compact ? "space-y-1" : "space-y-1.5"}`}>
                 {!isUnlimited && !isCreditBalance && (
                 <div className={`${compact ? "h-1" : "h-1.5"} rounded-full overflow-hidden border ${colors.bgLight} ${
-                  quota.remaining === 0 ? "border-black/10 dark:border-white/10" : "border-transparent"
+                  quota.remaining === 0 ? "border-border-subtle" : "border-transparent"
                 }`}>
                   <div
                     className={`h-full transition-all duration-300 ${colors.bg}`}
@@ -246,7 +246,7 @@ export default function QuotaTable({
                 <button
                   type="button"
                   onClick={() => onHideQuota(quota)}
-                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-text-muted transition-colors hover:bg-black/5 hover:text-text-primary dark:hover:bg-white/5"
+                  className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-surface-2 hover:text-text-primary"
                   title="Hide this quota row"
                   aria-label={`Hide quota ${quota.name}`}
                 >
@@ -261,7 +261,7 @@ export default function QuotaTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="rounded-md border border-black/10 bg-black/[0.02] px-2 py-1.5 dark:border-white/10 dark:bg-white/[0.03]">
+        <div className="rounded-xl border border-border-subtle bg-surface/55 px-2 py-1.5">
           <div className="flex items-center justify-between gap-2 text-[10px] text-text-muted">
             <span>
               Showing {pageStart}-{pageEnd} of {sortedQuotas.length}
@@ -275,7 +275,7 @@ export default function QuotaTable({
               type="button"
               onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))}
               disabled={page === 1}
-              className="flex h-6 items-center rounded-md border border-black/10 px-2 text-[10px] text-text-primary transition-colors hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:hover:bg-white/5"
+              className="flex h-7 items-center rounded-lg border border-border-subtle bg-surface/60 px-2 text-[10px] text-text-primary transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Prev
             </button>
@@ -283,7 +283,7 @@ export default function QuotaTable({
               type="button"
               onClick={() => setPage((currentPage) => Math.min(totalPages, currentPage + 1))}
               disabled={page === totalPages}
-              className="flex h-6 items-center rounded-md border border-black/10 px-2 text-[10px] text-text-primary transition-colors hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:hover:bg-white/5"
+              className="flex h-7 items-center rounded-lg border border-border-subtle bg-surface/60 px-2 text-[10px] text-text-primary transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>
