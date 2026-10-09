@@ -70,8 +70,8 @@ function CallbackContent() {
   }, [searchParams]);
 
   return (
-    <div className="liquid-callback-page min-h-screen flex items-center justify-center bg-bg p-5">
-      <div className="glass-card text-center p-6 max-w-sm w-full">
+    <div className="min-h-screen flex items-center justify-center bg-bg p-5">
+      <div className="glass-card text-center p-6 max-w-sm w-full rounded-2xl">
         {status === "processing" && (
           <>
             <div className="size-12 mx-auto mb-3 rounded-full bg-primary/8 flex items-center justify-center">
@@ -85,7 +85,7 @@ function CallbackContent() {
         {(status === "success" || status === "done") && (
           <>
             <div className="size-12 mx-auto mb-3 rounded-full bg-green-500/8 flex items-center justify-center">
-              <span className="material-symbols-outlined text-2xl text-green-600">check_circle</span>
+              <span className="material-symbols-outlined text-2xl text-green-500">check_circle</span>
             </div>
             <h1 className="text-base font-medium mb-1 text-text-main">Authorization Successful!</h1>
             <p className="text-sm text-text-muted">
@@ -96,14 +96,14 @@ function CallbackContent() {
 
         {status === "manual" && (
           <>
-            <div className="size-12 mx-auto mb-3 rounded-full bg-yellow-500/8 flex items-center justify-center">
-              <span className="material-symbols-outlined text-2xl text-yellow-600">info</span>
+            <div className="size-12 mx-auto mb-3 rounded-full bg-orange-500/8 flex items-center justify-center">
+              <span className="material-symbols-outlined text-2xl text-orange-500">info</span>
             </div>
             <h1 className="text-base font-medium mb-1 text-text-main">Copy This URL</h1>
             <p className="text-sm text-text-muted mb-3">
               Please copy the URL from the address bar and paste it in the application.
             </p>
-            <div className="bg-surface border border-border rounded-md p-2.5 text-left">
+            <div className="bg-surface-2 border border-border-subtle rounded-lg p-2.5 text-left">
               <code className="text-xs break-all text-text-muted">{typeof window !== "undefined" ? window.location.href : ""}</code>
             </div>
           </>
@@ -116,8 +116,8 @@ function CallbackContent() {
 export default function CallbackPage() {
   return (
     <Suspense fallback={
-      <div className="liquid-callback-page min-h-screen flex items-center justify-center bg-bg p-5">
-        <div className="glass-card text-center p-6 max-w-sm w-full">
+      <div className="min-h-screen flex items-center justify-center bg-bg p-5">
+        <div className="glass-card text-center p-6 max-w-sm w-full rounded-2xl">
           <div className="size-12 mx-auto mb-3 rounded-full bg-primary/8 flex items-center justify-center">
             <span className="material-symbols-outlined text-2xl text-primary animate-spin">progress_activity</span>
           </div>

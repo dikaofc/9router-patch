@@ -44,52 +44,53 @@ export default function Modal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-[2px] fade-in"
+        className="absolute inset-0 bg-black/30 backdrop-blur-lg fade-in"
         onClick={closeOnOverlay ? onClose : undefined}
       />
 
       {/* Modal content */}
       <div
         className={cn(
-          "glass-card relative w-full bg-surface",
-          "border border-border-subtle",
-          "rounded-[12px] shadow-[var(--shadow-elev)]",
+          "glass-card relative flex max-h-[calc(100dvh-1rem)] w-full flex-col overflow-hidden rounded-[28px] border border-[var(--glass-border)]",
           "fade-in",
           sizes[size],
           className
         )}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title || "Dialog"}
       >
         {/* Header */}
         {(title || showTrafficLights) && (
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-border-subtle">
-            <div className="flex items-center">
+          <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-3 border-b border-border-subtle sm:px-5">
+            <div className="flex min-w-0 items-center">
               {showTrafficLights && (
-                <div className="hidden md:flex items-center gap-1.5 mr-3 ml-1">
-                  <Tooltip text="Close" position="top" color="#e05548">
+                <div className="hidden md:flex items-center gap-2 mr-4 ml-1">
+                  <Tooltip text="Close" position="top" color="#ff5f57">
                     <button
                       onClick={onClose}
                       aria-label="Close"
                       title="Close"
-                      className="w-3 h-3 rounded-full bg-[#e05548] hover:brightness-90 transition-all cursor-pointer flex items-center justify-center group/dot"
+                      className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all cursor-pointer flex items-center justify-center group/dot"
                     >
-                      <span className="text-[7px] font-bold text-white opacity-0 group-hover/dot:opacity-100 transition-opacity leading-none">✕</span>
+                      <span className="text-[8px] font-bold text-white opacity-0 group-hover/dot:opacity-100 transition-opacity leading-none">✕</span>
                     </button>
                   </Tooltip>
-                  <div className="w-3 h-3 rounded-full bg-[#3a3a3a]/10 dark:bg-white/10 cursor-not-allowed" />
-                  <div className="w-3 h-3 rounded-full bg-[#3a3a3a]/10 dark:bg-white/10 cursor-not-allowed" />
+                  <div className="w-3 h-3 rounded-full bg-[#febc2e] cursor-not-allowed" />
+                  <div className="w-3 h-3 rounded-full bg-[#28c840] cursor-not-allowed" />
                 </div>
               )}
               {title && (
-                <h2 className="text-sm font-medium text-text-main">{title}</h2>
+                <h2 className="truncate text-base font-semibold text-text-main">{title}</h2>
               )}
             </div>
             <button
               onClick={onClose}
               aria-label="Close"
-              className="md:hidden p-1 rounded-md text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors"
+              className="md:hidden p-1.5 rounded-lg text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors"
             >
               <span className="material-symbols-outlined text-[18px]">close</span>
             </button>
@@ -97,11 +98,11 @@ export default function Modal({
         )}
 
         {/* Body */}
-        <div className="p-5 max-h-[calc(85vh-80px)] overflow-y-auto custom-scrollbar">{children}</div>
+        <div className="min-h-0 overflow-y-auto p-4 custom-scrollbar sm:p-5">{children}</div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 px-4 py-3 border-t border-border-subtle sm:px-5">
             {footer}
           </div>
         )}

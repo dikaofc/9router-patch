@@ -60,15 +60,15 @@ export default function PricingSettingsPage() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="h-9 px-4 bg-primary text-white rounded-md hover:bg-primary-hover transition-colors text-sm font-medium"
+          className="h-9 px-4 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors text-sm font-medium"
         >
           Edit Pricing
         </button>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <Card className="p-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="p-4 rounded-xl">
           <div className="text-text-muted text-xs font-medium uppercase tracking-wider">
             Total Models
           </div>
@@ -76,7 +76,7 @@ export default function PricingSettingsPage() {
             {loading ? "..." : getModelCount()}
           </div>
         </Card>
-        <Card className="p-4">
+        <Card className="p-4 rounded-xl">
           <div className="text-text-muted text-xs font-medium uppercase tracking-wider">
             Providers
           </div>
@@ -84,7 +84,7 @@ export default function PricingSettingsPage() {
             {loading ? "..." : getProviders().length}
           </div>
         </Card>
-        <Card className="p-4">
+        <Card className="p-4 rounded-xl">
           <div className="text-text-muted text-xs font-medium uppercase tracking-wider">
             Status
           </div>

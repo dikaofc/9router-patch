@@ -96,13 +96,20 @@ export default function Sidebar({ onClose }) {
     setShutdownCountdown(0);
   };
 
+  const navLinkClass = (active) => cn(
+    "flex min-h-10 items-center gap-2.5 px-3 py-2 rounded-xl transition-all group text-[13px] font-medium",
+    active
+      ? "bg-primary/10 text-primary"
+      : "text-text-muted hover:bg-surface-2 hover:text-text-main"
+  );
+
   return (
     <>
-      <aside className="glass-sidebar flex w-60 flex-col border-r border-border-subtle bg-surface transition-colors duration-200 min-h-full">
+      <aside className="glass-sidebar flex w-60 flex-col border-r border-border-subtle bg-surface/80 backdrop-blur-xl transition-colors duration-200 min-h-full">
         {/* Logo */}
         <div className="px-4 py-4 flex flex-col gap-1.5">
           <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center size-7 rounded-md bg-brand-500">
+            <div className="flex items-center justify-center size-7 rounded-lg bg-primary shadow-sm">
               <span className="material-symbols-outlined text-white text-[16px]">hub</span>
             </div>
             <div className="flex flex-col">
@@ -113,14 +120,14 @@ export default function Sidebar({ onClose }) {
             </div>
           </Link>
           {updateInfo && (
-            <div className="flex flex-col gap-1 rounded-md p-1.5 -m-1.5">
-              <span className="text-[11px] font-medium text-green-600 dark:text-amber-500">
+            <div className="flex flex-col gap-1 rounded-lg p-1.5 -m-1.5 bg-green-500/5">
+              <span className="text-[11px] font-medium text-green-600 dark:text-green-400">
                 ↑ New version available: v{updateInfo.latestVersion}
               </span>
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setShowUpdateModal(true)}
-                  className="px-1.5 py-0.5 rounded bg-green-600 hover:bg-green-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white text-[10px] font-medium transition-colors cursor-pointer"
+                  className="px-1.5 py-0.5 rounded-md bg-green-500 hover:bg-green-600 text-white text-[10px] font-medium transition-colors cursor-pointer"
                 >
                   Update now
                 </button>
@@ -129,7 +136,7 @@ export default function Sidebar({ onClose }) {
                   title="Copy install command"
                   className="flex-1 text-left hover:opacity-80 transition-opacity cursor-pointer min-w-0"
                 >
-                  <code className="block text-[10px] text-green-600/80 dark:text-amber-400/70 font-mono truncate">
+                  <code className="block text-[10px] text-green-600/80 dark:text-green-400/70 font-mono truncate">
                     {copied ? "✓ copied!" : INSTALL_CMD}
                   </code>
                 </button>
@@ -145,22 +152,10 @@ export default function Sidebar({ onClose }) {
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className={cn(
-                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-all group",
-                isActive(item.href)
-                  ? "bg-primary/8 text-primary"
-                  : "text-text-muted hover:bg-surface-2 hover:text-text-main"
-              )}
+              className={navLinkClass(isActive(item.href))}
             >
-              <span
-                className={cn(
-                  "material-symbols-outlined text-[16px]",
-                  isActive(item.href) ? "fill-1" : "group-hover:text-primary transition-colors"
-                )}
-              >
-                {item.icon}
-              </span>
-              <span className="text-xs font-medium">{item.label}</span>
+              <span className="material-symbols-outlined text-[16px]">{item.icon}</span>
+              {item.label}
             </Link>
           ))}
 
@@ -174,14 +169,14 @@ export default function Sidebar({ onClose }) {
             <button
               onClick={() => setMediaOpen((v) => !v)}
               className={cn(
-                "w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-all group",
+                "w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg transition-all group text-[13px] font-medium",
                 pathname.startsWith("/dashboard/media-providers")
-                  ? "bg-primary/8 text-primary"
+                  ? "bg-primary/10 text-primary"
                   : "text-text-muted hover:bg-surface-2 hover:text-text-main"
               )}
             >
               <span className="material-symbols-outlined text-[16px]">perm_media</span>
-              <span className="text-xs font-medium flex-1 text-left">Media Providers</span>
+              <span className="flex-1 text-left">Media Providers</span>
               <span className="material-symbols-outlined text-[12px] transition-transform" style={{ transform: mediaOpen ? "rotate(180deg)" : "rotate(0deg)" }}>
                 expand_more
               </span>
@@ -194,14 +189,14 @@ export default function Sidebar({ onClose }) {
                     href={`/dashboard/media-providers/${kind.id}`}
                     onClick={onClose}
                     className={cn(
-                      "flex items-center gap-2.5 px-3 py-1.5 rounded-md transition-all group",
+                      "flex min-h-9 items-center gap-2.5 px-3 py-2 rounded-xl transition-all text-xs",
                       pathname.startsWith(`/dashboard/media-providers/${kind.id}`)
-                        ? "bg-primary/8 text-primary"
+                        ? "bg-primary/10 text-primary"
                         : "text-text-muted hover:bg-surface-2 hover:text-text-main"
                     )}
                   >
                     <span className="material-symbols-outlined text-[14px]">{kind.icon}</span>
-                    <span className="text-xs">{kind.label}</span>
+                    {kind.label}
                   </Link>
                 ))}
                 <Link
@@ -209,14 +204,14 @@ export default function Sidebar({ onClose }) {
                   href={COMBINED_WEB_ITEM.href}
                   onClick={onClose}
                   className={cn(
-                    "flex items-center gap-2.5 px-3 py-1.5 rounded-md transition-all group",
+                    "flex min-h-9 items-center gap-2.5 px-3 py-2 rounded-xl transition-all text-xs",
                     pathname.startsWith(COMBINED_WEB_ITEM.href)
-                      ? "bg-primary/8 text-primary"
+                      ? "bg-primary/10 text-primary"
                       : "text-text-muted hover:bg-surface-2 hover:text-text-main"
                   )}
                 >
                   <span className="material-symbols-outlined text-[14px]">{COMBINED_WEB_ITEM.icon}</span>
-                  <span className="text-xs">{COMBINED_WEB_ITEM.label}</span>
+                  {COMBINED_WEB_ITEM.label}
                 </Link>
               </div>
             )}
@@ -226,22 +221,10 @@ export default function Sidebar({ onClose }) {
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={cn(
-                  "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-all group",
-                  isActive(item.href)
-                    ? "bg-primary/8 text-primary"
-                    : "text-text-muted hover:bg-surface-2 hover:text-text-main"
-                )}
+                className={navLinkClass(isActive(item.href))}
               >
-                <span
-                  className={cn(
-                    "material-symbols-outlined text-[16px]",
-                    isActive(item.href) ? "fill-1" : "group-hover:text-primary transition-colors"
-                  )}
-                >
-                  {item.icon}
-                </span>
-                <span className="text-xs font-medium">{item.label}</span>
+                <span className="material-symbols-outlined text-[16px]">{item.icon}</span>
+                {item.label}
               </Link>
             ))}
 
@@ -252,22 +235,10 @@ export default function Sidebar({ onClose }) {
                   key={item.href}
                   href={item.href}
                   onClick={onClose}
-                  className={cn(
-                    "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-all group",
-                    isActive(item.href)
-                      ? "bg-primary/8 text-primary"
-                      : "text-text-muted hover:bg-surface-2 hover:text-text-main"
-                  )}
+                  className={navLinkClass(isActive(item.href))}
                 >
-                  <span
-                    className={cn(
-                      "material-symbols-outlined text-[16px]",
-                      isActive(item.href) ? "fill-1" : "group-hover:text-primary transition-colors"
-                    )}
-                  >
-                    {item.icon}
-                  </span>
-                  <span className="text-xs font-medium">{item.label}</span>
+                  <span className="material-symbols-outlined text-[16px]">{item.icon}</span>
+                  {item.label}
                 </Link>
               ) : null;
             })}
@@ -275,15 +246,10 @@ export default function Sidebar({ onClose }) {
             {/* Remote */}
             <button
               onClick={() => setShowRemoteModal(true)}
-              className={cn(
-                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-all group w-full",
-                "text-text-muted hover:bg-surface-2 hover:text-text-main"
-              )}
+              className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg transition-all text-[13px] font-medium text-text-muted hover:bg-surface-2 hover:text-text-main"
             >
-              <span className="material-symbols-outlined text-[16px] group-hover:text-primary transition-colors">
-                computer
-              </span>
-              <span className="text-xs font-medium">9Remote</span>
+              <span className="material-symbols-outlined text-[16px]">computer</span>
+              9Remote
             </button>
 
             {/* 9English */}
@@ -292,46 +258,27 @@ export default function Sidebar({ onClose }) {
               target="_blank"
               rel="noreferrer"
               onClick={onClose}
-              className={cn(
-                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-all group w-full",
-                "text-text-muted hover:bg-surface-2 hover:text-text-main"
-              )}
+              className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg transition-all text-[13px] font-medium text-text-muted hover:bg-surface-2 hover:text-text-main"
             >
-              <span className="material-symbols-outlined text-[16px] group-hover:text-primary transition-colors">
-                translate
-              </span>
-              <span className="text-xs font-medium">9English</span>
+              <span className="material-symbols-outlined text-[16px]">translate</span>
+              9English
             </a>
 
             {/* Settings */}
             <Link
               href="/dashboard/profile"
               onClick={onClose}
-              className={cn(
-                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-all group",
-                isActive("/dashboard/profile")
-                  ? "bg-primary/8 text-primary"
-                  : "text-text-muted hover:bg-surface-2 hover:text-text-main"
-              )}
+              className={navLinkClass(isActive("/dashboard/profile"))}
             >
-              <span
-                className={cn(
-                  "material-symbols-outlined text-[16px]",
-                  isActive("/dashboard/profile") ? "fill-1" : "group-hover:text-primary transition-colors"
-                )}
-              >
-                settings
-              </span>
-              <span className="text-xs font-medium">Settings</span>
+              <span className="material-symbols-outlined text-[16px]">settings</span>
+              Settings
             </Link>
           </div>
         </nav>
       </aside>
 
-      {/* Remote Promo Modal */}
       <NineRemotePromoModal isOpen={showRemoteModal} onClose={() => setShowRemoteModal(false)} />
 
-      {/* Update Confirmation Modal */}
       <ConfirmModal
         isOpen={showUpdateModal}
         onClose={() => setShowUpdateModal(false)}
@@ -343,9 +290,8 @@ export default function Sidebar({ onClose }) {
         variant="primary"
       />
 
-      {/* Disconnected / Updating Overlay */}
       {(isDisconnected || isUpdating) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md p-6">
           {isUpdating ? (
             <ManualUpdatePanel
               latestVersion={updateInfo?.latestVersion}
@@ -381,13 +327,13 @@ Sidebar.propTypes = {
 function ManualUpdatePanel({ latestVersion, installCmd, copied, onCopyAndShutdown, onCancel, countdown, isDisconnected }) {
   const isCountingDown = countdown > 0;
   return (
-    <div className="w-full max-w-md rounded-[12px] bg-neutral-900/95 border border-white/10 p-5 text-white">
+    <div className="glass-card w-full max-w-md p-6 text-white">
       <div className="flex items-center gap-2.5 mb-3">
         <div className="flex items-center justify-center size-8 rounded-full bg-amber-500/20 text-amber-400">
           <span className="material-symbols-outlined text-[18px]">content_copy</span>
         </div>
         <div>
-          <h2 className="text-sm font-medium">Update 9Router{latestVersion ? ` to v${latestVersion}` : ""}</h2>
+          <h2 className="text-sm font-semibold">Update 9Router{latestVersion ? ` to v${latestVersion}` : ""}</h2>
           <p className="text-[11px] text-white/60">
             {isDisconnected
               ? "Server stopped. Paste the command into a terminal to install."
@@ -399,11 +345,11 @@ function ManualUpdatePanel({ latestVersion, installCmd, copied, onCopyAndShutdow
       </div>
 
       <p className="text-xs text-white/80 mb-1.5">Install command:</p>
-      <div className="w-full px-2.5 py-1.5 rounded-md bg-white/5 mb-3">
-        <code className="text-[11px] font-mono text-amber-400 break-all">{installCmd}</code>
+      <div className="w-full px-3 py-2 rounded-lg bg-white/5 mb-3">
+        <code className="text-xs font-mono text-amber-400 break-all">{installCmd}</code>
       </div>
 
-      <ol className="text-[11px] text-white/70 space-y-0.5 list-decimal list-inside mb-3">
+      <ol className="text-xs text-white/70 space-y-1 list-decimal list-inside mb-4">
         <li>Click <strong>Copy & Shutdown</strong> below.</li>
         <li>Paste the command into your terminal and press Enter.</li>
         <li>Run <code className="px-1 rounded bg-white/10 text-green-400">9router</code> again after install.</li>

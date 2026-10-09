@@ -12,10 +12,10 @@ export default function Drawer({
   className
 }) {
   const widths = {
-    sm: "w-[360px]",
-    md: "w-[440px]",
-    lg: "w-[520px]",
-    xl: "w-[640px]",
+    sm: "w-[min(360px,100vw)]",
+    md: "w-[min(440px,100vw)]",
+    lg: "w-[min(520px,100vw)]",
+    xl: "w-[min(640px,100vw)]",
     full: "w-full",
   };
 
@@ -42,31 +42,34 @@ export default function Drawer({
     <div className="fixed inset-0 z-50">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-[2px] fade-in cursor-pointer"
+        className="absolute inset-0 bg-black/30 backdrop-blur-xl fade-in cursor-pointer"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Drawer panel */}
       <div className={cn(
-        "absolute right-0 top-0 h-full bg-surface flex flex-col",
-        "shadow-[var(--shadow-elev)]",
+        "absolute right-0 top-0 h-dvh glass-card flex flex-col",
         "slide-in-right",
-        "border-l border-border-subtle",
         widths[width] || widths.md,
         className
-      )}>
+      )}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title || "Drawer"}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border-subtle flex-shrink-0">
           <div className="flex items-center gap-2.5">
             {title && (
-              <h2 className="text-sm font-medium text-text-main">{title}</h2>
+              <h2 className="text-sm font-semibold text-text-main">{title}</h2>
             )}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-md text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors"
+            className="flex size-10 items-center justify-center rounded-full text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors"
+            aria-label="Close drawer"
           >
             <span className="material-symbols-outlined text-[18px]">close</span>
           </button>

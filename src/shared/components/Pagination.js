@@ -43,7 +43,7 @@ export default function Pagination({
     >
       {totalItems > 0 && (
         <div className="text-xs text-text-muted">
-          <span className="text-text-main">{startItem}</span>–<span className="text-text-main">{endItem}</span> of <span className="text-text-main">{totalItems}</span>
+          <span className="text-text-main font-medium">{startItem}</span>–<span className="text-text-main font-medium">{endItem}</span> of <span className="text-text-main font-medium">{totalItems}</span>
         </div>
       )}
 
@@ -55,8 +55,8 @@ export default function Pagination({
               value={pageSize}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
               className={cn(
-                "h-7 rounded-md border border-border bg-surface",
-                "text-xs text-text-main focus:outline-none focus:ring-1 focus:ring-brand-500/20",
+                "min-h-9 rounded-xl border border-border bg-surface/75 px-3 shadow-sm backdrop-blur-xl",
+                "text-xs font-medium text-text-main focus:outline-none focus:ring-2 focus:ring-primary/20",
                 "cursor-pointer"
               )}
               style={{ colorScheme: 'auto' }}
@@ -77,7 +77,7 @@ export default function Pagination({
               size="sm"
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="w-7 px-0"
+              className="min-w-9 min-h-9 px-0 rounded-full"
             >
               <span className="material-symbols-outlined text-[16px]">chevron_left</span>
             </Button>
@@ -88,7 +88,7 @@ export default function Pagination({
                   variant="ghost"
                   size="sm"
                   onClick={() => onPageChange(1)}
-                  className="w-7 px-0 hidden sm:inline-flex"
+                  className="min-w-9 min-h-9 px-0 rounded-full hidden sm:inline-flex"
                 >
                   1
                 </Button>
@@ -105,7 +105,7 @@ export default function Pagination({
                 size="sm"
                 onClick={() => onPageChange(page)}
                 className={cn(
-                  "w-7 px-0",
+                  "min-w-9 min-h-9 px-0 rounded-full",
                   currentPage === page ? "inline-flex" : "hidden sm:inline-flex"
                 )}
               >
@@ -122,7 +122,7 @@ export default function Pagination({
                   variant="ghost"
                   size="sm"
                   onClick={() => onPageChange(totalPages)}
-                  className="w-7 px-0 hidden sm:inline-flex"
+                  className="min-w-9 min-h-9 px-0 rounded-full hidden sm:inline-flex"
                 >
                   {totalPages}
                 </Button>
@@ -134,7 +134,7 @@ export default function Pagination({
               size="sm"
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="w-7 px-0"
+              className="min-w-9 min-h-9 px-0 rounded-full"
             >
               <span className="material-symbols-outlined text-[16px]">chevron_right</span>
             </Button>

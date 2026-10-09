@@ -3,18 +3,18 @@
 import { cn } from "@/shared/utils/cn";
 
 const variants = {
-  default: "bg-surface-2 text-text-muted",
-  primary: "bg-brand-500/8 text-brand-600 dark:text-brand-300",
-  success: "bg-green-500/8 text-green-600 dark:text-green-400",
-  warning: "bg-yellow-500/8 text-yellow-600 dark:text-yellow-400",
-  error: "bg-red-500/8 text-red-600 dark:text-red-400",
-  info: "bg-blue-500/8 text-blue-600 dark:text-blue-400",
+  default: "bg-surface/70 text-text-muted border-border/70",
+  primary: "bg-primary/10 text-primary border-primary/15",
+  success: "bg-success/10 text-success border-success/15",
+  warning: "bg-warning/10 text-warning border-warning/15",
+  error: "bg-danger/10 text-danger border-danger/15",
+  info: "bg-info/10 text-info border-info/15",
 };
 
 const sizes = {
-  sm: "px-1.5 py-0.5 text-[10px]",
-  md: "px-2 py-0.5 text-xs",
-  lg: "px-2.5 py-1 text-sm",
+  sm: "px-2 py-0.5 text-[10px]",
+  md: "px-2.5 py-1 text-xs",
+  lg: "px-3 py-1.5 text-sm",
 };
 
 export default function Badge({
@@ -28,7 +28,7 @@ export default function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full font-medium",
+        "inline-flex max-w-full items-center gap-1 rounded-full border bg-clip-padding font-medium backdrop-blur-md",
         variants[variant],
         sizes[size],
         className
@@ -37,13 +37,13 @@ export default function Badge({
       {dot && (
         <span
           className={cn(
-            "size-1 rounded-full",
-            variant === "success" && "bg-green-500",
-            variant === "warning" && "bg-yellow-500",
-            variant === "error" && "bg-red-500",
-            variant === "info" && "bg-blue-500",
-            variant === "primary" && "bg-brand-500",
-            variant === "default" && "bg-gray-400"
+            "size-1.5 rounded-full",
+            variant === "success" && "bg-success",
+            variant === "warning" && "bg-warning",
+            variant === "error" && "bg-danger",
+            variant === "info" && "bg-info",
+            variant === "primary" && "bg-primary",
+            variant === "default" && "bg-text-subtle"
           )}
         />
       )}

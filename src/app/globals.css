@@ -79,11 +79,17 @@
   /* Shadows — Apple-style layered, soft */
   --shadow-soft: 0 0.5px 1px rgba(0,0,0,0.04);
   --shadow-warm: 0 2px 8px -2px rgba(0, 122, 255, 0.08);
-  --shadow-elevated: 0 4px 16px -4px rgba(0, 0, 0, 0.08);
+  --shadow-elevated:
+    0 2px 5px rgba(27, 51, 79, 0.08),
+    0 12px 28px -10px rgba(27, 51, 79, 0.18),
+    0 34px 72px -28px rgba(27, 51, 79, 0.28);
   --shadow-elev:
-    0 0.5px 0 rgba(255,255,255,0.8) inset,
-    0 2px 8px rgba(0,0,0,0.04),
-    0 12px 32px -8px rgba(0,0,0,0.08);
+    inset 0 2px 0 rgba(255,255,255,0.88),
+    inset 0 -1px 0 rgba(255,255,255,0.36),
+    inset 1px 0 0 rgba(255,255,255,0.44),
+    0 3px 8px rgba(27, 51, 79, 0.08),
+    0 14px 28px -10px rgba(27, 51, 79, 0.18),
+    0 38px 78px -26px rgba(27, 51, 79, 0.3);
   --shadow-focus: 0 0 0 4px rgba(0, 122, 255, 0.15);
 
   color-scheme: light;
@@ -132,11 +138,17 @@
 
   --shadow-soft: 0 0.5px 1px rgba(0,0,0,0.2);
   --shadow-warm: 0 2px 8px -2px rgba(10, 132, 255, 0.12);
-  --shadow-elevated: 0 4px 16px -4px rgba(0, 0, 0, 0.3);
+  --shadow-elevated:
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    0 14px 30px -10px rgba(0, 0, 0, 0.6),
+    0 38px 78px -26px rgba(0, 0, 0, 0.88);
   --shadow-elev:
-    0 0.5px 0 rgba(255,255,255,0.08) inset,
-    0 2px 8px rgba(0,0,0,0.15),
-    0 12px 32px -8px rgba(0,0,0,0.35);
+    inset 0 2px 0 rgba(255,255,255,0.2),
+    inset 0 -1px 0 rgba(255,255,255,0.07),
+    inset 1px 0 0 rgba(255,255,255,0.1),
+    0 3px 9px rgba(0,0,0,0.28),
+    0 16px 32px -10px rgba(0,0,0,0.58),
+    0 40px 82px -24px rgba(0,0,0,0.9);
   --shadow-focus: 0 0 0 4px rgba(10, 132, 255, 0.2);
 
   color-scheme: dark;
@@ -148,8 +160,8 @@
 body {
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(ellipse at 12% 10%, rgba(229, 178, 157, 0.16), transparent 34%),
-    radial-gradient(ellipse at 90% 44%, rgba(151, 185, 220, 0.12), transparent 36%);
+    radial-gradient(ellipse at 12% 10%, color-mix(in srgb, var(--color-primary) 11%, transparent), transparent 36%),
+    radial-gradient(ellipse at 90% 44%, color-mix(in srgb, var(--color-info) 9%, transparent), transparent 38%);
   color: var(--color-text-main);
   font-family: var(--font-system);
   -webkit-font-smoothing: antialiased;
@@ -214,16 +226,16 @@ select:focus-visible,
 }
 .dark body {
   background-image:
-    radial-gradient(ellipse at 12% 10%, rgba(168, 115, 93, 0.18), transparent 34%),
-    radial-gradient(ellipse at 90% 44%, rgba(88, 119, 157, 0.16), transparent 36%);
+    radial-gradient(ellipse at 12% 10%, color-mix(in srgb, var(--color-primary) 15%, transparent), transparent 36%),
+    radial-gradient(ellipse at 90% 44%, color-mix(in srgb, var(--color-info) 12%, transparent), transparent 38%);
 }
 
 ::selection {
-  background-color: rgba(168, 115, 93, 0.15);
+  background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
   color: var(--color-primary);
 }
 .dark ::selection {
-  background-color: rgba(192, 141, 120, 0.25);
+  background-color: color-mix(in srgb, var(--color-primary) 28%, transparent);
   color: var(--color-brand-300);
 }
 
@@ -248,19 +260,19 @@ input, textarea {
 
 .scroll-thin-x {
   scrollbar-width: thin;
-  scrollbar-color: rgba(168, 115, 93, 0.3) transparent;
+  scrollbar-color: color-mix(in srgb, var(--color-primary) 34%, transparent) transparent;
 }
 .dark .scroll-thin-x {
-  scrollbar-color: rgba(192, 141, 120, 0.3) transparent;
+  scrollbar-color: color-mix(in srgb, var(--color-primary) 34%, transparent) transparent;
 }
 .scroll-thin-x::-webkit-scrollbar { height: 3px; }
 .scroll-thin-x::-webkit-scrollbar-track { background: transparent; }
 .scroll-thin-x::-webkit-scrollbar-thumb {
-  background: rgba(168, 115, 93, 0.3);
+  background: color-mix(in srgb, var(--color-primary) 34%, transparent);
   border-radius: 3px;
 }
 .dark .scroll-thin-x::-webkit-scrollbar-thumb {
-  background: rgba(192, 141, 120, 0.3);
+  background: color-mix(in srgb, var(--color-primary) 34%, transparent);
 }
 
 * {
@@ -317,19 +329,46 @@ input, textarea {
 .glass-card {
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  background: var(--glass-bg);
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(255,255,255,0.38), transparent 45%),
+    linear-gradient(145deg, color-mix(in srgb, var(--glass-bg) 94%, white 6%), color-mix(in srgb, var(--glass-bg) 68%, transparent));
   border: 1px solid var(--glass-border);
   border-radius: var(--bento-radius);
   box-shadow: var(--shadow-elev);
+  position: relative;
+  isolation: isolate;
+  transform-style: preserve-3d;
   transition:
     transform 300ms var(--motion-apple-spring),
-    box-shadow 300ms var(--motion-apple),
-    border-color 200ms var(--motion-apple);
+    box-shadow 420ms var(--motion-apple),
+    border-color 300ms var(--motion-apple),
+    background 420ms var(--motion-apple);
+}
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 1px auto;
+  height: 2px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent 2%, rgba(255,255,255,0.96) 48%, rgba(255,255,255,0.32) 78%, transparent 98%);
+  pointer-events: none;
+}
+.glass-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(130deg, rgba(255,255,255,0.12), transparent 30%, transparent 72%, rgba(255,255,255,0.06));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.09);
+  pointer-events: none;
 }
 .glass-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px) perspective(1000px) rotateX(0.45deg) scale(1.004);
   border-color: color-mix(in srgb, var(--glass-border) 60%, var(--color-primary));
-  box-shadow: var(--shadow-elevated);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.96),
+    0 8px 18px rgba(27,51,79,0.1),
+    0 42px 86px -26px rgba(27,51,79,0.38);
 }
 .bento-grid {
   display: grid;
@@ -585,9 +624,9 @@ select {
 .dashboard-shell {
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(ellipse at 14% 8%, rgba(241, 176, 147, 0.42), transparent 38%),
-    radial-gradient(ellipse at 88% 24%, rgba(130, 184, 238, 0.4), transparent 36%),
-    radial-gradient(ellipse at 42% 100%, rgba(186, 145, 222, 0.33), transparent 42%);
+    radial-gradient(ellipse at 14% 8%, color-mix(in srgb, var(--color-primary) 16%, transparent), transparent 38%),
+    radial-gradient(ellipse at 88% 24%, color-mix(in srgb, var(--color-info) 14%, transparent), transparent 36%),
+    radial-gradient(ellipse at 42% 100%, rgba(140, 120, 255, 0.12), transparent 42%);
 }
 
 .dashboard-shell.pricing-page {
@@ -601,24 +640,24 @@ select {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse at 14% 8%, rgba(241, 176, 147, 0.32), transparent 38%),
-    radial-gradient(ellipse at 88% 24%, rgba(130, 184, 238, 0.28), transparent 36%),
-    radial-gradient(ellipse at 42% 100%, rgba(186, 145, 222, 0.23), transparent 42%),
+    radial-gradient(ellipse at 14% 8%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 38%),
+    radial-gradient(ellipse at 88% 24%, color-mix(in srgb, var(--color-info) 10%, transparent), transparent 36%),
+    radial-gradient(ellipse at 42% 100%, rgba(140, 120, 255, 0.08), transparent 42%),
     var(--color-bg);
 }
 
 .dark .dashboard-shell {
   background-image:
-    radial-gradient(ellipse at 14% 8%, rgba(188, 108, 75, 0.34), transparent 38%),
-    radial-gradient(ellipse at 88% 24%, rgba(67, 130, 195, 0.34), transparent 36%),
-    radial-gradient(ellipse at 42% 100%, rgba(125, 83, 171, 0.28), transparent 42%);
+    radial-gradient(ellipse at 14% 8%, color-mix(in srgb, var(--color-primary) 20%, transparent), transparent 38%),
+    radial-gradient(ellipse at 88% 24%, color-mix(in srgb, var(--color-info) 19%, transparent), transparent 36%),
+    radial-gradient(ellipse at 42% 100%, rgba(125, 103, 211, 0.18), transparent 42%);
 }
 
 .dark .dashboard-shell.pricing-page::before {
   background:
-    radial-gradient(ellipse at 14% 8%, rgba(188, 108, 75, 0.28), transparent 38%),
-    radial-gradient(ellipse at 88% 24%, rgba(67, 130, 195, 0.27), transparent 36%),
-    radial-gradient(ellipse at 42% 100%, rgba(125, 83, 171, 0.2), transparent 42%),
+    radial-gradient(ellipse at 14% 8%, color-mix(in srgb, var(--color-primary) 15%, transparent), transparent 38%),
+    radial-gradient(ellipse at 88% 24%, color-mix(in srgb, var(--color-info) 14%, transparent), transparent 36%),
+    radial-gradient(ellipse at 42% 100%, rgba(125, 103, 211, 0.12), transparent 42%),
     var(--color-bg);
 }
 
@@ -626,34 +665,22 @@ select {
   margin: 10px 0 10px 10px;
   min-height: calc(100% - 20px);
   border: 1px solid var(--glass-border);
-  border-radius: 30px;
-  background:
-    linear-gradient(155deg, color-mix(in srgb, var(--glass-bg) 88%, white 12%), color-mix(in srgb, var(--glass-bg) 66%, transparent));
+  border-radius: 24px;
+  background: var(--glass-bg);
   border-color: var(--color-border-subtle);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.95),
-    inset 0 -2px 0 rgba(255,255,255,0.38),
-    inset 1px 0 0 rgba(255,255,255,0.65),
-    0 6px 16px rgba(31,41,55,0.09),
-    0 34px 72px -28px rgba(50,58,72,0.56);
-  backdrop-filter: saturate(190%) blur(var(--glass-blur));
-  -webkit-backdrop-filter: saturate(190%) blur(var(--glass-blur));
-}
-.dark .dashboard-shell .glass-sidebar {
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.2),
-    0 6px 18px rgba(0,0,0,0.25),
-    0 28px 64px -30px rgba(0,0,0,0.85);
+  box-shadow: var(--shadow-elev);
+  backdrop-filter: saturate(180%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(180%) blur(var(--glass-blur));
 }
 
-.dashboard-shell .glass-sidebar nav a[class*="bg-primary/8"] {
+.dashboard-shell .glass-sidebar nav a[class*="bg-primary/10"] {
   background: linear-gradient(145deg, rgba(255,255,255,0.72), color-mix(in srgb, var(--color-primary) 12%, transparent));
   border: 1px solid color-mix(in srgb, var(--glass-border) 70%, var(--color-primary));
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.9),
     0 4px 10px -7px color-mix(in srgb, var(--color-primary) 65%, transparent);
 }
-.dark .dashboard-shell .glass-sidebar nav a[class*="bg-primary/8"] {
+.dark .dashboard-shell .glass-sidebar nav a[class*="bg-primary/10"] {
   background: linear-gradient(145deg, rgba(255,255,255,0.12), color-mix(in srgb, var(--color-primary) 16%, transparent));
   border-color: rgba(255,255,255,0.16);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 5px 14px rgba(0,0,0,0.24);
@@ -870,18 +897,18 @@ select {
   min-height: 100vh;
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(ellipse at 12% 12%, rgba(241, 176, 147, 0.34), transparent 34%),
-    radial-gradient(ellipse at 88% 44%, rgba(130, 184, 238, 0.3), transparent 34%),
-    radial-gradient(ellipse at 46% 100%, rgba(186, 145, 222, 0.24), transparent 40%);
+    radial-gradient(ellipse at 12% 12%, color-mix(in srgb, var(--color-primary) 14%, transparent), transparent 34%),
+    radial-gradient(ellipse at 88% 44%, color-mix(in srgb, var(--color-info) 13%, transparent), transparent 34%),
+    radial-gradient(ellipse at 46% 100%, rgba(140, 120, 255, 0.1), transparent 40%);
   color: var(--color-text-main);
 }
 
 .dark .liquid-auth-page,
 .dark .liquid-landing {
   background-image:
-    radial-gradient(ellipse at 12% 12%, rgba(188, 108, 75, 0.3), transparent 34%),
-    radial-gradient(ellipse at 88% 44%, rgba(67, 130, 195, 0.3), transparent 34%),
-    radial-gradient(ellipse at 46% 100%, rgba(125, 83, 171, 0.24), transparent 40%);
+    radial-gradient(ellipse at 12% 12%, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 34%),
+    radial-gradient(ellipse at 88% 44%, color-mix(in srgb, var(--color-info) 17%, transparent), transparent 34%),
+    radial-gradient(ellipse at 46% 100%, rgba(125, 103, 211, 0.14), transparent 40%);
 }
 
 .liquid-landing h1,
@@ -1021,14 +1048,14 @@ select {
 
 .liquid-callback-page {
   background:
-    radial-gradient(ellipse at 20% 20%, rgba(229, 178, 157, 0.22), transparent 42%),
-    radial-gradient(ellipse at 82% 80%, rgba(151, 185, 220, 0.18), transparent 42%);
+    radial-gradient(ellipse at 20% 20%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 42%),
+    radial-gradient(ellipse at 82% 80%, color-mix(in srgb, var(--color-info) 11%, transparent), transparent 42%);
 }
 
 .dark .liquid-callback-page {
   background:
-    radial-gradient(ellipse at 20% 20%, rgba(168, 115, 93, 0.22), transparent 42%),
-    radial-gradient(ellipse at 82% 80%, rgba(88, 119, 157, 0.2), transparent 42%);
+    radial-gradient(ellipse at 20% 20%, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 42%),
+    radial-gradient(ellipse at 82% 80%, color-mix(in srgb, var(--color-info) 15%, transparent), transparent 42%);
 }
 
 @media (prefers-reduced-motion: reduce) {

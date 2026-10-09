@@ -9,24 +9,24 @@ import Header from "../Header";
 function getToastStyle(type) {
   if (type === "success") {
     return {
-      wrapper: "border-green-500/20 bg-green-500/8 text-green-600 dark:text-green-400",
+      wrapper: "border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400",
       icon: "check_circle",
     };
   }
   if (type === "error") {
     return {
-      wrapper: "border-red-500/20 bg-red-500/8 text-red-600 dark:text-red-400",
+      wrapper: "border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400",
       icon: "error",
     };
   }
   if (type === "warning") {
     return {
-      wrapper: "border-amber-500/20 bg-amber-500/8 text-amber-600 dark:text-amber-400",
+      wrapper: "border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400",
       icon: "warning",
     };
   }
   return {
-    wrapper: "border-blue-500/20 bg-blue-500/8 text-blue-600 dark:text-blue-400",
+    wrapper: "border-primary/20 bg-primary/10 text-primary",
     icon: "info",
   };
 }
@@ -56,12 +56,12 @@ export default function DashboardLayout({ children }) {
           return (
             <div
               key={n.id}
-              className={`rounded-lg border px-3 py-2 shadow-sm backdrop-blur-sm ${style.wrapper}`}
+              className={`rounded-xl border px-3 py-2 shadow-lg backdrop-blur-sm ${style.wrapper}`}
             >
               <div className="flex items-start gap-2">
                 <span className="material-symbols-outlined text-[16px] leading-5">{style.icon}</span>
                 <div className="min-w-0 flex-1">
-                  {n.title ? <p className="text-xs font-medium mb-0.5">{n.title}</p> : null}
+                  {n.title ? <p className="text-xs font-semibold mb-0.5">{n.title}</p> : null}
                   <p className="text-xs whitespace-pre-wrap break-words">{n.message}</p>
                 </div>
                 {n.dismissible ? (

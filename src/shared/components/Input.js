@@ -18,16 +18,16 @@ export default function Input({
   ...props
 }) {
   return (
-    <div className={cn("flex flex-col gap-1", className)}>
+    <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
-        <label className="text-xs font-medium text-text-main">
+      <label className="text-xs font-medium text-text-main sm:text-sm">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <div className="relative">
         {icon && (
-          <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-text-muted">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-text-muted">
             <span className="material-symbols-outlined text-[18px]">{icon}</span>
           </div>
         )}
@@ -38,12 +38,12 @@ export default function Input({
           onChange={onChange}
           disabled={disabled}
           className={cn(
-            "w-full py-2 px-2.5 text-sm text-text-main bg-surface-2/60 rounded-md",
-            "border border-transparent placeholder-text-muted/60",
-            "focus:outline-none focus:ring-2 focus:ring-brand-500/15 focus:border-brand-500/30",
-            "transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed",
+            "w-full min-h-11 py-2.5 px-3.5 text-base text-text-main bg-surface/70 rounded-2xl",
+            "border border-border/70 placeholder-text-muted/60 shadow-inner backdrop-blur-xl",
+            "focus:outline-none focus:ring-4 focus:ring-primary/15 focus:border-primary/50",
+            "transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed",
             "text-[16px] sm:text-sm",
-            icon && "pl-8",
+            icon && "pl-9",
             error && "ring-1 ring-red-500/30 focus:ring-2 focus:ring-red-500/20 border-red-500/30",
             inputClassName
           )}

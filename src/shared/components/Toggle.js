@@ -12,9 +12,9 @@ export default function Toggle({
   className,
 }) {
   const sizes = {
-    sm: { track: "w-7 h-4", thumb: "size-3", translate: "translate-x-3" },
-    md: { track: "w-9 h-5", thumb: "size-4", translate: "translate-x-4" },
-    lg: { track: "w-11 h-6", thumb: "size-5", translate: "translate-x-5" },
+    sm: { track: "w-8 h-[18px]", thumb: "size-3.5", translate: "translate-x-[14px]" },
+    md: { track: "w-10 h-6", thumb: "size-5", translate: "translate-x-[18px]" },
+    lg: { track: "w-12 h-7", thumb: "size-6", translate: "translate-x-5" },
   };
 
   const handleClick = () => {
@@ -24,7 +24,7 @@ export default function Toggle({
   return (
     <div
       className={cn(
-        "flex items-center gap-2.5",
+        "flex min-w-0 items-center gap-2.5",
         disabled && "opacity-50 cursor-not-allowed",
         className
       )}
@@ -33,24 +33,24 @@ export default function Toggle({
         type="button"
         role="switch"
         aria-checked={checked}
+        aria-label={label || description}
         disabled={disabled}
         onClick={handleClick}
         className={cn(
-          "relative inline-flex shrink-0 cursor-pointer rounded-full",
-          "transition-colors duration-150 ease-in-out",
-          "focus:outline-none focus:ring-2 focus:ring-brand-500/15",
-          checked ? "bg-brand-500" : "bg-surface-3",
+          "relative inline-flex shrink-0 cursor-pointer items-center rounded-full p-0.5 shadow-inner",
+          "transition-colors duration-300",
+          "focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/20",
+          checked ? "bg-primary" : "bg-surface-3",
           sizes[size].track,
           disabled && "cursor-not-allowed"
         )}
       >
         <span
           className={cn(
-            "pointer-events-none inline-block rounded-full bg-white shadow-sm",
-            "transform transition duration-150 ease-in-out",
+            "pointer-events-none inline-block rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.24)]",
+            "transform transition duration-300",
             checked ? sizes[size].translate : "translate-x-0.5",
             sizes[size].thumb,
-            "mt-0.5"
           )}
         />
       </button>

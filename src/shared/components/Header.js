@@ -215,15 +215,16 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
   };
 
   return (
-    <header className="dashboard-header shrink-0 flex items-center justify-between gap-3 px-4 lg:px-6 pt-2.5 pb-2 border-b border-border-subtle z-20">
+    <header className="dashboard-header shrink-0 flex items-center justify-between gap-3 px-4 lg:px-6 pt-2.5 pb-2 z-20">
       {/* Mobile menu button */}
       <div className="flex items-center gap-2 lg:hidden shrink-0">
         {showMenuButton && (
           <button
             onClick={onMenuClick}
-            className="text-text-main hover:text-primary transition-colors"
+            className="flex size-10 items-center justify-center rounded-full border border-border/60 bg-surface/70 text-text-main shadow-sm backdrop-blur-xl hover:text-primary"
+            aria-label="Open navigation menu"
           >
-            <span className="material-symbols-outlined">menu</span>
+            <span className="material-symbols-outlined text-[22px]">menu</span>
           </button>
         )}
       </div>
@@ -260,7 +261,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
                         fallbackText={crumb.label.slice(0, 2).toUpperCase()}
                       />
                     )}
-                    <h1 className="text-sm lg:text-base font-medium text-text-main tracking-tight truncate">
+                    <h1 className="text-sm lg:text-base font-semibold text-text-main tracking-tight truncate">
                       {translate(crumb.label)}
                     </h1>
                   </div>
@@ -276,7 +277,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
                   {icon}
                 </span>
               )}
-              <h1 className="text-sm lg:text-base font-medium tracking-tight truncate">
+              <h1 className="text-sm lg:text-base font-semibold tracking-tight truncate">
                 {translate(title)}
               </h1>
             </div>
@@ -298,7 +299,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
           >
             <span className="material-symbols-outlined text-[12px] mr-1 text-primary">person</span>
             <span className="truncate">{displayName}</span>
-            <span className="ml-1.5 shrink-0 rounded-full bg-primary/8 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-primary">
+            <span className="ml-1.5 shrink-0 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-primary">
               {loginMethod}
             </span>
           </div>
@@ -306,7 +307,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
         <HeaderSearch />
         <button
           onClick={() => setDonateOpen(true)}
-          className="flex items-center gap-1 px-2.5 h-7 rounded-md border border-pink-500/20 bg-pink-500/5 text-pink-600 dark:text-pink-400 hover:bg-pink-500/10 transition-colors text-xs font-medium"
+          className="flex items-center gap-1 px-2.5 h-7 rounded-lg border border-pink-500/20 bg-pink-500/5 text-pink-600 dark:text-pink-400 hover:bg-pink-500/10 transition-colors text-xs font-medium"
           aria-label="Donate"
         >
           <span className="material-symbols-outlined text-[16px]">volunteer_activism</span>
@@ -330,7 +331,7 @@ function HeaderSearch() {
   if (!visible) return null;
 
   return (
-    <div className="relative w-[140px] sm:w-[180px]">
+    <div className="relative w-[clamp(7rem,20vw,140px)] sm:w-[180px]">
       <span className="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-text-muted text-[14px] pointer-events-none">
         search
       </span>
@@ -339,7 +340,7 @@ function HeaderSearch() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
-        className="w-full h-7 pl-6 pr-6 rounded-md border border-border bg-surface/60 text-xs focus:outline-none focus:border-primary/30 transition-colors"
+        className="w-full h-8 pl-6 pr-6 rounded-full border border-border bg-surface/60 text-xs focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/15 transition-colors"
       />
       {query && (
         <button

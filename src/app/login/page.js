@@ -153,7 +153,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="liquid-auth-page min-h-screen flex items-center justify-center bg-bg p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-bg p-4 relative overflow-hidden">
       <div className="landing-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
       <div className="relative z-10 w-full max-w-sm">
         <div className="text-center mb-6">
@@ -169,12 +169,12 @@ export default function LoginPage() {
 
         <Card glass>
           {mustChange ? (
-            <form onSubmit={handleSetNewPassword} className="flex flex-col gap-3">
-              <p className="text-xs text-amber-600 dark:text-amber-400 text-center">
+            <form onSubmit={handleSetNewPassword} className="flex flex-col gap-4">
+              <p className="text-xs text-orange-500 text-center">
                 Set a new password before accessing the dashboard remotely.
               </p>
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium">New password</label>
+                <label className="text-xs font-medium text-text-main">New password</label>
                 <Input
                   type="password"
                   placeholder="Enter new password"
@@ -190,7 +190,7 @@ export default function LoginPage() {
               </Button>
             </form>
           ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {samlAvailable && (
               <Button type="button" variant="primary" className="w-full" onClick={handleSamlLogin}>
                 {samlLoginLabel}
@@ -203,12 +203,12 @@ export default function LoginPage() {
               </Button>
             )}
 
-            {ssoAvailable && passwordAvailable && <div className="h-px bg-border/60" />}
+            {ssoAvailable && passwordAvailable && <div className="h-px bg-border-subtle" />}
 
             {passwordAvailable ? (
-              <form onSubmit={handleLogin} className="flex flex-col gap-3">
+              <form onSubmit={handleLogin} className="flex flex-col gap-4">
                 {isSsoEnabled && !ssoAvailable && (
-                  <p className="text-[11px] text-amber-600 dark:text-amber-400 text-center">
+                  <p className="text-[11px] text-orange-500 text-center">
                     {activeSsoType === "saml" ? "SAML SSO" : "OIDC"} login is enabled, but configuration is incomplete. Password login is still available for recovery.
                   </p>
                 )}
@@ -220,7 +220,7 @@ export default function LoginPage() {
                 )}
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-medium">Password</label>
+                  <label className="text-xs font-medium text-text-main">Password</label>
                   <Input
                     type="password"
                     placeholder="Enter password"
@@ -231,13 +231,13 @@ export default function LoginPage() {
                   />
                   {error && <p className="text-xs text-red-500">{error}</p>}
                   {retryAfter > 0 && (
-                    <p className="text-xs text-amber-600 dark:text-amber-400">
+                    <p className="text-xs text-orange-500">
                       Locked. Retry in <span className="font-mono">{retryAfter}s</span>.
                     </p>
                   )}
                   {resetHint && (
                     <p className="text-xs text-text-muted">
-                      Forgot password? Open <code className="bg-sidebar px-1 rounded">9router</code> CLI on the host → <b>Settings</b> → <b>Reset Password to Default</b>.
+                      Forgot password? Open <code className="bg-surface-2 px-1 rounded">9router</code> CLI on the host → <b>Settings</b> → <b>Reset Password to Default</b>.
                     </p>
                   )}
                 </div>
@@ -252,11 +252,11 @@ export default function LoginPage() {
                   {retryAfter > 0 ? `Wait ${retryAfter}s` : "Login"}
                 </Button>
 
-                <p className="text-[11px] text-center text-text-muted mt-1">
-                  Default password is <code className="bg-sidebar px-1 rounded">123456</code>
+                <p className="text-[11px] text-center text-text-muted">
+                  Default password is <code className="bg-surface-2 px-1 rounded">123456</code>
                 </p>
                 {hasPassword === false && (
-                  <p className="text-[11px] text-center text-amber-600 dark:text-amber-400">
+                  <p className="text-[11px] text-center text-orange-500">
                     Security risk: no password set. You will be asked to set one when logging in remotely.
                   </p>
                 )}

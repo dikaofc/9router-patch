@@ -27,25 +27,25 @@ export default function Avatar({
   };
 
   const getColorFromName = (name) => {
-    if (!name) return "bg-brand-500";
+    if (!name) return "bg-primary";
     const colors = [
-      "bg-red-400",
-      "bg-orange-400",
-      "bg-amber-400",
-      "bg-yellow-400",
-      "bg-lime-400",
-      "bg-green-400",
-      "bg-emerald-400",
-      "bg-teal-400",
-      "bg-cyan-400",
-      "bg-sky-400",
-      "bg-blue-400",
-      "bg-indigo-400",
-      "bg-violet-400",
-      "bg-purple-400",
-      "bg-fuchsia-400",
-      "bg-pink-400",
-      "bg-rose-400",
+      "bg-red-600",
+      "bg-orange-600",
+      "bg-amber-700",
+      "bg-yellow-700",
+      "bg-lime-700",
+      "bg-green-700",
+      "bg-emerald-700",
+      "bg-teal-700",
+      "bg-cyan-700",
+      "bg-sky-700",
+      "bg-blue-700",
+      "bg-indigo-700",
+      "bg-violet-700",
+      "bg-purple-700",
+      "bg-fuchsia-700",
+      "bg-pink-700",
+      "bg-rose-700",
     ];
     const index = name.charCodeAt(0) % colors.length;
     return colors[index];
@@ -56,7 +56,7 @@ export default function Avatar({
       <div
         className={cn(
           "rounded-full bg-cover bg-center bg-no-repeat",
-          "ring-1 ring-border",
+          "ring-2 ring-white/60 dark:ring-white/10",
           sizes[size],
           className
         )}
@@ -70,8 +70,8 @@ export default function Avatar({
   return (
     <div
       className={cn(
-        "rounded-full flex items-center justify-center font-medium text-white",
-        "ring-1 ring-border",
+        "rounded-full flex items-center justify-center font-semibold text-white",
+        "ring-2 ring-white/60 dark:ring-white/10 shadow-lg shadow-black/15",
         sizes[size],
         getColorFromName(name),
         className
