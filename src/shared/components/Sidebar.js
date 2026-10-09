@@ -327,14 +327,14 @@ Sidebar.propTypes = {
 function ManualUpdatePanel({ latestVersion, installCmd, copied, onCopyAndShutdown, onCancel, countdown, isDisconnected }) {
   const isCountingDown = countdown > 0;
   return (
-    <div className="glass-card w-full max-w-md p-6 text-white">
+    <div className="glass-card w-full max-w-md p-6 text-text-main">
       <div className="flex items-center gap-2.5 mb-3">
         <div className="flex items-center justify-center size-8 rounded-full bg-amber-500/20 text-amber-400">
           <span className="material-symbols-outlined text-[18px]">content_copy</span>
         </div>
         <div>
           <h2 className="text-sm font-semibold">Update 9Router{latestVersion ? ` to v${latestVersion}` : ""}</h2>
-          <p className="text-[11px] text-white/60">
+          <p className="text-[11px] text-text-muted">
             {isDisconnected
               ? "Server stopped. Paste the command into a terminal to install."
               : isCountingDown
@@ -344,15 +344,15 @@ function ManualUpdatePanel({ latestVersion, installCmd, copied, onCopyAndShutdow
         </div>
       </div>
 
-      <p className="text-xs text-white/80 mb-1.5">Install command:</p>
-      <div className="w-full px-3 py-2 rounded-lg bg-white/5 mb-3">
-        <code className="text-xs font-mono text-amber-400 break-all">{installCmd}</code>
+      <p className="mb-1.5 text-xs text-text-muted">Install command:</p>
+      <div className="mb-3 w-full rounded-xl border border-border-subtle bg-surface-2/70 px-3 py-2">
+        <code className="break-all font-mono text-xs text-amber-600 dark:text-amber-400">{installCmd}</code>
       </div>
 
-      <ol className="text-xs text-white/70 space-y-1 list-decimal list-inside mb-4">
+      <ol className="mb-4 list-inside list-decimal space-y-1 text-xs text-text-muted">
         <li>Click <strong>Copy & Shutdown</strong> below.</li>
         <li>Paste the command into your terminal and press Enter.</li>
-        <li>Run <code className="px-1 rounded bg-white/10 text-green-400">9router</code> again after install.</li>
+        <li>Run <code className="rounded bg-surface-2 px-1 text-green-600 dark:text-green-400">9router</code> again after install.</li>
       </ol>
 
       {isDisconnected ? (

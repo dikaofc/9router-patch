@@ -14,7 +14,7 @@ function MetricCard({ icon, label, value, sub, color = "primary" }) {
     cyan: "text-cyan-500 bg-cyan-500/10",
   };
   return (
-    <div className="bg-surface border border-border rounded-xl p-4 flex items-start gap-3">
+    <div className="glass-card flex items-start gap-3 rounded-2xl p-4">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${colors[color]}`}>
         <span className="material-symbols-outlined text-[20px]">{icon}</span>
       </div>
@@ -31,7 +31,7 @@ function ProgressBar({ value, max = 100, color = "primary" }) {
   const pct = Math.min((value / max) * 100, 100);
   const barColor = pct > 90 ? "bg-red-500" : pct > 70 ? "bg-amber-500" : `bg-${color === "primary" ? "primary" : color}`;
   return (
-    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+    <div className="w-full h-2 overflow-hidden rounded-full bg-surface-2">
       <div
         className={`h-full rounded-full transition-all duration-500 ${barColor}`}
         style={{ width: `${pct}%` }}
@@ -42,10 +42,10 @@ function ProgressBar({ value, max = 100, color = "primary" }) {
 
 function LogLine({ time, level, msg }) {
   const levelColors = {
-    info: "text-blue-400",
-    warn: "text-amber-400",
-    error: "text-red-400",
-    ok: "text-green-400",
+    info: "text-primary",
+    warn: "text-amber-500 dark:text-amber-400",
+    error: "text-red-600 dark:text-red-400",
+    ok: "text-green-600 dark:text-green-400",
   };
   return (
     <div className="flex items-start gap-2 text-xs font-mono py-0.5">
@@ -203,7 +203,7 @@ export default function SystemStatusPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-bold flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[22px]">monitoring</span>
@@ -211,7 +211,7 @@ export default function SystemStatusPage() {
           </h2>
           <p className="text-xs text-text-muted">Real-time monitoring for Vercel serverless environment</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <label className="flex items-center gap-1.5 text-xs text-text-muted cursor-pointer">
             <input
               type="checkbox"
@@ -224,7 +224,7 @@ export default function SystemStatusPage() {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-text-main hover:bg-white/10 transition-colors flex items-center gap-1.5"
+            className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-border-subtle bg-surface/70 px-4 py-2 text-xs font-medium text-text-main shadow-sm backdrop-blur-xl transition-colors hover:bg-surface-2"
           >
             <span className={`material-symbols-outlined text-[14px] ${refreshing ? "animate-spin" : ""}`}>refresh</span>
             Refresh
@@ -241,7 +241,7 @@ export default function SystemStatusPage() {
       </div>
 
       {/* Memory Usage */}
-      <div className="bg-surface border border-border rounded-xl p-4">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-[16px] text-blue-500">memory</span>
           Memory Usage
@@ -255,19 +255,19 @@ export default function SystemStatusPage() {
             <ProgressBar value={status?.memory?.heapUsed || 0} max={status?.memory?.heapTotal || 1} color="blue" />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-            <div className="bg-white/5 rounded-lg p-2">
+            <div className="rounded-xl border border-border-subtle bg-surface/55 p-3">
               <p className="text-text-muted">Heap Used</p>
               <p className="font-mono font-bold text-text-main">{formatBytes(status?.memory?.heapUsed)}</p>
             </div>
-            <div className="bg-white/5 rounded-lg p-2">
+            <div className="rounded-xl border border-border-subtle bg-surface/55 p-3">
               <p className="text-text-muted">Heap Total</p>
               <p className="font-mono font-bold text-text-main">{formatBytes(status?.memory?.heapTotal)}</p>
             </div>
-            <div className="bg-white/5 rounded-lg p-2">
+            <div className="rounded-xl border border-border-subtle bg-surface/55 p-3">
               <p className="text-text-muted">RSS</p>
               <p className="font-mono font-bold text-text-main">{formatBytes(status?.memory?.rss)}</p>
             </div>
-            <div className="bg-white/5 rounded-lg p-2">
+            <div className="rounded-xl border border-border-subtle bg-surface/55 p-3">
               <p className="text-text-muted">External</p>
               <p className="font-mono font-bold text-text-main">{formatBytes(status?.memory?.external)}</p>
             </div>
@@ -276,7 +276,7 @@ export default function SystemStatusPage() {
       </div>
 
       {/* Service Status */}
-      <div className="bg-surface border border-border rounded-xl p-4">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-[16px] text-green-500">check_circle</span>
           Service Status
@@ -289,7 +289,7 @@ export default function SystemStatusPage() {
             { label: "Providers", status: "online", detail: `${status?.providers || 0} connected` },
             { label: "API Keys", status: "online", detail: `${status?.apiKeys || 0} active` },
           ].map((s) => (
-            <div key={s.label} className="bg-white/5 rounded-lg p-3 border border-white/5">
+            <div key={s.label} className="rounded-xl border border-border-subtle bg-surface/55 p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <div className={`w-2 h-2 rounded-full ${s.status === "online" ? "bg-green-500" : "bg-red-500"}`} />
                 <span className="text-xs font-medium">{s.label}</span>
@@ -301,7 +301,7 @@ export default function SystemStatusPage() {
       </div>
 
       {/* Environment */}
-      <div className="bg-surface border border-border rounded-xl p-4">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-[16px] text-amber-500">settings</span>
           Environment
@@ -317,7 +317,7 @@ export default function SystemStatusPage() {
             { label: "Version", value: status?.version || APP_CONFIG.version },
             { label: "Timestamp", value: status?.timestamp ? new Date(status.timestamp).toLocaleString() : "N/A" },
           ].map((item) => (
-            <div key={item.label} className="flex justify-between bg-white/5 rounded-lg px-3 py-2">
+            <div key={item.label} className="flex flex-wrap justify-between gap-2 rounded-xl border border-border-subtle bg-surface/55 px-3 py-2.5">
               <span className="text-text-muted">{item.label}</span>
               <span className="font-mono text-text-main">{item.value}</span>
             </div>
@@ -326,7 +326,7 @@ export default function SystemStatusPage() {
       </div>
 
       {/* Vercel Limitations */}
-      <div className="bg-surface border border-border rounded-xl p-4">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-[16px] text-amber-500">info</span>
           Vercel Serverless Limitations
@@ -340,10 +340,10 @@ export default function SystemStatusPage() {
             { label: "Background Jobs", value: "Not supported", icon: "schedule" },
             { label: "Persistent State", value: "Not supported", icon: "cloud_off" },
           ].map((item) => (
-            <div key={item.label} className="bg-amber-500/5 border border-amber-500/10 rounded-lg p-2">
+            <div key={item.label} className="rounded-xl border border-amber-500/15 bg-amber-500/5 p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <span className="material-symbols-outlined text-[12px] text-amber-500">{item.icon}</span>
-                <span className="text-amber-400 font-medium">{item.label}</span>
+                <span className="font-medium text-amber-600 dark:text-amber-400">{item.label}</span>
               </div>
               <p className="text-text-muted">{item.value}</p>
             </div>
@@ -352,7 +352,7 @@ export default function SystemStatusPage() {
       </div>
 
       {/* Activity Log */}
-      <div className="bg-surface border border-border rounded-xl p-4">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <span className="material-symbols-outlined text-[16px] text-primary">terminal</span>
@@ -365,7 +365,7 @@ export default function SystemStatusPage() {
             Clear
           </button>
         </div>
-        <div className="bg-black/30 rounded-lg p-3 max-h-48 overflow-y-auto font-mono text-[11px]">
+        <div className="max-h-48 overflow-y-auto rounded-xl border border-border-subtle bg-surface-2/70 p-3 font-mono text-[11px]">
           {logs.length === 0 ? (
             <p className="text-text-muted">No activity yet...</p>
           ) : (
