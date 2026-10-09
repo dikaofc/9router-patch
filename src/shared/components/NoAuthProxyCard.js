@@ -107,7 +107,7 @@ export default function NoAuthProxyCard({ providerId }) {
           value={rotateStrategy}
           onChange={(e) => handleStrategyChange(e.target.value)}
           disabled={saving}
-          className="py-2.5 px-3 text-sm text-text-main bg-white dark:bg-white/5 border border-border rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40 focus:outline-none transition-all disabled:opacity-50"
+          className="rounded-xl border border-border-subtle bg-surface/70 px-3 py-2.5 text-sm text-text-main transition-all focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
         >
           {STRATEGIES.map((s) => (
             <option key={s.value} value={s.value} disabled={s.value !== "none" && !canRotate}>

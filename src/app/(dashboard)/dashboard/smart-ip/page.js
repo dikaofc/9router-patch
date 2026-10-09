@@ -143,7 +143,7 @@ export default function SmartIpPage() {
   return (
     <div className="space-y-6">
       {/* Current IP */}
-      <div className="bg-surface border border-border rounded-2xl p-5">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
             <span className="material-symbols-outlined text-primary text-[18px]">public</span>
@@ -153,8 +153,8 @@ export default function SmartIpPage() {
             <p className="text-xs text-text-muted">Detected from Vercel serverless function</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <code className="text-lg font-mono font-bold text-primary">{currentIp}</code>
+        <div className="flex flex-wrap items-center gap-3">
+          <code className="break-all font-mono text-lg font-bold text-primary">{currentIp}</code>
           <span className="text-xs text-text-muted bg-surface-2 px-2 py-0.5 rounded-full">
             {activeRelays.length} relay{activeRelays.length !== 1 ? "s" : ""} active
           </span>
@@ -162,7 +162,7 @@ export default function SmartIpPage() {
       </div>
 
       {/* Deploy Config */}
-      <div className="bg-surface border border-border rounded-2xl p-5">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-[18px] text-primary">deploy</span>
           Deploy Relay to New IPs
@@ -176,7 +176,7 @@ export default function SmartIpPage() {
               placeholder="vercel_token_xxx"
               value={vercelToken}
               onChange={(e) => setVercelToken(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors font-mono"
+              className="w-full rounded-xl border border-border-subtle bg-surface/70 px-3 py-2.5 font-mono text-sm text-text-main placeholder:text-text-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
             />
             <p className="text-[10px] text-text-muted mt-1">Disimpan di server setelah deploy pertama — tidak perlu diisi ulang saat refresh.</p>
           </div>
@@ -188,7 +188,7 @@ export default function SmartIpPage() {
               placeholder="https://your-project.vercel.app"
               value={targetUrl}
               onChange={(e) => setTargetUrl(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
+              className="w-full rounded-xl border border-border-subtle bg-surface/70 px-3 py-2.5 text-sm text-text-main placeholder:text-text-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
             />
           </div>
 
@@ -202,7 +202,7 @@ export default function SmartIpPage() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
                     selectedRegions.includes(region.id)
                       ? "bg-primary/10 border-primary/30 text-primary"
-                      : "bg-white/5 border-white/10 text-text-muted hover:bg-white/10"
+                      : "border-border-subtle bg-surface/55 text-text-muted hover:bg-surface-2"
                   }`}
                 >
                   <span>{region.flag}</span>
@@ -215,7 +215,7 @@ export default function SmartIpPage() {
           <button
             onClick={handleDeploy}
             disabled={deploying || !targetUrl || selectedRegions.length === 0}
-            className="w-full py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
             {deploying ? (
               <>
@@ -232,10 +232,10 @@ export default function SmartIpPage() {
         </div>
 
         {deployLog.length > 0 && (
-          <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/5 max-h-48 overflow-y-auto">
+          <div className="mt-4 max-h-48 overflow-y-auto rounded-xl border border-border-subtle bg-surface-2/70 p-3">
             {deployLog.map((log, i) => (
               <p key={i} className={`text-xs font-mono mb-1 ${
-                log.type === "success" ? "text-green-400" : log.type === "error" ? "text-rose-400" : "text-slate-400"
+                log.type === "success" ? "text-green-600 dark:text-green-400" : log.type === "error" ? "text-rose-600 dark:text-rose-400" : "text-text-muted"
               }`}>
                 {log.text}
               </p>
@@ -245,7 +245,7 @@ export default function SmartIpPage() {
       </div>
 
       {/* Active Relays */}
-      <div className="bg-surface border border-border rounded-2xl p-5">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-[18px] text-green-500">dns</span>
           Active Relays ({activeRelays.length})
@@ -262,17 +262,17 @@ export default function SmartIpPage() {
               return (
                 <div
                   key={relay.id}
-                  className={`flex items-center justify-between px-3 py-2 rounded-lg border transition-all ${
+                  className={`flex flex-col gap-3 rounded-xl border px-3 py-2.5 transition-all sm:flex-row sm:items-center sm:justify-between ${
                     i === activeRelayIndex
                       ? "bg-primary/10 border-primary/30"
-                      : "bg-white/5 border-white/10"
+                      : "bg-surface/55 border-border-subtle"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-sm">{region?.flag || "🌐"}</span>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs font-medium">{relay.name}</p>
-                      <p className="text-[10px] text-text-muted font-mono truncate max-w-[200px]">{relay.proxyUrl}</p>
+                      <p className="max-w-full truncate font-mono text-[10px] text-text-muted sm:max-w-[200px]">{relay.proxyUrl}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -302,7 +302,7 @@ export default function SmartIpPage() {
               <select
                 value={rotationStrategy}
                 onChange={(e) => setRotationStrategy(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs text-white focus:outline-none focus:border-primary transition-colors"
+                className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-surface/70 px-3 py-2.5 text-xs text-text-main focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
               >
                 <option value="round-robin">Round Robin</option>
                 <option value="random">Random</option>
@@ -313,7 +313,7 @@ export default function SmartIpPage() {
                   const next = nextRelay();
                   if (next) alert(`Switched to: ${next.name}\n${next.proxyUrl}`);
                 }}
-                className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-xs font-medium text-white border border-white/10 transition-colors"
+                className="min-h-10 rounded-xl border border-border-subtle bg-surface/70 px-4 py-2 text-xs font-medium text-text-main transition-colors hover:bg-surface-2"
               >
                 Manual Switch →
               </button>
@@ -323,7 +323,7 @@ export default function SmartIpPage() {
       </div>
 
       {/* Info */}
-      <div className="bg-surface border border-border rounded-2xl p-5">
+      <div className="glass-card rounded-2xl p-4 sm:p-5">
         <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-[18px] text-amber-500">info</span>
           How Smart IP Works
@@ -333,7 +333,7 @@ export default function SmartIpPage() {
           <p>• When rate limited (429), rotate to next relay → <strong className="text-text-main">bypass IP ban</strong></p>
           <p>• Assign relays as Proxy Pool to your provider connections</p>
           <p>• Strategy: Round Robin (sequential), Random, or Least Used</p>
-          <p>• <strong className="text-amber-400">Vercel Hobby:</strong> Deploying multiple projects may hit free tier limits (100 concurrent)</p>
+          <p>• <strong className="text-amber-600 dark:text-amber-400">Vercel Hobby:</strong> Deploying multiple projects may hit free tier limits (100 concurrent)</p>
         </div>
       </div>
     </div>

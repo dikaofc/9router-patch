@@ -307,7 +307,7 @@ export default function Sidebar({ onClose }) {
               <div className="flex items-center justify-center size-12 rounded-full bg-red-500/20 text-red-500 mx-auto mb-3">
                 <span className="material-symbols-outlined text-[24px]">power_off</span>
               </div>
-              <h2 className="text-base font-semibold text-white mb-1">Server Disconnected</h2>
+              <h2 className="mb-1 text-base font-semibold text-text-main">Server Disconnected</h2>
               <p className="text-sm text-text-muted mb-4">The proxy server has been stopped.</p>
               <Button variant="secondary" onClick={() => globalThis.location.reload()}>
                 Reload Page
