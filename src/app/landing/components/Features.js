@@ -16,8 +16,8 @@ export default function Features() {
     <section className="py-20 px-6" id="features">
       <div className="max-w-6xl mx-auto">
         <div className="mb-12">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-3 text-white tracking-tight">Powerful Features</h2>
-          <p className="text-[#8e8e93] max-w-lg text-sm leading-relaxed">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-3 text-text-main tracking-tight">Powerful Features</h2>
+          <p className="text-text-muted max-w-lg text-sm leading-relaxed">
             Everything you need to manage your AI infrastructure in one place, built for scale.
           </p>
         </div>
@@ -26,15 +26,15 @@ export default function Features() {
           {FEATURES.map((feature) => (
             <div
               key={feature.title}
-              className="group p-5 rounded-2xl bg-[#1c1c1e] border border-white/5 backdrop-blur-xl hover:border-white/10 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#007aff]/5 transition-all duration-300"
+              className="group landing-panel p-5 rounded-2xl border border-border-subtle backdrop-blur-xl hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
             >
-              <div className="w-9 h-9 rounded-xl bg-[#007aff]/10 flex items-center justify-center mb-3 text-[#5a9de0] group-hover:scale-110 transition-transform duration-300">
+              <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center mb-3 text-primary group-hover:scale-110 transition-transform duration-300">
                 <span className="material-symbols-outlined text-[18px]">{feature.icon}</span>
               </div>
-              <h3 className="text-sm font-semibold mb-1.5 text-white tracking-tight">
+              <h3 className="text-sm font-semibold mb-1.5 text-text-main tracking-tight">
                 {feature.title}
               </h3>
-              <p className="text-xs text-[#8e8e93] leading-relaxed">{feature.desc}</p>
+              <p className="text-xs text-text-muted leading-relaxed">{feature.desc}</p>
             </div>
           ))}
         </div>

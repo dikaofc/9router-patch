@@ -70,7 +70,7 @@ function CallbackContent() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg p-5">
+    <div className="liquid-auth-page min-h-screen flex items-center justify-center p-5">
       <div className="glass-card text-center p-6 max-w-sm w-full rounded-2xl">
         {status === "processing" && (
           <>
@@ -116,7 +116,7 @@ function CallbackContent() {
 export default function CallbackPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-bg p-5">
+      <div className="liquid-auth-page min-h-screen flex items-center justify-center p-5">
         <div className="glass-card text-center p-6 max-w-sm w-full rounded-2xl">
           <div className="size-12 mx-auto mb-3 rounded-full bg-primary/8 flex items-center justify-center">
             <span className="material-symbols-outlined text-2xl text-primary animate-spin">progress_activity</span>

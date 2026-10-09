@@ -143,7 +143,7 @@ export default function LoginPage() {
 
   if (hasPassword === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-bg p-4">
+      <div className="liquid-auth-page min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
           <p className="text-sm text-text-muted mt-3">Loading...</p>
@@ -153,7 +153,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg p-4 relative overflow-hidden">
+    <div className="liquid-auth-page min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       <div className="landing-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
       <div className="relative z-10 w-full max-w-sm">
         <div className="text-center mb-6">

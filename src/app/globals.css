@@ -850,12 +850,11 @@ select {
 .dashboard-shell button[class*="bg-green-"],
 .dashboard-shell button[class*="bg-red-"],
 .dashboard-shell button[class*="bg-blue-"],
-.liquid-landing button[class*="bg-brand-500"],
-.liquid-landing button[class*="bg-[#f97815]"] {
+.liquid-landing button[class*="bg-primary"] {
   border: 1px solid rgba(255,255,255,0.32);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.42),
-    0 4px 0 color-mix(in srgb, var(--color-primary) 58%, #25202a),
+    0 4px 0 color-mix(in srgb, var(--color-primary) 58%, var(--color-bg-alt)),
     0 9px 18px -8px color-mix(in srgb, var(--color-primary) 70%, transparent);
   transform: translateY(-2px);
   transition: transform 320ms var(--motion-apple-spring), box-shadow 320ms var(--motion-apple), filter 320ms var(--motion-apple) !important;
@@ -866,13 +865,12 @@ select {
 .dashboard-shell button[class*="bg-green-"]:not(:disabled):hover,
 .dashboard-shell button[class*="bg-red-"]:not(:disabled):hover,
 .dashboard-shell button[class*="bg-blue-"]:not(:disabled):hover,
-.liquid-landing button[class*="bg-brand-500"]:not(:disabled):hover,
-.liquid-landing button[class*="bg-[#f97815]"]:not(:disabled):hover {
+.liquid-landing button[class*="bg-primary"]:not(:disabled):hover {
   filter: brightness(1.05);
   transform: translateY(-3px);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.5),
-    0 5px 0 color-mix(in srgb, var(--color-primary) 58%, #25202a),
+    0 5px 0 color-mix(in srgb, var(--color-primary) 58%, var(--color-bg-alt)),
     0 14px 24px -8px color-mix(in srgb, var(--color-primary) 74%, transparent);
 }
 
@@ -881,8 +879,7 @@ select {
 .dashboard-shell button[class*="bg-green-"]:not(:disabled):active,
 .dashboard-shell button[class*="bg-red-"]:not(:disabled):active,
 .dashboard-shell button[class*="bg-blue-"]:not(:disabled):active,
-.liquid-landing button[class*="bg-brand-500"]:not(:disabled):active,
-.liquid-landing button[class*="bg-[#f97815]"]:not(:disabled):active {
+.liquid-landing button[class*="bg-primary"]:not(:disabled):active {
   transform: translateY(2px);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 0 rgba(0,0,0,0.18);
 }
@@ -918,28 +915,6 @@ select {
   color: var(--color-text-main);
 }
 
-.liquid-landing .text-white {
-  color: var(--color-text-main) !important;
-}
-
-.liquid-landing .text-gray-400,
-.liquid-landing .text-gray-500,
-.liquid-landing .text-gray-600 {
-  color: var(--color-text-muted) !important;
-}
-
-.liquid-landing [class*="bg-[#181411]"],
-.liquid-landing [class*="bg-[#161616]"],
-.liquid-landing [class*="bg-[#120f0d]"],
-.liquid-landing [class*="bg-[#23180f]"],
-.liquid-landing [class*="bg-[#1e1e1e]"] {
-  background: linear-gradient(145deg, var(--glass-bg), color-mix(in srgb, var(--glass-bg) 75%, transparent)) !important;
-  border-color: var(--glass-border);
-  box-shadow: var(--shadow-elevated);
-  backdrop-filter: saturate(150%) blur(var(--glass-blur));
-  -webkit-backdrop-filter: saturate(150%) blur(var(--glass-blur));
-}
-
 .liquid-landing > .fixed {
   background: transparent !important;
   box-shadow: none !important;
@@ -947,18 +922,14 @@ select {
   -webkit-backdrop-filter: none !important;
 }
 
-.liquid-landing [class*="bg-[#f97815]"],
-.liquid-landing [class*="bg-brand-500"] {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover)) !important;
-  box-shadow: 0 8px 24px -14px color-mix(in srgb, var(--color-primary) 85%, transparent);
-}
-
-.liquid-landing [class*="text-[#f97815]"] {
-  color: var(--color-primary) !important;
-}
-
-.liquid-landing [class*="border-[#3a2f27]"] {
-  border-color: var(--glass-border) !important;
+.liquid-landing .landing-panel {
+  background:
+    radial-gradient(ellipse at 12% 0%, color-mix(in srgb, var(--color-surface) 30%, transparent), transparent 45%),
+    linear-gradient(150deg, color-mix(in srgb, var(--glass-bg) 92%, var(--color-surface) 8%), color-mix(in srgb, var(--glass-bg) 64%, transparent));
+  border-color: var(--glass-border);
+  box-shadow: var(--shadow-elev);
+  backdrop-filter: saturate(180%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(180%) blur(var(--glass-blur));
 }
 
 .liquid-landing nav {
@@ -968,17 +939,13 @@ select {
   -webkit-backdrop-filter: saturate(180%) blur(28px);
 }
 
-.liquid-landing nav a,
-.liquid-landing nav button:not([class*="bg-brand-500"]) {
+.liquid-landing nav a:not(.landing-nav-brand),
+.liquid-landing nav button:not([class*="bg-primary"]):not(.landing-nav-brand) {
   color: var(--color-text-muted);
 }
 
 .liquid-landing section {
   border-color: var(--glass-border);
-}
-
-.liquid-landing section[class*="bg-gradient-to-t"] > div:first-child {
-  background-image: radial-gradient(ellipse at center, rgba(192, 164, 208, 0.16), transparent 65%);
 }
 
 .liquid-landing [class*="rounded-xl"][class*="border"],
@@ -990,24 +957,7 @@ select {
   -webkit-backdrop-filter: saturate(180%) blur(var(--glass-blur));
 }
 
-.liquid-landing #features [class*="rounded-lg"][class*="bg-"] {
-  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface)) !important;
-  color: var(--color-primary) !important;
-}
-
-.liquid-landing .landing-terminal {
-  background: rgba(22, 25, 31, 0.78) !important;
-  border-color: rgba(255,255,255,0.14) !important;
-  box-shadow: 0 24px 64px -28px rgba(12, 16, 24, 0.55), inset 0 1px 0 rgba(255,255,255,0.12);
-  backdrop-filter: blur(28px) saturate(140%);
-  -webkit-backdrop-filter: blur(28px) saturate(140%);
-}
-
-.liquid-landing .landing-terminal .text-white {
-  color: #f2f2f2 !important;
-}
-
-.liquid-landing #features > div > div:last-child > div {
+.liquid-landing #features .landing-panel {
   border-radius: 20px;
   box-shadow:
     inset 0 2px 0 rgba(255,255,255,0.76),
@@ -1015,7 +965,7 @@ select {
     0 24px 48px -28px rgba(50,58,72,0.38);
   transition: transform 420ms var(--motion-apple), box-shadow 420ms var(--motion-apple);
 }
-.liquid-landing #features > div > div:last-child > div:hover {
+.liquid-landing #features .landing-panel:hover {
   transform: translateY(-6px) rotateX(1deg);
   box-shadow:
     inset 0 2px 0 rgba(255,255,255,0.9),
@@ -1030,6 +980,17 @@ select {
   box-shadow: var(--shadow-elev);
   backdrop-filter: saturate(190%) blur(32px);
   -webkit-backdrop-filter: saturate(190%) blur(32px);
+}
+
+.basic-chat .chat-composer-input,
+.basic-chat .chat-composer-input:focus {
+  min-height: 2.5rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none;
 }
 
 .liquid-auth-page .landing-grid {
@@ -1079,7 +1040,7 @@ select {
   .dashboard-shell button[class*="bg-red-"],
   .dashboard-shell button[class*="bg-blue-"],
   .liquid-landing button[class*="bg-brand-500"],
-  .liquid-landing button[class*="bg-[#f97815]"] {
+  .liquid-landing button[class*="bg-primary"] {
     transform: none;
   }
 }

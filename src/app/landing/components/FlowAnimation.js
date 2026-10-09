@@ -10,10 +10,10 @@ const CLI_TOOLS = [
 ];
 
 const PROVIDERS = [
-  { id: "openai", name: "OpenAI", color: "bg-emerald-500/20 border border-emerald-500/30", textColor: "text-emerald-400" },
-  { id: "anthropic", name: "Anthropic", color: "bg-orange-400/20 border border-orange-400/30", textColor: "text-orange-300" },
-  { id: "gemini", name: "Gemini", color: "bg-blue-500/20 border border-blue-500/30", textColor: "text-[#5a9de0]" },
-  { id: "github", name: "GitHub Copilot", color: "bg-gray-600/20 border border-gray-500/30", textColor: "text-gray-400" },
+  { id: "openai", name: "OpenAI" },
+  { id: "anthropic", name: "Anthropic" },
+  { id: "gemini", name: "Gemini" },
+  { id: "github", name: "GitHub Copilot" },
 ];
 
 export default function FlowAnimation() {
@@ -27,25 +27,25 @@ export default function FlowAnimation() {
   }, []);
 
   return (
-    <div className="mt-12 w-full max-w-3xl relative h-[320px] hidden md:flex items-center justify-center">
+    <div className="relative mt-10 flex min-h-44 w-full max-w-3xl flex-col items-center justify-center gap-5 md:h-[320px] md:min-h-0 md:flex-row">
       {/* 9Router Hub - Center */}
-      <div className="relative z-20 w-24 h-24 rounded-full bg-[#1c1c1e] border border-[#007aff]/30 backdrop-blur-xl flex flex-col items-center justify-center gap-0.5 shadow-xl shadow-[#007aff]/10 cursor-pointer hover:scale-105 transition-transform duration-300">
-        <span className="material-symbols-outlined text-2xl text-[#5a9de0]">
+      <div className="landing-panel relative z-20 flex size-20 flex-col items-center justify-center gap-0.5 rounded-full border border-primary/30 backdrop-blur-xl shadow-xl shadow-primary/10 transition-transform duration-300 hover:scale-105 md:size-24">
+        <span className="material-symbols-outlined text-2xl text-primary">
           hub
         </span>
-        <span className="text-[10px] font-semibold text-white tracking-wider uppercase">
+        <span className="text-[10px] font-semibold text-text-main tracking-wider uppercase">
           9Router
         </span>
       </div>
 
       {/* CLI Tools - Left side */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-5">
+      <div className="absolute left-0 top-1/2 hidden -translate-y-1/2 flex-col gap-5 md:flex">
         {CLI_TOOLS.map((tool) => (
           <div
             key={tool.id}
-            className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity group"
+            className="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity group"
           >
-            <div className="w-12 h-12 rounded-xl bg-[#1c1c1e] border border-white/10 backdrop-blur-xl flex items-center justify-center overflow-hidden p-1.5 hover:border-[#007aff]/30 transition-all hover:scale-105">
+            <div             className="landing-panel flex size-12 items-center justify-center overflow-hidden rounded-2xl border border-border-subtle p-1.5 backdrop-blur-xl transition-all hover:border-primary/30 hover:scale-105">
               <ProviderIcon
                 src={tool.image}
                 alt={tool.name}
@@ -60,33 +60,33 @@ export default function FlowAnimation() {
 
       {/* SVG Lines from CLI to 9Router */}
       <svg
-        className="absolute inset-0 w-full h-full z-10 pointer-events-none"
+        className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full md:block"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M 40 40 C 200 60, 200 160, 320 160" fill="none" strokeDasharray="4,4" strokeWidth="1.5" className="stroke-[#2c2c2e]"></path>
-        <path d="M 40 120 C 200 120, 200 160, 320 160" fill="none" strokeDasharray="4,4" strokeWidth="1.5" className="stroke-[#2c2c2e]"></path>
-        <path d="M 40 200 C 200 200, 200 160, 320 160" fill="none" strokeDasharray="4,4" strokeWidth="1.5" className="stroke-[#2c2c2e]"></path>
-        <path d="M 40 280 C 200 260, 200 160, 320 160" fill="none" strokeDasharray="4,4" strokeWidth="1.5" className="stroke-[#2c2c2e]"></path>
+        <path d="M 40 40 C 200 60, 200 160, 320 160" fill="none" stroke="var(--color-border-subtle)" strokeDasharray="4,4" strokeWidth="1.5"></path>
+        <path d="M 40 120 C 200 120, 200 160, 320 160" fill="none" stroke="var(--color-border-subtle)" strokeDasharray="4,4" strokeWidth="1.5"></path>
+        <path d="M 40 200 C 200 200, 200 160, 320 160" fill="none" stroke="var(--color-border-subtle)" strokeDasharray="4,4" strokeWidth="1.5"></path>
+        <path d="M 40 280 C 200 260, 200 160, 320 160" fill="none" stroke="var(--color-border-subtle)" strokeDasharray="4,4" strokeWidth="1.5"></path>
       </svg>
 
       {/* SVG Lines from 9Router to Providers */}
       <svg
-        className="absolute inset-0 w-full h-full z-10 pointer-events-none"
+        className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full md:block"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M 400 160 C 500 160, 500 40, 680 40" fill="none" stroke={activeFlow === 0 ? "#007aff" : "#2c2c2e"} strokeWidth={activeFlow === 0 ? "2" : "1.5"} className={activeFlow === 0 ? "animate-pulse" : ""}></path>
-        <path d="M 400 160 C 500 160, 500 120, 680 120" fill="none" stroke={activeFlow === 1 ? "#007aff" : "#2c2c2e"} strokeWidth={activeFlow === 1 ? "2" : "1.5"} className={activeFlow === 1 ? "animate-pulse" : ""}></path>
-        <path d="M 400 160 C 500 160, 500 200, 680 200" fill="none" stroke={activeFlow === 2 ? "#007aff" : "#2c2c2e"} strokeWidth={activeFlow === 2 ? "2" : "1.5"} className={activeFlow === 2 ? "animate-pulse" : ""}></path>
-        <path d="M 400 160 C 500 160, 500 280, 680 280" fill="none" stroke={activeFlow === 3 ? "#007aff" : "#2c2c2e"} strokeWidth={activeFlow === 3 ? "2" : "1.5"} className={activeFlow === 3 ? "animate-pulse" : ""}></path>
+        <path d="M 400 160 C 500 160, 500 40, 680 40" fill="none" stroke={activeFlow === 0 ? "var(--color-primary)" : "var(--color-border-subtle)"} strokeWidth={activeFlow === 0 ? "2" : "1.5"} className={activeFlow === 0 ? "animate-pulse" : ""}></path>
+        <path d="M 400 160 C 500 160, 500 120, 680 120" fill="none" stroke={activeFlow === 1 ? "var(--color-primary)" : "var(--color-border-subtle)"} strokeWidth={activeFlow === 1 ? "2" : "1.5"} className={activeFlow === 1 ? "animate-pulse" : ""}></path>
+        <path d="M 400 160 C 500 160, 500 200, 680 200" fill="none" stroke={activeFlow === 2 ? "var(--color-primary)" : "var(--color-border-subtle)"} strokeWidth={activeFlow === 2 ? "2" : "1.5"} className={activeFlow === 2 ? "animate-pulse" : ""}></path>
+        <path d="M 400 160 C 500 160, 500 280, 680 280" fill="none" stroke={activeFlow === 3 ? "var(--color-primary)" : "var(--color-border-subtle)"} strokeWidth={activeFlow === 3 ? "2" : "1.5"} className={activeFlow === 3 ? "animate-pulse" : ""}></path>
       </svg>
 
       {/* AI Providers - Right side */}
-      <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-between py-4">
+      <div className="absolute right-0 top-0 bottom-0 hidden flex-col justify-between py-4 md:flex">
         {PROVIDERS.map((provider, idx) => (
           <div
             key={provider.id}
-            className={`px-3 py-1.5 rounded-lg ${provider.color} ${provider.textColor} flex items-center justify-center font-medium text-[11px] backdrop-blur-xl hover:scale-105 transition-all cursor-help min-w-[120px] ${
-              activeFlow === idx ? "ring-2 ring-[#007aff]/40 scale-105 shadow-lg shadow-[#007aff]/10" : ""
+            className={`rounded-xl border border-border-subtle bg-surface/70 px-3 py-2 text-[11px] font-medium text-text-main shadow-sm backdrop-blur-xl transition-all hover:scale-105 cursor-help min-w-[120px] ${
+              activeFlow === idx ? "ring-2 ring-primary/40 scale-105 shadow-lg shadow-primary/10" : ""
             }`}
             title={provider.name}
           >
@@ -96,8 +96,8 @@ export default function FlowAnimation() {
       </div>
 
       {/* Mobile fallback */}
-      <div className="md:hidden mt-6 w-full p-4 rounded-xl bg-[#1c1c1e] border border-white/10 backdrop-blur-xl">
-        <p className="text-xs text-center text-[#8e8e93]">
+      <div className="landing-panel md:hidden w-full rounded-2xl border border-border-subtle p-4 backdrop-blur-xl">
+        <p className="text-xs text-center text-text-muted">
           Interactive diagram visible on desktop
         </p>
       </div>

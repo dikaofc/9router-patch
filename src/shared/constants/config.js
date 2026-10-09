@@ -9,6 +9,10 @@ export const APP_CONFIG = {
 
 // GitHub configuration
 export const GITHUB_CONFIG = {
+  repositoryUrl: "https://github.com/decolua/9router",
+  readmeUrl: "https://github.com/decolua/9router#readme",
+  licenseUrl: "https://github.com/decolua/9router/blob/main/LICENSE",
+  npmPackageUrl: "https://www.npmjs.com/package/9router",
   changelogUrl: "https://raw.githubusercontent.com/decolua/9router/refs/heads/master/CHANGELOG.md",
   donateUrl: "https://9router.com/api/donate",
 };

@@ -27,7 +27,7 @@ export default function App() {
       {/* Page header */}
       <div>
         <h1 className="text-2xl font-bold text-text-main flex items-center gap-2">
-          <span className="material-symbols-outlined text-brand-500">volunteer_activism</span>
+          <span className="material-symbols-outlined text-primary">volunteer_activism</span>
           Credits &amp; About
         </h1>
         <p className="text-sm text-text-muted mt-1">
@@ -45,7 +45,7 @@ export default function App() {
               onClick={() => setActiveTab(t.id)}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
                 active
-                  ? "border-brand-500 text-brand-500"
+                  ? "border-primary text-primary"
                   : "border-transparent text-text-muted hover:text-text-main"
               }`}
             >
@@ -59,7 +59,7 @@ export default function App() {
       {activeTab === "about" && (
         <Card>
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-brand-500/10 text-brand-500 shrink-0">
+            <div className="p-3 rounded-xl bg-primary/10 text-primary shrink-0">
               <span className="material-symbols-outlined text-[28px]">memory</span>
             </div>
             <div className="min-w-0">
@@ -108,7 +108,7 @@ export default function App() {
       {activeTab === "vercel" && (
         <Card>
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-brand-500/10 text-brand-500 shrink-0">
+            <div className="p-3 rounded-xl bg-primary/10 text-primary shrink-0">
               <span className="material-symbols-outlined text-[28px]">language</span>
             </div>
             <div className="min-w-0">
@@ -146,7 +146,7 @@ export default function App() {
 
           <div className="flex items-center justify-between gap-3 mt-4 rounded-xl border border-border-subtle bg-surface-2 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-brand-500/10 text-brand-500">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
                 <span className="material-symbols-outlined text-[20px]">local_cafe</span>
               </div>
               <div>
