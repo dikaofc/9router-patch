@@ -742,23 +742,23 @@ export default function BasicChatPageClient() {
     <div className="basic-chat relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-bg text-text-main">
       <div className="relative mx-auto flex flex-1 h-full min-h-0 w-full max-w-4xl flex-col">
         <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-3 lg:px-6">
-          <div ref={modelMenuRef} className="relative">
+          <div ref={modelMenuRef} className="relative min-w-0 flex-1">
             <button
               type="button"
               onClick={() => setModelMenuOpen((value) => !value)}
-              className="flex min-h-12 items-center gap-3 rounded-2xl border border-border-subtle bg-surface/60 px-4 py-2.5 text-left text-text-main shadow-sm backdrop-blur-xl transition hover:bg-surface"
+              className="flex min-h-12 max-w-full items-center gap-2 rounded-2xl border border-border-subtle bg-surface/60 px-3 py-2.5 text-left text-text-main shadow-sm backdrop-blur-xl transition hover:bg-surface sm:gap-3 sm:px-4"
             >
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-text-main">{modelLabel}</span>
-                  <span className="material-symbols-outlined text-[18px] text-text-muted">expand_more</span>
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <span className="truncate text-sm font-semibold text-text-main">{modelLabel}</span>
+                  <span className="material-symbols-outlined shrink-0 text-[18px] text-text-muted">expand_more</span>
                 </div>
-                <p className="truncate text-xs text-text-muted">{modelSubLabel}</p>
+                <p className="hidden truncate text-xs text-text-muted xs:block">{modelSubLabel}</p>
               </div>
             </button>
 
             {modelMenuOpen ? (
-              <div className="glass-card absolute left-0 top-[calc(100%+10px)] z-30 w-[min(520px,calc(100vw-2rem))] overflow-hidden rounded-3xl">
+              <div className="glass-card absolute left-0 top-[calc(100%+10px)] z-30 w-[min(520px,calc(100vw-1.5rem))] overflow-hidden rounded-3xl">
                 <div className="border-b border-border-subtle px-4 py-3">
                   <p className="text-xs uppercase tracking-[0.22em] text-text-muted">Models</p>
                   <p className="text-sm text-text-main">Only from connected providers</p>
@@ -798,11 +798,11 @@ export default function BasicChatPageClient() {
             ) : null}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <button
               type="button"
               onClick={() => setHistoryOpen((value) => !value)}
-              className="min-h-11 rounded-2xl border border-border-subtle bg-surface/60 px-4 py-2.5 text-sm text-text-main shadow-sm backdrop-blur-xl transition hover:bg-surface"
+              className="min-h-10 rounded-2xl border border-border-subtle bg-surface/60 px-3 py-2 text-xs text-text-main shadow-sm backdrop-blur-xl transition hover:bg-surface sm:min-h-11 sm:px-4 sm:py-2.5 sm:text-sm"
             >
               History
             </button>
@@ -813,7 +813,7 @@ export default function BasicChatPageClient() {
         </div>
 
         {historyOpen ? (
-          <div ref={historyMenuRef} className="glass-card absolute right-4 top-[72px] z-20 w-[min(360px,calc(100vw-2rem))] rounded-3xl p-2 lg:right-6">
+          <div ref={historyMenuRef} className="glass-card absolute right-2 top-[72px] z-20 w-[min(360px,calc(100vw-1rem))] rounded-3xl p-2 sm:right-4 lg:right-6">
             <div className="px-3 py-2">
               <p className="text-xs uppercase tracking-[0.22em] text-text-muted">Recent chats</p>
             </div>
