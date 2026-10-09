@@ -94,11 +94,11 @@ export default function PricingModal({ isOpen, onClose, onSave }) {
   const pricingFields = ["input", "output", "cached", "reasoning", "cache_creation"];
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-bg-base border border-border rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="glass-card max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
         {/* Header */}
         <div className="p-4 border-b border-border flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Pricing Configuration</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Pricing Configuration</h2>
           <button
             onClick={onClose}
             className="text-text-muted hover:text-text text-2xl leading-none"
@@ -114,7 +114,7 @@ export default function PricingModal({ isOpen, onClose, onSave }) {
           ) : (
             <div className="space-y-6">
               {/* Instructions */}
-              <div className="bg-bg-subtle border border-border rounded-lg p-3 text-sm">
+              <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 text-sm">
                 <p className="font-medium mb-1">Pricing Rates Format</p>
                 <p className="text-text-muted">
                   All rates are in <strong>dollars per million tokens</strong> ($/1M tokens).
@@ -126,7 +126,7 @@ export default function PricingModal({ isOpen, onClose, onSave }) {
               {allProviders.map(provider => {
                 const models = Object.keys(pricingData[provider]).sort();
                 return (
-                  <div key={provider} className="border border-border rounded-lg overflow-hidden">
+                  <div key={provider} className="border border-border rounded-xl overflow-hidden">
                     <div className="bg-bg-subtle px-4 py-2 font-semibold text-sm">
                       {provider.toUpperCase()}
                     </div>
@@ -154,7 +154,7 @@ export default function PricingModal({ isOpen, onClose, onSave }) {
                                     min="0"
                                     value={pricingData[provider][model][field] || 0}
                                     onChange={(e) => handlePricingChange(provider, model, field, e.target.value)}
-                                    className="w-20 px-2 py-1 text-right bg-bg-base border border-border rounded focus:outline-none focus:border-primary"
+                                    className="w-20 px-2 py-1 text-right bg-bg-base border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40"
                                   />
                                 </td>
                               ))}
@@ -180,7 +180,7 @@ export default function PricingModal({ isOpen, onClose, onSave }) {
         <div className="p-4 border-t border-border flex items-center justify-between gap-2">
           <button
             onClick={handleReset}
-            className="px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 rounded border border-red-500/20 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10 rounded-lg border border-red-500/20 transition-colors active:scale-[0.98]"
             disabled={saving}
           >
             Reset to Defaults
@@ -188,14 +188,14 @@ export default function PricingModal({ isOpen, onClose, onSave }) {
           <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm text-text-muted hover:text-text border border-border rounded transition-colors"
+              className="px-4 py-2 text-sm font-medium text-text-muted hover:text-text border border-border rounded-lg transition-colors active:scale-[0.98]"
               disabled={saving}
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-primary/90 transition-colors disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors active:scale-[0.98] disabled:opacity-50"
               disabled={saving}
             >
               {saving ? "Saving..." : "Save Changes"}

@@ -27,7 +27,7 @@ export default function ProviderIcon({
   if (!effectiveSrc || errored) {
     return (
       <span
-        className={`inline-flex items-center justify-center font-medium rounded-md ${className}`.trim()}
+        className={`inline-flex items-center justify-center font-medium rounded-lg ${className}`.trim()}
         style={{
           width: size,
           height: size,

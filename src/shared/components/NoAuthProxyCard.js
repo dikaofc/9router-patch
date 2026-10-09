@@ -79,7 +79,7 @@ export default function NoAuthProxyCard({ providerId }) {
   return (
     <Card>
       <div className="flex items-center gap-3 mb-4">
-        <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-500/10 text-green-500">
+        <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-500/10 text-green-500 ring-2 ring-green-500/20">
           <span className="material-symbols-outlined text-[20px]">lock_open</span>
         </div>
         <div className="flex-1">
@@ -107,7 +107,7 @@ export default function NoAuthProxyCard({ providerId }) {
           value={rotateStrategy}
           onChange={(e) => handleStrategyChange(e.target.value)}
           disabled={saving}
-          className="py-2 px-3 text-sm text-text-main bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-md focus:ring-1 focus:ring-primary/30 focus:border-primary/50 focus:outline-none transition-all disabled:opacity-50"
+          className="py-2.5 px-3 text-sm text-text-main bg-white dark:bg-white/5 border border-border rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40 focus:outline-none transition-all disabled:opacity-50"
         >
           {STRATEGIES.map((s) => (
             <option key={s.value} value={s.value} disabled={s.value !== "none" && !canRotate}>

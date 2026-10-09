@@ -78,7 +78,7 @@ export default function HeaderMenu({ onLogout }) {
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-52 bg-surface border border-border-subtle rounded-[12px] shadow-[var(--shadow-elev)] z-50 fade-in overflow-hidden py-1">
+          <div className="absolute right-0 top-full mt-1.5 w-52 glass-card z-50 fade-in overflow-hidden py-1.5">
             <MenuItem
               icon="history"
               label="Change Log"

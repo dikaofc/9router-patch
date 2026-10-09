@@ -759,14 +759,14 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
               <button
                 type="button"
                 onClick={() => { setAuthMode("browser"); setError(null); setStep("waiting"); startOAuthFlow(); }}
-                className={`flex-1 rounded-lg border px-3 py-2 text-sm transition-colors ${authMode === "browser" ? "border-primary bg-primary/10 text-primary" : "border-border text-text-muted hover:text-primary"}`}
+                className={`flex-1 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all active:scale-[0.98] ${authMode === "browser" ? "border-blue-500 bg-blue-500/10 text-blue-500" : "border-border text-text-muted hover:text-blue-500"}`}
               >
                 🌐 Sign in with browser
               </button>
               <button
                 type="button"
                 onClick={() => { setAuthMode("paste-token"); setError(null); setStep("input"); }}
-                className={`flex-1 rounded-lg border px-3 py-2 text-sm transition-colors ${authMode === "paste-token" ? "border-primary bg-primary/10 text-primary" : "border-border text-text-muted hover:text-primary"}`}
+                className={`flex-1 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all active:scale-[0.98] ${authMode === "paste-token" ? "border-blue-500 bg-blue-500/10 text-blue-500" : "border-border text-text-muted hover:text-blue-500"}`}
               >
                 🔑 Paste token
               </button>
@@ -775,8 +775,8 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
             {authMode === "browser" && (
               <>
                 {step === "waiting" && (
-                  <div className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg bg-sidebar/50">
-                    <span className="material-symbols-outlined text-base text-primary animate-spin">progress_activity</span>
+                  <div className="flex items-center gap-2 px-3 py-2 border border-border rounded-xl bg-sidebar/50">
+                    <span className="material-symbols-outlined text-base text-blue-500 animate-spin">progress_activity</span>
                     <span className="text-sm">Waiting for browser authorization…</span>
                   </div>
                 )}
@@ -898,7 +898,7 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
               <p className="text-sm text-text-muted mb-4">
                 Visit the login URL below and authorize:
               </p>
-              <div className="bg-sidebar p-4 rounded-lg mb-4">
+              <div className="bg-sidebar p-4 rounded-xl mb-4">
                 <p className="text-xs text-text-muted mb-1">Login URL</p>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 text-sm break-all">{deviceLoginUrl}</code>
@@ -920,10 +920,10 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
                   </Button>
                 </div>
               </div>
-              <div className="bg-primary/10 p-4 rounded-lg">
+              <div className="bg-blue-500/10 p-4 rounded-xl">
                 <p className="text-xs text-text-muted mb-1">Your Code</p>
                 <div className="flex items-center justify-center gap-2">
-                  <p className="text-2xl font-mono font-bold text-primary">{deviceData.user_code}</p>
+                  <p className="text-2xl font-mono font-bold text-blue-500">{deviceData.user_code}</p>
                   <Button
                     size="sm"
                     variant="ghost"
@@ -945,8 +945,8 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
         {/* Success Step */}
         {step === "success" && (
           <div className="text-center py-6">
-            <div className="size-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl text-green-600">check_circle</span>
+            <div className="size-16 mx-auto mb-4 rounded-full bg-green-500/10 flex items-center justify-center">
+              <span className="material-symbols-outlined text-3xl text-green-500">check_circle</span>
             </div>
             <h3 className="text-lg font-semibold mb-2">Connected Successfully!</h3>
             <p className="text-sm text-text-muted mb-4">
@@ -961,8 +961,8 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
         {/* Error Step */}
         {step === "error" && (
           <div className="text-center py-6">
-            <div className="size-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl text-red-600">error</span>
+            <div className="size-16 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
+              <span className="material-symbols-outlined text-3xl text-red-500">error</span>
             </div>
             <h3 className="text-lg font-semibold mb-2">Connection Failed</h3>
             <p className="text-sm text-red-600 mb-4">{error}</p>

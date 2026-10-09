@@ -23,7 +23,7 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-bg border-t border-border pt-12 pb-8">
+    <footer className="bg-bg border-t border-border-subtle pt-12 pb-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-8">
           {/* Brand */}
@@ -38,7 +38,7 @@ export default function Footer() {
                   />
                 </svg>
               </div>
-              <span className="text-base font-semibold text-text-main">
+              <span className="text-base font-semibold text-text-main tracking-tight">
                 {APP_CONFIG.name}
               </span>
             </div>
@@ -48,7 +48,7 @@ export default function Footer() {
             <div className="flex gap-3">
               <a
                 href="#"
-                className="text-text-muted hover:text-primary transition-colors"
+                className="text-text-muted hover:text-blue-500 transition-colors"
                 aria-label="Twitter"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -57,7 +57,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="text-text-muted hover:text-primary transition-colors"
+                className="text-text-muted hover:text-blue-500 transition-colors"
                 aria-label="GitHub"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <h4 className="text-xs font-medium text-text-main mb-3 uppercase tracking-wider">Product</h4>
+            <h4 className="text-xs font-semibold text-text-main mb-3 uppercase tracking-wider">Product</h4>
             <ul className="flex flex-col gap-2 text-sm text-text-muted">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
@@ -83,7 +83,7 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="text-xs font-medium text-text-main mb-3 uppercase tracking-wider">Resources</h4>
+            <h4 className="text-xs font-semibold text-text-main mb-3 uppercase tracking-wider">Resources</h4>
             <ul className="flex flex-col gap-2 text-sm text-text-muted">
               {footerLinks.resources.map((link) => (
                 <li key={link.label}>
@@ -97,7 +97,7 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="text-xs font-medium text-text-main mb-3 uppercase tracking-wider">Company</h4>
+            <h4 className="text-xs font-semibold text-text-main mb-3 uppercase tracking-wider">Company</h4>
             <ul className="flex flex-col gap-2 text-sm text-text-muted">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
@@ -111,7 +111,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-border pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
+        <div className="border-t border-border-subtle pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-xs text-text-muted">
             © {new Date().getFullYear()} {APP_CONFIG.name} Inc. All rights reserved.
           </p>

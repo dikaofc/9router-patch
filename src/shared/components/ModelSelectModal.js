@@ -496,7 +496,7 @@ export default function ModelSelectModal({
       footer={null}
     >
       {/* Info bar */}
-      <div className="flex items-center gap-2 mb-3 px-2.5 py-2 bg-primary/8 border border-primary/20 rounded-lg text-xs text-text-muted">
+      <div className="flex items-center gap-2 mb-3 px-2.5 py-2 bg-blue-500/5 border border-blue-500/10 rounded-xl text-xs text-text-muted">
         <span className="material-symbols-outlined text-primary shrink-0" style={{ fontSize: "14px" }}>info</span>
         <span>Click to add, click again to remove. Changes are saved automatically.</span>
       </div>
@@ -512,7 +512,7 @@ export default function ModelSelectModal({
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-surface border border-border rounded text-xs focus:outline-none focus:ring-1 focus:ring-primary/50"
+            className="w-full pl-8 pr-3 py-2 bg-surface border border-border rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           />
         </div>
       </div>
@@ -535,12 +535,12 @@ export default function ModelSelectModal({
                     key={combo.id}
                     onClick={() => handleSelect({ id: combo.name, name: combo.name, value: combo.name })}
                     className={`
-                      px-2 py-1 rounded-xl text-xs font-medium transition-all border hover:cursor-pointer flex items-center gap-1
+                      px-2 py-1 rounded-full text-xs font-medium transition-all border hover:cursor-pointer flex items-center gap-1 active:scale-[0.98]
                       ${isSelected
-                        ? "bg-primary text-white border-primary"
+                        ? "bg-blue-500 text-white border-blue-500"
                         : addedModelValues.includes(combo.name)
-                          ? "bg-primary border-primary text-white hover:bg-primary-hover"
-                          : "bg-surface border-border text-text-main hover:border-primary/50 hover:bg-primary/5"
+                          ? "bg-blue-500 border-blue-500 text-white hover:bg-blue-600"
+                          : "bg-surface border-border text-text-main hover:border-blue-500/50 hover:bg-blue-500/5"
                       }
                     `}
                   >
@@ -585,14 +585,14 @@ export default function ModelSelectModal({
                     onClick={() => handleSelect(model)}
                     title={isPlaceholder ? "Select to pre-fill, then edit model ID in the input" : undefined}
                     className={`
-                      px-2 py-1 rounded-xl text-xs font-medium transition-all border hover:cursor-pointer
+                      px-2 py-1 rounded-full text-xs font-medium transition-all border hover:cursor-pointer active:scale-[0.98]
                       ${isPlaceholder
-                        ? "border-dashed border-border text-text-muted hover:border-primary/50 hover:text-primary bg-surface italic"
+                        ? "border-dashed border-border text-text-muted hover:border-blue-500/50 hover:text-blue-500 bg-surface italic"
                         : isSelected
-                          ? "bg-primary text-white border-primary"
+                          ? "bg-blue-500 text-white border-blue-500"
                           : addedModelValues.includes(model.value)
-                            ? "bg-primary border-primary text-white hover:bg-primary-hover"
-                            : "bg-surface border-border text-text-main hover:border-primary/50 hover:bg-primary/5"
+                            ? "bg-blue-500 border-blue-500 text-white hover:bg-blue-600"
+                            : "bg-surface border-border text-text-main hover:border-blue-500/50 hover:bg-blue-500/5"
                       }
                     `}
                   >

@@ -127,16 +127,16 @@ export default function LanguageSwitcher({ className = "", isOpen: controlledOpe
       {isOpen && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" data-i18n-skip="true">
           <div
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
 
           <div
             ref={modalRef}
-            className="relative w-full bg-surface border border-border-subtle rounded-[12px] shadow-[var(--shadow-elev)] fade-in max-w-2xl flex flex-col max-h-[80vh]"
+            className="relative w-full glass-card rounded-2xl fade-in max-w-2xl flex flex-col max-h-[80vh]"
           >
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-border-subtle">
-              <h2 className="text-sm font-medium text-text-main">Select Language</h2>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
+              <h2 className="text-sm font-semibold text-text-main">Select Language</h2>
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-1 rounded-md text-text-muted hover:bg-surface-2 transition-colors"
@@ -156,9 +156,9 @@ export default function LanguageSwitcher({ className = "", isOpen: controlledOpe
                       key={item}
                       onClick={() => handleSetLocale(item)}
                       disabled={isPending}
-                      className={`flex flex-col items-center justify-start gap-0.5 px-1.5 py-2.5 rounded-md text-xs font-medium transition-colors w-full ${
+                      className={`flex flex-col items-center justify-start gap-0.5 px-1.5 py-2.5 rounded-lg text-xs font-medium transition-colors w-full ${
                         active
-                          ? "bg-primary/10 text-primary ring-1 ring-primary/30"
+                          ? "bg-blue-500/10 text-blue-500 ring-2 ring-blue-500/20"
                           : "text-text-main hover:bg-surface-2"
                       } ${isPending ? "opacity-70 cursor-wait" : ""}`}
                       title={info.name}

@@ -30,9 +30,9 @@ export default function NineRemotePromoModal({ isOpen, onClose }) {
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] fade-in" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm fade-in" onClick={onClose} />
 
-      <div className="relative w-full max-w-sm rounded-[14px] overflow-hidden shadow-[var(--shadow-elev)] fade-in flex flex-col bg-surface border border-border-subtle">
+      <div className="relative w-full max-w-sm glass-card rounded-3xl overflow-hidden fade-in flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-border-subtle">
           <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ export default function NineRemotePromoModal({ isOpen, onClose }) {
           {/* CTA */}
           <button
             onClick={() => window.open(NINE_REMOTE_URL, "_blank")}
-            className="w-full py-3 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-[10px] bg-primary hover:bg-primary-hover shadow-[var(--shadow-warm)] active:scale-[0.98] transition-all"
+            className="w-full py-3 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg active:scale-[0.98] transition-all"
           >
             <span className="material-symbols-outlined text-base">open_in_new</span>
             Get 9Remote
