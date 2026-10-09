@@ -1102,6 +1102,33 @@ select {
     border-radius: 16px;
   }
 
+  .mobile-sidebar-backdrop {
+    background: rgba(18, 22, 30, 0.24);
+    opacity: 0;
+    backdrop-filter: saturate(135%) blur(0);
+    -webkit-backdrop-filter: saturate(135%) blur(0);
+    transition:
+      opacity 320ms var(--motion-apple),
+      backdrop-filter 420ms var(--motion-apple),
+      -webkit-backdrop-filter 420ms var(--motion-apple);
+  }
+
+  .mobile-sidebar-backdrop.is-open {
+    opacity: 1;
+    backdrop-filter: saturate(145%) blur(16px);
+    -webkit-backdrop-filter: saturate(145%) blur(16px);
+  }
+
+  .mobile-sidebar-drawer {
+    transform: translateX(calc(-100% - 1rem));
+    transition: transform 440ms var(--motion-apple-spring);
+    will-change: transform;
+  }
+
+  .mobile-sidebar-drawer.is-open {
+    transform: translateX(0);
+  }
+
   .dashboard-shell .glass-sidebar {
     margin: 8px;
     min-height: calc(100% - 16px);
@@ -1113,10 +1140,61 @@ select {
   .glass-card {
     border-radius: 18px;
   }
+
+  .dashboard-shell main {
+    min-width: 0;
+  }
+
+  .dashboard-shell main > .dashboard-header {
+    min-height: 3.5rem;
+    margin: 6px 6px 0;
+    padding-inline: 0.625rem;
+    gap: 0.375rem;
+    border-radius: 18px;
+  }
+
+  .dashboard-shell main > .flex-1 {
+    min-width: 0;
+  }
+
+  .dashboard-shell main :where(pre, img, video, canvas) {
+    max-width: 100%;
+  }
+
+  .dashboard-shell main pre {
+    overflow-x: auto;
+  }
+
+  .dashboard-shell [role="dialog"] {
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 1rem);
+    overflow: auto;
+  }
+
+  .dashboard-shell :where(input, textarea, select) {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .dashboard-shell main > .dashboard-header {
+    padding-inline: 0.5rem;
+  }
+
+  .dashboard-shell main > .dashboard-header > div:last-of-type {
+    gap: 0;
+  }
 }
 
 @media (hover: none) {
   .glass-card:hover {
     transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-sidebar-backdrop,
+  .mobile-sidebar-drawer {
+    transition-duration: 0.01ms !important;
   }
 }
