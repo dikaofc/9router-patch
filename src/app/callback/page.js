@@ -3,9 +3,6 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-/**
- * OAuth Callback Page Content
- */
 function CallbackContent() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("processing");
@@ -28,21 +25,11 @@ function CallbackContent() {
 
     let relayed = false;
 
-    // Trusted origins that may receive this callback. The OAuth code/state
-    // must only be relayed to the dashboard window we expect to be the opener
-    // (same origin) or the Codex helper that listens on a fixed loopback port.
-    // Any other origin is treated as hostile (drive-by attacker that opened
-    // the popup against the well-known redirect_uri to phish the code).
     const expectedOrigins = [
-      window.location.origin, // Same origin (for most providers)
-      "http://localhost:1455", // Codex specific port
+      window.location.origin,
+      "http://localhost:1455",
     ];
 
-    // Method 1: postMessage to opener (popup mode)
-    // Send once per expected origin. The browser delivers the message only
-    // when the opener's origin matches the targetOrigin we pass — using "*"
-    // here would leak the code/state to any opener (e.g. an attacker page
-    // that opened this URL in a popup), so iterate over the allowlist.
     if (window.opener) {
       for (const origin of expectedOrigins) {
         try {
@@ -54,7 +41,6 @@ function CallbackContent() {
       }
     }
 
-    // Method 2: BroadcastChannel (same origin tabs)
     try {
       const channel = new BroadcastChannel("oauth_callback");
       channel.postMessage(callbackData);
@@ -64,7 +50,6 @@ function CallbackContent() {
       console.log("BroadcastChannel failed:", e);
     }
 
-    // Method 3: localStorage event (fallback)
     try {
       localStorage.setItem("oauth_callback", JSON.stringify({ ...callbackData, timestamp: Date.now() }));
       relayed = true;
@@ -86,24 +71,24 @@ function CallbackContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg">
-      <div className="text-center p-8 max-w-md">
+      <div className="text-center p-6 max-w-sm">
         {status === "processing" && (
           <>
-            <div className="size-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl text-primary animate-spin">progress_activity</span>
+            <div className="size-12 mx-auto mb-3 rounded-full bg-primary/8 flex items-center justify-center">
+              <span className="material-symbols-outlined text-2xl text-primary animate-spin">progress_activity</span>
             </div>
-            <h1 className="text-xl font-semibold mb-2">Processing...</h1>
-            <p className="text-text-muted">Please wait while we complete the authorization.</p>
+            <h1 className="text-base font-medium mb-1 text-text-main">Processing...</h1>
+            <p className="text-sm text-text-muted">Please wait while we complete the authorization.</p>
           </>
         )}
 
         {(status === "success" || status === "done") && (
           <>
-            <div className="size-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl text-green-600">check_circle</span>
+            <div className="size-12 mx-auto mb-3 rounded-full bg-green-500/8 flex items-center justify-center">
+              <span className="material-symbols-outlined text-2xl text-green-600">check_circle</span>
             </div>
-            <h1 className="text-xl font-semibold mb-2">Authorization Successful!</h1>
-            <p className="text-text-muted">
+            <h1 className="text-base font-medium mb-1 text-text-main">Authorization Successful!</h1>
+            <p className="text-sm text-text-muted">
               {status === "success" ? "This window will close automatically..." : "You can close this tab now."}
             </p>
           </>
@@ -111,15 +96,15 @@ function CallbackContent() {
 
         {status === "manual" && (
           <>
-            <div className="size-16 mx-auto mb-4 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl text-yellow-600">info</span>
+            <div className="size-12 mx-auto mb-3 rounded-full bg-yellow-500/8 flex items-center justify-center">
+              <span className="material-symbols-outlined text-2xl text-yellow-600">info</span>
             </div>
-            <h1 className="text-xl font-semibold mb-2">Copy This URL</h1>
-            <p className="text-text-muted mb-4">
+            <h1 className="text-base font-medium mb-1 text-text-main">Copy This URL</h1>
+            <p className="text-sm text-text-muted mb-3">
               Please copy the URL from the address bar and paste it in the application.
             </p>
-            <div className="bg-surface border border-border rounded-lg p-3 text-left">
-              <code className="text-xs break-all">{typeof window !== "undefined" ? window.location.href : ""}</code>
+            <div className="bg-surface border border-border rounded-md p-2.5 text-left">
+              <code className="text-xs break-all text-text-muted">{typeof window !== "undefined" ? window.location.href : ""}</code>
             </div>
           </>
         )}
@@ -128,19 +113,15 @@ function CallbackContent() {
   );
 }
 
-/**
- * OAuth Callback Page
- * Receives callback from OAuth providers and sends data back via multiple methods
- */
 export default function CallbackPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-bg">
-        <div className="text-center p-8">
-          <div className="size-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl text-primary animate-spin">progress_activity</span>
+        <div className="text-center p-6">
+          <div className="size-12 mx-auto mb-3 rounded-full bg-primary/8 flex items-center justify-center">
+            <span className="material-symbols-outlined text-2xl text-primary animate-spin">progress_activity</span>
           </div>
-          <p className="text-text-muted">Loading...</p>
+          <p className="text-sm text-text-muted">Loading...</p>
         </div>
       </div>
     }>

@@ -16,7 +16,7 @@ export default function ProviderIcon({
   src,
   providerId,
   alt,
-  size = 32,
+  size = 28,
   className = "",
   fallbackText = "?",
   fallbackColor,
@@ -27,12 +27,12 @@ export default function ProviderIcon({
   if (!effectiveSrc || errored) {
     return (
       <span
-        className={`inline-flex items-center justify-center font-bold rounded-lg ${className}`.trim()}
+        className={`inline-flex items-center justify-center font-medium rounded-md ${className}`.trim()}
         style={{
           width: size,
           height: size,
           color: fallbackColor,
-          fontSize: Math.max(10, Math.floor(size * 0.38)),
+          fontSize: Math.max(10, Math.floor(size * 0.35)),
         }}
       >
         {fallbackText}

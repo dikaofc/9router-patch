@@ -2,13 +2,12 @@
 
 import { cn } from "@/shared/utils/cn";
 
-// Spinner loading
 export function Spinner({ size = "md", className }) {
   const sizes = {
     sm: "size-4",
-    md: "size-6",
-    lg: "size-8",
-    xl: "size-12",
+    md: "size-5",
+    lg: "size-6",
+    xl: "size-8",
   };
 
   return (
@@ -24,22 +23,20 @@ export function Spinner({ size = "md", className }) {
   );
 }
 
-// Full page loading
 export function PageLoading({ message = "Loading..." }) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg">
-      <Spinner size="xl" />
-      <p className="mt-4 text-text-muted">{message}</p>
+      <Spinner size="lg" />
+      <p className="mt-3 text-sm text-text-muted">{message}</p>
     </div>
   );
 }
 
-// Skeleton loading
 export function Skeleton({ className, ...props }) {
   return (
     <div
       className={cn(
-        "animate-pulse rounded-[10px] bg-surface-2",
+        "animate-pulse rounded-md bg-surface-2/60",
         className
       )}
       {...props}
@@ -47,16 +44,15 @@ export function Skeleton({ className, ...props }) {
   );
 }
 
-// Card skeleton
 export function CardSkeleton() {
   return (
-    <div className="p-6 rounded-[14px] border border-border-subtle bg-surface shadow-[var(--shadow-soft)]">
-      <div className="flex items-center justify-between mb-4">
-        <Skeleton className="h-4 w-24" />
-        <Skeleton className="size-10 rounded-[10px]" />
+    <div className="p-5 rounded-[12px] border border-border-subtle bg-surface shadow-[var(--shadow-soft)]">
+      <div className="flex items-center justify-between mb-3">
+        <Skeleton className="h-3 w-20" />
+        <Skeleton className="size-8 rounded-md" />
       </div>
-      <Skeleton className="h-8 w-16 mb-2" />
-      <Skeleton className="h-3 w-20" />
+      <Skeleton className="h-6 w-14 mb-2" />
+      <Skeleton className="h-2.5 w-16" />
     </div>
   );
 }

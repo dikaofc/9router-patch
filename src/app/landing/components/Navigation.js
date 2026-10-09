@@ -7,40 +7,37 @@ export default function Navigation() {
   const router = useRouter();
 
   return (
-    <nav className="fixed top-0 z-50 w-full bg-[#181411]/80 backdrop-blur-md border-b border-[#3a2f27]">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
+    <nav className="fixed top-0 z-50 w-full bg-[#161616]/80 backdrop-blur-xl border-b border-white/5">
+      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
         <button
           type="button"
-          className="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0"
+          className="flex items-center gap-2 cursor-pointer bg-transparent border-none p-0"
           onClick={() => router.push("/")}
           aria-label="Navigate to home"
         >
-          <div className="size-8 rounded bg-linear-to-br from-[#f97815] to-orange-700 flex items-center justify-center text-white">
-            <span className="material-symbols-outlined text-[20px]">hub</span>
+          <div className="size-6 rounded-md bg-brand-500 flex items-center justify-center text-white">
+            <span className="material-symbols-outlined text-[14px]">hub</span>
           </div>
-          <h2 className="text-white text-xl font-bold tracking-tight">9Router</h2>
+          <h2 className="text-white text-sm font-semibold tracking-tight">9Router</h2>
         </button>
 
-        {/* Desktop menu */}
-        <div className="hidden md:flex items-center gap-8">
-          <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="#features">Features</a>
-          <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="#how-it-works">How it Works</a>
-          <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="https://github.com/decolua/9router#readme" target="_blank" rel="noopener noreferrer">Docs</a>
-          <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors flex items-center gap-1" href="https://github.com/decolua/9router" target="_blank" rel="noopener noreferrer">
-            GitHub <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+        <div className="hidden md:flex items-center gap-6">
+          <a className="text-gray-400 hover:text-white text-xs font-medium transition-colors" href="#features">Features</a>
+          <a className="text-gray-400 hover:text-white text-xs font-medium transition-colors" href="#how-it-works">How it Works</a>
+          <a className="text-gray-400 hover:text-white text-xs font-medium transition-colors" href="https://github.com/decolua/9router#readme" target="_blank" rel="noopener noreferrer">Docs</a>
+          <a className="text-gray-400 hover:text-white text-xs font-medium transition-colors flex items-center gap-0.5" href="https://github.com/decolua/9router" target="_blank" rel="noopener noreferrer">
+            GitHub <span className="material-symbols-outlined text-[12px]">open_in_new</span>
           </a>
         </div>
 
-        {/* CTA + Mobile menu */}
-        <div className="flex items-center gap-4">
-          <button 
+        <div className="flex items-center gap-3">
+          <button
             onClick={() => router.push("/dashboard")}
-            className="hidden sm:flex h-9 items-center justify-center rounded-lg px-4 bg-[#f97815] hover:bg-[#e0650a] transition-all text-[#181411] text-sm font-bold shadow-[0_0_15px_rgba(249,120,21,0.4)] hover:shadow-[0_0_20px_rgba(249,120,21,0.6)]"
+            className="hidden sm:flex h-8 items-center justify-center rounded-md px-3.5 bg-brand-500 hover:bg-brand-600 transition-colors text-white text-xs font-medium"
           >
             Get Started
           </button>
-          <button 
+          <button
             className="md:hidden text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -49,17 +46,16 @@ export default function Navigation() {
         </div>
       </div>
 
-      {/* Mobile menu dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#3a2f27] bg-[#181411]/95 backdrop-blur-md">
-          <div className="flex flex-col gap-4 p-6">
-            <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
-            <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it Works</a>
-            <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="https://github.com/decolua/9router#readme" target="_blank" rel="noopener noreferrer">Docs</a>
-            <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="https://github.com/decolua/9router" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <button 
+        <div className="md:hidden border-t border-white/5 bg-[#161616]/95 backdrop-blur-xl">
+          <div className="flex flex-col gap-3 p-4">
+            <a className="text-gray-400 hover:text-white text-xs font-medium transition-colors" href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+            <a className="text-gray-400 hover:text-white text-xs font-medium transition-colors" href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it Works</a>
+            <a className="text-gray-400 hover:text-white text-xs font-medium transition-colors" href="https://github.com/decolua/9router#readme" target="_blank" rel="noopener noreferrer">Docs</a>
+            <a className="text-gray-400 hover:text-white text-xs font-medium transition-colors" href="https://github.com/decolua/9router" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <button
               onClick={() => router.push("/dashboard")}
-              className="h-9 rounded-lg bg-[#f97815] hover:bg-[#e0650a] text-[#181411] text-sm font-bold"
+              className="h-8 rounded-md bg-brand-500 hover:bg-brand-600 text-white text-xs font-medium"
             >
               Get Started
             </button>
@@ -69,4 +65,3 @@ export default function Navigation() {
     </nav>
   );
 }
-

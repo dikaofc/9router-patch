@@ -19,8 +19,8 @@ export default function Card({
     none: "",
     xs: "p-3",
     sm: "p-4",
-    md: "p-6",
-    lg: "p-8",
+    md: "p-5",
+    lg: "p-6",
   };
 
   return (
@@ -29,28 +29,28 @@ export default function Card({
         glass
           ? "glass-card glass-in"
           : elev
-            ? "bg-surface border border-border-subtle rounded-[14px] shadow-[var(--shadow-elev)]"
-            : "bg-surface border border-border-subtle rounded-[14px] shadow-[var(--shadow-soft)]",
-        hover && "hover:shadow-[var(--shadow-warm)] hover:border-brand-500/30 transition-all cursor-pointer",
+            ? "bg-surface border border-border-subtle rounded-[12px] shadow-[var(--shadow-elev)]"
+            : "bg-surface border border-border-subtle rounded-[12px] shadow-[var(--shadow-soft)]",
+        hover && "hover:shadow-[var(--shadow-warm)] hover:border-brand-500/20 transition-all cursor-pointer",
         paddings[padding],
         className
       )}
       {...props}
     >
       {(title || action) && (
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
             {icon && (
-              <div className="p-2 rounded-[10px] bg-bg text-text-muted">
-                <span className="material-symbols-outlined text-[20px]">{icon}</span>
+              <div className="p-1.5 rounded-md bg-bg text-text-muted">
+                <span className="material-symbols-outlined text-[18px]">{icon}</span>
               </div>
             )}
             <div>
               {title && (
-                <h3 className="text-text-main font-semibold">{title}</h3>
+                <h3 className="text-sm font-medium text-text-main">{title}</h3>
               )}
               {subtitle && (
-                <p className="text-sm text-text-muted">{subtitle}</p>
+                <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>
               )}
             </div>
           </div>
@@ -66,7 +66,7 @@ Card.Section = function CardSection({ children, className, ...props }) {
   return (
     <div
       className={cn(
-        "p-4 rounded-[10px]",
+        "p-3 rounded-md",
         "bg-bg border border-border-subtle",
         className
       )}
@@ -81,9 +81,9 @@ Card.Row = function CardRow({ children, className, ...props }) {
   return (
     <div
       className={cn(
-        "p-3 -mx-3 px-3 transition-colors",
+        "p-2.5 -mx-2.5 px-2.5 transition-colors",
         "border-b border-border-subtle last:border-b-0",
-        "hover:bg-surface-2/50",
+        "hover:bg-surface-2/40",
         className
       )}
       {...props}
@@ -102,16 +102,16 @@ Card.ListItem = function CardListItem({
   return (
     <div
       className={cn(
-        "group flex items-center justify-between p-3 -mx-3 px-3",
+        "group flex items-center justify-between p-2.5 -mx-2.5 px-2.5",
         "border-b border-border-subtle last:border-b-0",
-        "hover:bg-surface-2/50 transition-colors",
+        "hover:bg-surface-2/40 transition-colors",
         className
       )}
       {...props}
     >
       <div className="flex-1 min-w-0">{children}</div>
       {actions && (
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
           {actions}
         </div>
       )}

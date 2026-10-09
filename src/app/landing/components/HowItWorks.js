@@ -2,58 +2,54 @@
 
 export default function HowItWorks() {
   return (
-    <section className="py-24 border-y border-[#3a2f27] bg-[#23180f]/30" id="how-it-works">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How 9Router Works</h2>
-          <p className="text-gray-400 max-w-xl text-lg">
+    <section className="py-20 border-y border-white/5 bg-[#1a1a1a]/50" id="how-it-works">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="mb-12">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-3 text-white">How 9Router Works</h2>
+          <p className="text-gray-500 max-w-lg text-sm">
             Data flows seamlessly from your application through our intelligent routing layer to the best provider for the job.
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          {/* Connection line */}
-          <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-[2px] bg-linear-to-r from-gray-700 via-[#f97815] to-gray-700 -z-10"></div>
-          
-          {/* Step 1: CLI & SDKs */}
-          <div className="flex flex-col gap-6 relative group">
-            <div className="w-24 h-24 rounded-2xl bg-[#181411] border border-[#3a2f27] flex items-center justify-center shadow-xl group-hover:border-gray-500 transition-colors z-10 mx-auto md:mx-0">
-              <span className="material-symbols-outlined text-4xl text-gray-300">terminal</span>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+          <div className="hidden md:block absolute top-10 left-[16%] right-[16%] h-px bg-gradient-to-r from-gray-700 via-brand-500/50 to-gray-700 -z-10"></div>
+
+          <div className="flex flex-col gap-4 relative group">
+            <div className="w-16 h-16 rounded-[12px] bg-[#1e1e1e] border border-white/5 flex items-center justify-center group-hover:border-white/10 transition-colors z-10 mx-auto md:mx-0">
+              <span className="material-symbols-outlined text-2xl text-gray-400">terminal</span>
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-2">1. CLI &amp; SDKs</h3>
-              <p className="text-sm text-gray-400">
+              <h3 className="text-sm font-medium mb-1.5 text-white">1. CLI &amp; SDKs</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">
                 Your requests start from your favorite tools or our unified SDK. Just change the base URL.
               </p>
             </div>
           </div>
 
-          {/* Step 2: 9Router Hub */}
-          <div className="flex flex-col gap-6 relative group md:items-center md:text-center">
-            <div className="w-24 h-24 rounded-2xl bg-[#181411] border-2 border-[#f97815] flex items-center justify-center shadow-[0_0_30px_rgba(249,120,21,0.2)] z-10 mx-auto">
-              <span className="material-symbols-outlined text-4xl text-[#f97815] animate-pulse">hub</span>
+          <div className="flex flex-col gap-4 relative group md:items-center md:text-center">
+            <div className="w-16 h-16 rounded-[12px] bg-[#1e1e1e] border border-brand-500/30 flex items-center justify-center z-10 mx-auto">
+              <span className="material-symbols-outlined text-2xl text-brand-400">hub</span>
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-2 text-[#f97815]">2. 9Router Hub</h3>
-              <p className="text-sm text-gray-400">
+              <h3 className="text-sm font-medium mb-1.5 text-brand-400">2. 9Router Hub</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">
                 Our engine analyzes the prompt, checks provider health, and routes for lowest latency or cost.
               </p>
             </div>
           </div>
 
-          {/* Step 3: AI Providers */}
-          <div className="flex flex-col gap-6 relative group md:items-end md:text-right">
-            <div className="w-24 h-24 rounded-2xl bg-[#181411] border border-[#3a2f27] flex items-center justify-center shadow-xl group-hover:border-gray-500 transition-colors z-10 mx-auto md:mx-0">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="w-6 h-6 rounded bg-white/10"></div>
-                <div className="w-6 h-6 rounded bg-white/10"></div>
-                <div className="w-6 h-6 rounded bg-white/10"></div>
-                <div className="w-6 h-6 rounded bg-white/10"></div>
+          <div className="flex flex-col gap-4 relative group md:items-end md:text-right">
+            <div className="w-16 h-16 rounded-[12px] bg-[#1e1e1e] border border-white/5 flex items-center justify-center group-hover:border-white/10 transition-colors z-10 mx-auto md:mx-0">
+              <div className="grid grid-cols-2 gap-1.5">
+                <div className="w-4 h-4 rounded bg-white/8"></div>
+                <div className="w-4 h-4 rounded bg-white/8"></div>
+                <div className="w-4 h-4 rounded bg-white/8"></div>
+                <div className="w-4 h-4 rounded bg-white/8"></div>
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-2">3. AI Providers</h3>
-              <p className="text-sm text-gray-400">
+              <h3 className="text-sm font-medium mb-1.5 text-white">3. AI Providers</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">
                 The request is fulfilled by OpenAI, Anthropic, Gemini, or others instantly.
               </p>
             </div>
@@ -63,4 +59,3 @@ export default function HowItWorks() {
     </section>
   );
 }
-

@@ -10,14 +10,13 @@ export default function Avatar({
   className,
 }) {
   const sizes = {
-    xs: "size-6 text-xs",
-    sm: "size-8 text-sm",
-    md: "size-10 text-base",
-    lg: "size-12 text-lg",
-    xl: "size-16 text-xl",
+    xs: "size-6 text-[10px]",
+    sm: "size-7 text-xs",
+    md: "size-8 text-sm",
+    lg: "size-10 text-base",
+    xl: "size-12 text-lg",
   };
 
-  // Get initials from name
   const getInitials = (name) => {
     if (!name) return "?";
     const parts = name.split(" ");
@@ -27,27 +26,26 @@ export default function Avatar({
     return name.substring(0, 2).toUpperCase();
   };
 
-  // Generate color from name
   const getColorFromName = (name) => {
-    if (!name) return "bg-primary";
+    if (!name) return "bg-brand-500";
     const colors = [
-      "bg-red-500",
-      "bg-orange-500",
-      "bg-amber-500",
-      "bg-yellow-500",
-      "bg-lime-500",
-      "bg-green-500",
-      "bg-emerald-500",
-      "bg-teal-500",
-      "bg-cyan-500",
-      "bg-sky-500",
-      "bg-blue-500",
-      "bg-indigo-500",
-      "bg-violet-500",
-      "bg-purple-500",
-      "bg-fuchsia-500",
-      "bg-pink-500",
-      "bg-rose-500",
+      "bg-red-400",
+      "bg-orange-400",
+      "bg-amber-400",
+      "bg-yellow-400",
+      "bg-lime-400",
+      "bg-green-400",
+      "bg-emerald-400",
+      "bg-teal-400",
+      "bg-cyan-400",
+      "bg-sky-400",
+      "bg-blue-400",
+      "bg-indigo-400",
+      "bg-violet-400",
+      "bg-purple-400",
+      "bg-fuchsia-400",
+      "bg-pink-400",
+      "bg-rose-400",
     ];
     const index = name.charCodeAt(0) % colors.length;
     return colors[index];
@@ -58,7 +56,7 @@ export default function Avatar({
       <div
         className={cn(
           "rounded-full bg-cover bg-center bg-no-repeat",
-          "ring-2 ring-white dark:ring-surface-dark shadow-sm",
+          "ring-1 ring-border",
           sizes[size],
           className
         )}
@@ -72,8 +70,8 @@ export default function Avatar({
   return (
     <div
       className={cn(
-        "rounded-full flex items-center justify-center font-semibold text-white",
-        "ring-2 ring-white dark:ring-surface-dark shadow-sm",
+        "rounded-full flex items-center justify-center font-medium text-white",
+        "ring-1 ring-border",
         sizes[size],
         getColorFromName(name),
         className
@@ -85,4 +83,3 @@ export default function Avatar({
     </div>
   );
 }
-

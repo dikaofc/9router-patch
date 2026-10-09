@@ -19,7 +19,6 @@ export default function LoginPage() {
   const [mustChange, setMustChange] = useState(false);
   const [newPassword, setNewPassword] = useState("");
 
-  // Countdown for rate-limit
   useEffect(() => {
     if (retryAfter <= 0) return;
     const id = setInterval(() => setRetryAfter((s) => (s > 0 ? s - 1 : 0)), 1000);
@@ -52,7 +51,6 @@ export default function LoginPage() {
           setSamlConfigured(data.samlConfigured === true);
           setSamlLoginLabel(data.samlLoginLabel || "Sign in with SAML SSO");
         } else {
-          // Safe fallback on non-OK response to avoid infinite loading state.
           setHasPassword(true);
         }
       } catch (err) {
@@ -96,7 +94,6 @@ export default function LoginPage() {
     }
   };
 
-  // Force a new password before entering the dashboard (default + remote).
   const handleSetNewPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -137,13 +134,12 @@ export default function LoginPage() {
 
   const passwordAvailable = authMode === "password" || authMode === "both" || !ssoAvailable;
 
-  // Show loading state while checking password
   if (hasPassword === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg p-4">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p className="text-text-muted mt-4">Loading...</p>
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <p className="text-sm text-text-muted mt-3">Loading...</p>
         </div>
       </div>
     );
@@ -151,12 +147,11 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg p-4 relative overflow-hidden">
-      {/* Faint grid background */}
       <div className="landing-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
-      <div className="relative z-10 w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-primary mb-2">9Router</h1>
-          <p className="text-text-muted">
+      <div className="relative z-10 w-full max-w-sm">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-semibold text-primary mb-1.5">9Router</h1>
+          <p className="text-sm text-text-muted">
             {samlAvailable
               ? "Sign in with SAML 2.0 Single Sign-On"
               : oidcAvailable
@@ -167,12 +162,12 @@ export default function LoginPage() {
 
         <Card glass>
           {mustChange ? (
-            <form onSubmit={handleSetNewPassword} className="flex flex-col gap-4">
-              <p className="text-sm text-amber-600 dark:text-amber-400 text-center">
+            <form onSubmit={handleSetNewPassword} className="flex flex-col gap-3">
+              <p className="text-xs text-amber-600 dark:text-amber-400 text-center">
                 Set a new password before accessing the dashboard remotely.
               </p>
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">New password</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-medium">New password</label>
                 <Input
                   type="password"
                   placeholder="Enter new password"
@@ -188,7 +183,7 @@ export default function LoginPage() {
               </Button>
             </form>
           ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {samlAvailable && (
               <Button type="button" variant="primary" className="w-full" onClick={handleSamlLogin}>
                 {samlLoginLabel}
@@ -204,21 +199,21 @@ export default function LoginPage() {
             {ssoAvailable && passwordAvailable && <div className="h-px bg-border/60" />}
 
             {passwordAvailable ? (
-              <form onSubmit={handleLogin} className="flex flex-col gap-4">
+              <form onSubmit={handleLogin} className="flex flex-col gap-3">
                 {isSsoEnabled && !ssoAvailable && (
-                  <p className="text-xs text-amber-600 dark:text-amber-400 text-center">
+                  <p className="text-[11px] text-amber-600 dark:text-amber-400 text-center">
                     {activeSsoType === "saml" ? "SAML SSO" : "OIDC"} login is enabled, but configuration is incomplete. Password login is still available for recovery.
                   </p>
                 )}
 
                 {authMode === "both" && ssoAvailable && (
-                  <p className="text-xs text-text-muted text-center">
+                  <p className="text-[11px] text-text-muted text-center">
                     Password and {activeSsoType === "saml" ? "SAML SSO" : "OIDC"} login are both enabled.
                   </p>
                 )}
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium">Password</label>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-medium">Password</label>
                   <Input
                     type="password"
                     placeholder="Enter password"
@@ -250,11 +245,11 @@ export default function LoginPage() {
                   {retryAfter > 0 ? `Wait ${retryAfter}s` : "Login"}
                 </Button>
 
-                <p className="text-xs text-center text-text-muted mt-2">
+                <p className="text-[11px] text-center text-text-muted mt-1">
                   Default password is <code className="bg-sidebar px-1 rounded">123456</code>
                 </p>
                 {hasPassword === false && (
-                  <p className="text-xs text-center text-amber-600 dark:text-amber-400">
+                  <p className="text-[11px] text-center text-amber-600 dark:text-amber-400">
                     Security risk: no password set. You will be asked to set one when logging in remotely.
                   </p>
                 )}

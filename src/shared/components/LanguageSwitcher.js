@@ -14,7 +14,6 @@ function getLocaleFromCookie() {
   return normalizeLocale(value);
 }
 
-// Locale display names and flags - will be translated by runtime i18n
 const getLocaleInfo = (locale) => {
   const locales = {
     "en": { name: "English", flag: "🇺🇸" },
@@ -76,7 +75,6 @@ export default function LanguageSwitcher({ className = "", isOpen: controlledOpe
     setLocale(getLocaleFromCookie());
   }, []);
 
-  // Close modal when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -100,7 +98,6 @@ export default function LanguageSwitcher({ className = "", isOpen: controlledOpe
         body: JSON.stringify({ locale: nextLocale }),
       });
       
-      // Reload translations without full page reload
       await reloadTranslations();
       setLocale(nextLocale);
       setIsOpen(false, nextLocale);
@@ -113,50 +110,44 @@ export default function LanguageSwitcher({ className = "", isOpen: controlledOpe
 
   return (
     <div className={className}>
-      {/* Trigger button */}
       {!hideTrigger && (
         <button
           onClick={() => setIsOpen(!isOpen)}
           disabled={isPending}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-text-muted hover:text-text-main hover:bg-surface/60 transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-text-muted hover:text-text-main hover:bg-surface-2 transition-colors"
           title="Language"
           data-i18n-skip="true"
         >
-          <span className="material-symbols-outlined text-[20px]">language</span>
-          <span className="text-sm font-medium">{getLocaleInfo(locale).name}</span>
-          <span className="text-lg">{getLocaleInfo(locale).flag}</span>
+          <span className="material-symbols-outlined text-[18px]">language</span>
+          <span className="text-xs font-medium">{getLocaleInfo(locale).name}</span>
+          <span className="text-base">{getLocaleInfo(locale).flag}</span>
         </button>
       )}
 
-      {/* Portal modal - renders at document.body to avoid parent layout constraints */}
       {isOpen && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" data-i18n-skip="true">
-          {/* Overlay */}
           <div
             className="absolute inset-0 bg-black/30 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
 
-          {/* Modal content */}
           <div
             ref={modalRef}
-            className="relative w-full bg-surface border border-black/10 dark:border-white/10 rounded-xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-w-2xl flex flex-col max-h-[80vh]"
+            className="relative w-full bg-surface border border-border-subtle rounded-[12px] shadow-[var(--shadow-elev)] fade-in max-w-2xl flex flex-col max-h-[80vh]"
           >
-            {/* Modal header */}
-            <div className="flex items-center justify-between p-3 border-b border-black/5 dark:border-white/5">
-              <h2 className="text-lg font-semibold text-text-main">Select Language</h2>
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-border-subtle">
+              <h2 className="text-sm font-medium text-text-main">Select Language</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                className="p-1 rounded-md text-text-muted hover:bg-surface-2 transition-colors"
                 aria-label="Close"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
-            {/* Modal body - fixed grid columns, equal sizing */}
-            <div className="p-6 overflow-y-auto flex-1">
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-2">
+            <div className="p-5 overflow-y-auto flex-1">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-1.5">
                 {LOCALES.map((item) => {
                   const active = locale === item;
                   const info = getLocaleInfo(item);
@@ -165,18 +156,17 @@ export default function LanguageSwitcher({ className = "", isOpen: controlledOpe
                       key={item}
                       onClick={() => handleSetLocale(item)}
                       disabled={isPending}
-                      className={`flex flex-col items-center justify-start gap-1 px-2 py-3 rounded-lg text-xs font-medium transition-colors w-full ${
+                      className={`flex flex-col items-center justify-start gap-0.5 px-1.5 py-2.5 rounded-md text-xs font-medium transition-colors w-full ${
                         active
-                          ? "bg-primary/15 text-primary ring-2 ring-primary"
-                          : "text-text-main hover:bg-black/5 dark:hover:bg-white/5"
+                          ? "bg-primary/10 text-primary ring-1 ring-primary/30"
+                          : "text-text-main hover:bg-surface-2"
                       } ${isPending ? "opacity-70 cursor-wait" : ""}`}
                       title={info.name}
                     >
-                      <span className="text-2xl">{info.flag}</span>
-                      {/* Fixed 2-line height so all cards are uniform */}
-                      <span className="text-center leading-tight line-clamp-2 h-8 flex items-center">{info.name}</span>
+                      <span className="text-xl">{info.flag}</span>
+                      <span className="text-center leading-tight line-clamp-2 h-7 flex items-center">{info.name}</span>
                       {active && (
-                        <span className="material-symbols-outlined text-sm">check</span>
+                        <span className="material-symbols-outlined text-xs">check</span>
                       )}
                     </button>
                   );

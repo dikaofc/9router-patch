@@ -12,10 +12,10 @@ export default function Drawer({
   className
 }) {
   const widths = {
-    sm: "w-[400px]",
-    md: "w-[500px]",
-    lg: "w-[600px]",
-    xl: "w-[800px]",
+    sm: "w-[360px]",
+    md: "w-[440px]",
+    lg: "w-[520px]",
+    xl: "w-[640px]",
     full: "w-full",
   };
 
@@ -42,7 +42,7 @@ export default function Drawer({
     <div className="fixed inset-0 z-50">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-[2px] fade-in cursor-pointer"
+        className="absolute inset-0 bg-black/30 backdrop-blur-[2px] fade-in cursor-pointer"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -57,23 +57,23 @@ export default function Drawer({
         className
       )}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border-subtle flex-shrink-0">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border-subtle flex-shrink-0">
+          <div className="flex items-center gap-2.5">
             {title && (
-              <h2 className="text-lg font-semibold text-text-main">{title}</h2>
+              <h2 className="text-sm font-medium text-text-main">{title}</h2>
             )}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-[10px] text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors"
+            className="p-1 rounded-md text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors"
           >
-            <span className="material-symbols-outlined text-[20px]">close</span>
+            <span className="material-symbols-outlined text-[18px]">close</span>
           </button>
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-5 custom-scrollbar">
           {children}
         </div>
       </div>

@@ -1,5 +1,22 @@
 {
+  "$schema": "https://opencode.ai/config.json",
   "plugin": [
     ".opencode/plugins/graphify.js"
-  ]
+  ],
+  "provider": {
+    "assembly": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Assembly",
+      "options": {
+        "baseURL": "https://ai.krynox.dev/v1",
+        "apiKey": "{env:ASSEMBLY_API_KEY}"
+      },
+      "models": {
+        "deepseek-v4.1-flash": {
+          "name": "cbai/deepseek-v4.1-flash",
+          "modelID": "cbai/deepseek-v4.1-flash"
+        }
+      }
+    }
+  }
 }
