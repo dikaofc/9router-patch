@@ -76,6 +76,13 @@ export function getModelType(aliasOrId, modelId) {
   return found?.kind || found?.type || null;
 }
 
+export function getModelKind(aliasOrId, modelId, fallback = "llm") {
+  const models = PROVIDER_MODELS[aliasOrId];
+  if (!models) return fallback;
+  const found = findModel(models, modelId, aliasOrId);
+  return found?.kind || found?.type || fallback;
+}
+
 export function getModelUpstreamId(aliasOrId, modelId) {
   // Split off thinking suffix "(level)" so lookup hits the base id; re-append it to
   // the result so downstream applyThinking still sees the suffix (body.model is stripped separately).

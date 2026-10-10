@@ -162,7 +162,29 @@ Usage DB:
 - Periodic task: `src/shared/services/cloudSyncScheduler.js`
 - Control route: `src/app/api/sync/cloud/route.js`
 
-## Request Lifecycle (`/v1/chat/completions`)
+## 6) System One (`/v1/systemone`)
+
+A dedicated endpoint for calibrated decision engines (e.g., v1m, Cloudflare Workers AI Clef).
+
+- Route: `src/app/api/v1/systemone/route.js` → handler `src/sse/handlers/systemone.js`
+- Core: `open-sse/handlers/systemone/index.js` (`getSystemOneCore`)
+- Providers declare `systemoneConfig` in registry (`serviceKinds: ["systemone"]`)
+- Request body: `{ model, state, questions }` — provider IS the model (like webSearch)
+- Account fallback supported (iterates connections like chat)
+- Upstream request: POST `{ model, state, questions }` to provider's `systemoneConfig.baseUrl` with `Authorization: Bearer <key>` + `systemoneConfig.headers`
+- Supported providers (npm 0.5.99):
+  - **v1m** (`v1m`): models `rev-latest`, `v1m-decision-engine` (kind: systemone), endpoint `https://v1m.ir/v1/systemone`
+  - **cloudflare-ai** (`cf`): model `@cf/cloudflare/clef-flash` (kind: systemone, upstream `clef-flash`), endpoint `https://api.cloudflare.com/client/v4/accounts/{accountId}/ai/v1/systemone` (requires Account ID)
+  - **openrouter** (`openrouter`): passthroughModels, endpoint `https://openrouter.ai/api/v1/systemone`
+- OpenCode Free (`opencode`) has model `jev-1.13-free` (kind: systemone) but endpoint `https://opencode.ai/zen/v1/systemone` returns `ModelProtocolUnsupported` — not functional yet
+
+Handler flow:
+1. Resolve provider by model ID (alias or id)
+2. Validate `systemoneConfig.baseUrl` exists
+3. Substitute `{accountId}` / `{model}` placeholders in URL
+4. Build headers: `Content-Type: application/json`, `Authorization: Bearer <key>` + `systemoneConfig.headers`
+5. Forward body `{ model, state, questions, ... }` to upstream
+6. Return upstream JSON + usage tracking (`/v1/chat/completions`)
 
 ```mermaid
 sequenceDiagram

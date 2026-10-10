@@ -14,7 +14,7 @@
       "models": {
         "deepseek-v4.1-flash": {
           "name": "cbai/deepseek-v4.1-flash",
-          "modelID": "cbai/deepseek-v4.1-flash"
+          "id": "cbai/deepseek-v4.1-flash"
         }
       }
     }

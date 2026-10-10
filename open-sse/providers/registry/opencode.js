@@ -23,6 +23,10 @@ export default {
       forceAutoToolChoiceModels: ["muse-spark-1.3-contributor-free"],
     },
   },
+  // System One is NOT supported for OpenCode Free.
+  // The endpoint https://opencode.ai/zen/v1/systemone returns "ModelProtocolUnsupported"
+  // for the jev-1.13-free model (which npm 0.5.99 advertised with kind: "systemone").
+  // Keep jev-1.13-free as a regular LLM model via passthroughModels.
   models: [
     // Live free catalog probed 2026-09-20 against https://opencode.ai/zen/v1/models
     // (Bearer public). `union-alpha` was retired upstream — requesting it now

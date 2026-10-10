@@ -51,6 +51,8 @@ export default {
     { id: "@cf/runwayml/stable-diffusion-v1-5-img2img", name: "Stable Diffusion v1.5 Img2Img", params: ["size"], capabilities: ["edit"], kind: "image" },
     { id: "@cf/runwayml/stable-diffusion-v1-5-inpainting", name: "Stable Diffusion v1.5 Inpainting", params: ["size"], capabilities: ["edit","mask"], kind: "image" },
     { id: "@cf/stabilityai/stable-diffusion-xl-base-1.0", name: "SDXL Base 1.0", params: ["size"], kind: "image" },
+    // System One models
+    { id: "@cf/cloudflare/clef-flash", name: "Clef Flash", kind: "systemone", upstreamModelId: "clef-flash" },
   ],
   serviceKinds: ["llm","image","systemone"],
   imageConfig: { baseUrl: "https://api.cloudflare.com/client/v4/accounts" },
@@ -59,7 +61,4 @@ export default {
     authType: "apikey",
     authHeader: "bearer",
   },
-  models: [
-    { id: "@cf/cloudflare/clef-flash", name: "Clef Flash", kind: "systemone", upstreamModelId: "clef-flash" },
-  ],
 };
