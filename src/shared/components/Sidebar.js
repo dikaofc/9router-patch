@@ -35,7 +35,7 @@ const systemItems = [
   { href: "/dashboard/skills", label: "Skills", icon: "extension" },
 ];
 
-export default function Sidebar({ onClose }) {
+export default function Sidebar({ onClose, isMobile = false }) {
   const pathname = usePathname();
   const [mediaOpen, setMediaOpen] = useState(false);
   const [showRemoteModal, setShowRemoteModal] = useState(false);
@@ -105,7 +105,7 @@ export default function Sidebar({ onClose }) {
 
   return (
     <>
-      <aside className="glass-sidebar flex w-60 flex-col border-r border-border-subtle bg-surface/80 backdrop-blur-xl transition-colors duration-200 min-h-full">
+      <aside className={`glass-sidebar flex w-60 flex-col border-r border-border-subtle bg-surface/80 backdrop-blur-xl transition-colors duration-200 min-h-full${isMobile ? " mobile-sidebar-content" : ""}`}>
         {/* Logo */}
         <div className="px-4 py-4 flex flex-col gap-1.5">
           <Link href="/dashboard" className="flex items-center gap-2.5">
@@ -146,7 +146,7 @@ export default function Sidebar({ onClose }) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-1.5 space-y-0.5 overflow-y-auto custom-scrollbar">
+        <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-1.5 space-y-0.5 custom-scrollbar">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -322,6 +322,7 @@ export default function Sidebar({ onClose }) {
 
 Sidebar.propTypes = {
   onClose: PropTypes.func,
+  isMobile: PropTypes.bool,
 };
 
 function ManualUpdatePanel({ latestVersion, installCmd, copied, onCopyAndShutdown, onCancel, countdown, isDisconnected }) {

@@ -81,10 +81,10 @@ export default function DashboardLayout({ children }) {
       </div>
       {/* Mobile sidebar backdrop */}
       <div
-        aria-hidden={!sidebarOpen}
+        aria-hidden="true"
         onClick={() => setSidebarOpen(false)}
-        className={`fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm transition-opacity duration-200 lg:hidden ${
-          sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        className={`mobile-sidebar-backdrop fixed inset-0 z-[60] lg:hidden ${
+          sidebarOpen ? "is-open" : ""
         }`}
       />
 
@@ -97,16 +97,28 @@ export default function DashboardLayout({ children }) {
       <div
         aria-hidden={!sidebarOpen}
         inert={!sidebarOpen}
-        className={`fixed inset-x-0 bottom-0 z-[70] lg:hidden transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          sidebarOpen ? "translate-y-0" : "translate-y-full"
-        }`}
+        className={`mobile-sidebar-drawer fixed inset-x-0 bottom-0 z-[70] lg:hidden ${sidebarOpen ? "is-open" : ""}`}
       >
-        {/* Sheet handle */}
-        <div className="flex justify-center pt-2 pb-1">
-          <div className="w-10 h-1 rounded-full bg-text-muted/30" />
-        </div>
-        <div className="max-h-[80dvh] overflow-hidden rounded-t-2xl bg-surface border-t border-border-subtle shadow-2xl">
-          <Sidebar onClose={() => setSidebarOpen(false)} />
+        <div
+          className="mobile-sidebar-sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+        >
+          <div className="mobile-sidebar-sheet-handle">
+            <span className="mobile-sidebar-grip" aria-hidden="true" />
+            <button
+              type="button"
+              className="mobile-sidebar-close"
+              onClick={() => setSidebarOpen(false)}
+              aria-label="Close navigation menu"
+            >
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+          </div>
+          <div className="mobile-sidebar-scroll-region">
+            <Sidebar onClose={() => setSidebarOpen(false)} isMobile />
+          </div>
         </div>
       </div>
 

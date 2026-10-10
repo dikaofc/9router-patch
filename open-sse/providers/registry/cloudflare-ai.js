@@ -59,4 +59,7 @@ export default {
     authType: "apikey",
     authHeader: "bearer",
   },
+  models: [
+    { id: "systemone-decision", name: "Cloudflare System One Decision", kind: "systemone" },
+  ],
 };

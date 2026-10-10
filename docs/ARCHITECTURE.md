@@ -105,6 +105,7 @@ Important compatibility routes:
 - `src/app/api/v1/responses/route.js`
 - `src/app/api/v1/models/route.js`
 - `src/app/api/v1/messages/count_tokens/route.js`
+- `src/app/api/v1/systemone/route.js` (routes to registry providers declaring `systemoneConfig`, with account fallback)
 - `src/app/api/v1beta/models/route.js`
 - `src/app/api/v1beta/models/[...path]/route.js`
 

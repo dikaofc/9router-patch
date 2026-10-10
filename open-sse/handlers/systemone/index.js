@@ -1,6 +1,6 @@
 // System One (v1m) core handler — sends { model, state, questions } to the provider's
 // System One endpoint, mirroring the webSearch pattern (provider IS the model).
-import { errorResponse } from "../../utils/error.js";
+import { createErrorResult } from "../../utils/error.js";
 import { HTTP_STATUS } from "../../config/runtimeConfig.js";
 
 export async function getSystemOneCore({ body, provider, systemoneConfig, credentials, log, onRequestSuccess }) {
@@ -9,7 +9,7 @@ export async function getSystemOneCore({ body, provider, systemoneConfig, creden
 
   if (!baseUrl) {
     log?.warn?.("SYSTEMONE", "Provider has no systemoneConfig.baseUrl", { provider });
-    return errorResponse(HTTP_STATUS.BAD_REQUEST, `Provider '${provider}' does not support System One.`);
+    return createErrorResult(HTTP_STATUS.BAD_REQUEST, `Provider '${provider}' does not support System One.`);
   }
 
   // Resolve baseUrl with optional {accountId} and {model} placeholders
@@ -18,7 +18,7 @@ export async function getSystemOneCore({ body, provider, systemoneConfig, creden
     const accountId = credentials?.providerSpecificData?.accountId;
     if (!accountId) {
       log?.warn?.("SYSTEMONE", "Provider requires accountId in providerSpecificData", { provider });
-      return errorResponse(HTTP_STATUS.BAD_REQUEST, `Provider '${provider}' requires accountId in providerSpecificData.`);
+      return createErrorResult(HTTP_STATUS.BAD_REQUEST, `Provider '${provider}' requires accountId in providerSpecificData.`);
     }
     resolvedUrl = resolvedUrl.replace("{accountId}", accountId);
   }
@@ -49,21 +49,21 @@ export async function getSystemOneCore({ body, provider, systemoneConfig, creden
   } catch (err) {
     const msg = `Fetch error: ${err?.message || err}`;
     log?.debug?.("SYSTEMONE", msg);
-    return errorResponse(HTTP_STATUS.BAD_GATEWAY, msg);
+    return createErrorResult(HTTP_STATUS.BAD_GATEWAY, msg);
   }
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");
     const msg = `Provider error: ${response.status} ${text.slice(0, 200)}`;
     log?.debug?.("SYSTEMONE", msg);
-    return errorResponse(HTTP_STATUS.BAD_GATEWAY, msg);
+    return createErrorResult(response.status, msg);
   }
 
   let data;
   try {
     data = await response.json();
   } catch {
-    return errorResponse(HTTP_STATUS.BAD_GATEWAY, `Invalid JSON response from ${provider}`);
+    return createErrorResult(HTTP_STATUS.BAD_GATEWAY, `Invalid JSON response from ${provider}`);
   }
 
   if (onRequestSuccess) await onRequestSuccess();
