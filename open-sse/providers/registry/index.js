@@ -78,6 +78,7 @@ import p74 from "./playht.js";
 import p75 from "./qoder.js";
 import p77 from "./recraft.js";
 import p78 from "./runwayml.js";
+import p79 from "./v1m.js";
 import p79 from "./sdwebui.js";
 import p80 from "./searchapi.js";
 import p81 from "./searxng.js";
@@ -256,4 +257,5 @@ export default [
   p130,
   p131,
   p132,
+  p79,
 ];

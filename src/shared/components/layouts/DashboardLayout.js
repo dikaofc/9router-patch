@@ -79,15 +79,12 @@ export default function DashboardLayout({ children }) {
           );
         })}
       </div>
-      {/* Mobile sidebar overlay */}
-      <button
-        type="button"
-        aria-label="Close navigation menu"
+      {/* Mobile sidebar backdrop */}
+      <div
         aria-hidden={!sidebarOpen}
-        tabIndex={sidebarOpen ? 0 : -1}
         onClick={() => setSidebarOpen(false)}
-        className={`mobile-sidebar-backdrop fixed inset-0 z-[60] lg:hidden ${
-          sidebarOpen ? "is-open" : "pointer-events-none"
+        className={`fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm transition-opacity duration-200 lg:hidden ${
+          sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       />
 
@@ -96,15 +93,21 @@ export default function DashboardLayout({ children }) {
         <Sidebar />
       </div>
 
-      {/* Sidebar - Mobile */}
+      {/* Sidebar - Mobile bottom sheet */}
       <div
         aria-hidden={!sidebarOpen}
         inert={!sidebarOpen}
-        className={`mobile-sidebar-drawer fixed inset-y-0 left-0 z-[70] w-[min(18rem,calc(100vw-1rem))] lg:hidden ${
-          sidebarOpen ? "is-open" : ""
+        className={`fixed inset-x-0 bottom-0 z-[70] lg:hidden transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          sidebarOpen ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        <Sidebar onClose={() => setSidebarOpen(false)} />
+        {/* Sheet handle */}
+        <div className="flex justify-center pt-2 pb-1">
+          <div className="w-10 h-1 rounded-full bg-text-muted/30" />
+        </div>
+        <div className="max-h-[80dvh] overflow-hidden rounded-t-2xl bg-surface border-t border-border-subtle shadow-2xl">
+          <Sidebar onClose={() => setSidebarOpen(false)} />
+        </div>
       </div>
 
       {/* Main content */}
