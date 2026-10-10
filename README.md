@@ -1,268 +1,192 @@
 <div align="center">
 
-# ⚡ 9Router
+# 9Router
 
-### AI Gateway yang bikin coding murah & gak pernah stop.
+### Satu gateway untuk menghubungkan AI coding tools ke berbagai provider.
 
-<img src="./images/9router.png?1" alt="9Router" width="700"/>
+Kelola koneksi model, routing, fallback, dan penggunaan dari satu dashboard.
+Jalankan secara lokal atau deploy di server milikmu.
 
-[![npm](https://img.shields.io/npm/v/9router.svg)](https://www.npmjs.com/package/9router)
-[![Docker](https://img.shields.io/docker/pulls/decolua/9router?logo=docker)](https://hub.docker.com/r/decolua/9router)
-[![License](https://img.shields.io/npm/l/9router.svg)](https://github.com/decolua/9router/blob/main/LICENSE)
+[![npm](https://img.shields.io/npm/v/9router?label=npm)](https://www.npmjs.com/package/9router)
+[![Docker pulls](https://img.shields.io/docker/pulls/decolua/9router?logo=docker&label=Docker)](https://hub.docker.com/r/decolua/9router)
+[![License](https://img.shields.io/github/license/dikaofc/9router-patch)](./LICENSE)
 
-[Bahasa Indonesia](./i18n/README.id-ID.md) • [Português](./i18n/README.pt-BR.md) • [Tiếng Việt](./i18n/README.vi.md) • [中文](./i18n/README.zh-CN.md) • [日本語](./i18n/README.ja-JP.md) • [Русский](./i18n/README.ru.md) • [ไทย](./i18n/README.th.md) • [فارسی](./i18n/README.fa_IR.md) • [Español](./i18n/README.es.md) • [Français](./i18n/README.fr.md)
+[Mulai cepat](#mulai-cepat) · [Fitur](#fitur) · [Integrasi](#menghubungkan-tools) · [Deployment](#deployment)
+
+**Bahasa:** [Português](./i18n/README.pt-BR.md) · [Tiếng Việt](./i18n/README.vi.md) · [中文](./README.zh-CN.md) · [日本語](./i18n/README.ja-JP.md) · [Русский](./i18n/README.ru.md) · [ไทย](./i18n/README.th.md) · [فارسی](./i18n/README.fa_IR.md) · [Español](./i18n/README.es.md) · [Français](./i18n/README.fr.md)
 
 </div>
 
 ---
 
-## Kenapa 9Router?
+## Sekilas
 
-Kamu pakai Claude Code, Cursor, Codex, atau CLI AI lainnya? Berarti kamu **bakar token tiap kali coding**. Tool outputs kayak `git diff`, `grep`, `ls` — itu semua makan token.
+9Router adalah gateway AI yang berada di antara aplikasi dan provider model. Aplikasi mengirim permintaan ke satu endpoint; 9Router meneruskannya ke koneksi provider yang kamu atur.
 
-**9Router = proxy antara kamu dan AI provider.** Dia:
-
-- 🎯 **Compress tool outputs** — RTK auto-press content, hemat 20-40% token
-- 🔄 **Auto-fallback** — Kalau provider A limit, lompat ke B, lalu C. Zero downtime.
-- 💰 **Pakai model gratis** — 40+ provider, 100+ model. Banyak yang free tier.
-- 🔑 **Multi-akun** — Round-robin antar akun per provider. Limit lebih banyak.
-- 📊 **Track usage** — Dashboard lihat berapa token terpakai, berapa hemat.
-
-```
-Kamu → 9Router → OpenAI / Anthropic / Groq / DeepSeek / Gemini / dll
-                  ↓
-            RTK compress dulu
-            Auto-fallback kalau limit
-            Multi-akun round-robin
+```text
+Claude Code · Cursor · Codex · aplikasi OpenAI-compatible
+                         │
+                         ▼
+                 9Router · /v1/*
+                 ├─ pemilihan provider dan model
+                 ├─ penerjemahan format API
+                 ├─ fallback dan pemilihan akun
+                 └─ dashboard untuk koneksi dan penggunaan
+                         │
+                         ▼
+          Provider AI yang kamu konfigurasi
 ```
 
----
+> 9Router tidak menyertakan kredit atau akses model. Biaya, kuota, ketersediaan model, dan ketentuan penggunaan mengikuti provider yang kamu hubungkan.
 
-## ⚡ Quick Start (30 detik)
+## Mulai cepat
 
-### Pakai npm (paling gampang)
+### Jalankan dengan npx
+
+Pastikan Node.js tersedia, lalu jalankan:
 
 ```bash
 npx 9router
 ```
 
-Buka `http://localhost:20128/dashboard` → login → tambah provider → selesai.
+Buka [http://localhost:20128/dashboard](http://localhost:20128/dashboard), masuk ke dashboard, lalu tambahkan koneksi provider. Buat atau pilih API key untuk menghubungkan klien.
 
-### Pakai Docker
-
-```bash
-docker run -d -p 20128:20128 -e JWT_SECRET=rahasia -e INITIAL_PASSWORD=sandi123 decolua/9router
-```
-
-### Pakai CLI global
+### Jalankan dengan Docker
 
 ```bash
-npm install -g 9router
-9router
+docker run -d \
+  --name 9router \
+  -p 20128:20128 \
+  -e JWT_SECRET="ganti-dengan-secret-acak-yang-panjang" \
+  -e INITIAL_PASSWORD="ganti-dengan-password-yang-kuat" \
+  -v 9router-data:/app/data \
+  decolua/9router
 ```
 
----
+Dashboard tersedia di [http://localhost:20128/dashboard](http://localhost:20128/dashboard). Volume menyimpan data melewati restart container. Untuk opsi deployment dan konfigurasi lainnya, lihat [panduan Docker](./DOCKER.md).
 
-## 🌐 Deploy ke Cloud (Gratis!)
+> **Sebelum membuka akses dari internet:** ganti `JWT_SECRET` dan `INITIAL_PASSWORD`, gunakan HTTPS, serta siapkan penyimpanan persisten untuk platform yang memakai filesystem sementara.
 
-### 🆓 GRATIS, NO CC (recommended)
+## Fitur
 
-| Platform | Gratis? | Sleep? | Link |
-|----------|---------|--------|------|
-| 🎭 **Glitch** | ✅ Selamanya | ⚠️ 5min idle | [GLITCH.md](./GLITCH.md) |
-| 🎮 **Replit** | ✅ Builder | ⚠️ Idle sleep | [REPLIT.md](./REPLIT.md) |
-| ⚡ **Koyeb** | ✅ Nano gratis | ❌ Gak sleep | [KOYEB.md](./KOYEB.md) |
-| 🚀 **Zeabur** | ✅ $5 credit | ❌ Gak sleep | [ZEABUR.md](./ZEABUR.md) |
-| ▲ **Vercel** | ✅ 100GB/bulan | ❌ Serverless | [VERCEL.md](./VERCEL.md) |
-| 🔷 **Netlify** | ✅ 100GB/bulan | ❌ Serverless | [NETLIFY.md](./NETLIFY.md) |
+| Kemampuan | Kegunaan |
+| --- | --- |
+| **Satu endpoint API** | Hubungkan klien ke gateway alih-alih mengatur endpoint setiap provider secara terpisah. |
+| **Banyak provider dan model** | Simpan koneksi API key maupun OAuth dalam dashboard; dukungan berbeda menurut provider. |
+| **Model combo dan fallback** | Susun urutan model alternatif untuk menangani kegagalan atau batas provider. |
+| **Multi-akun** | Kelola beberapa koneksi untuk provider yang sama dan gunakan pemilihan akun yang tersedia. |
+| **Penerjemahan format** | Gunakan klien dengan format API yang didukung oleh provider dan rute terkait. |
+| **RTK Token Saver** | Kompresi selektif pada keluaran tool yang didukung; penghematan aktual bergantung pada konten dan konfigurasi. |
+| **Dashboard penggunaan** | Kelola provider, model combo, API key, serta pantau penggunaan dari satu tempat. |
 
-### 💳 BUTUH CC (trial/free tier)
+## Menghubungkan tools
 
-| Platform | Gratis? | Sleep? | Link |
-|----------|---------|--------|------|
-| 🚂 Railway | ✅ $5 credit | ❌ Persistent | [RAILWAY.md](./RAILWAY.md) |
-| 🌐 Render | ✅ 750 jam | ⚠️ 15min idle | [RENDER.md](./RENDER.md) |
-| 🐳 Cloud Run | ✅ 2M req | ❌ Auto-scale | [CLOUDRUN.md](./CLOUDRUN.md) |
-
-**Rekomendasi:** Koyeb/Zeabur (no CC, gak sleep) atau Glitch (paling gampang).
-
----
-
-## 🔌 Cara Pakai dengan CLI Tools
+Gunakan alamat server 9Router-mu dan API key yang dibuat di dashboard. Ganti `YOUR_SERVER` dengan alamat instance, misalnya `http://localhost:20128`.
 
 ### Claude Code
 
 ```bash
-export ANTHROPIC_API_BASE="https://YOUR_DOMAIN/v1"
-export ANTHROPIC_API_KEY="sk_your_key"
-claude --model cc/claude-opus-4-7
-```
-
-### Cursor IDE
-
-```
-Settings → Models → Advanced:
-  Base URL: https://YOUR_DOMAIN/v1
-  API Key: sk_your_key
-  Model: cc/claude-opus-4-7
+export ANTHROPIC_BASE_URL="http://localhost:20128/v1"
+export ANTHROPIC_AUTH_TOKEN="API_KEY_DARI_DASHBOARD"
 ```
 
 ### Codex CLI
 
 ```bash
-export OPENAI_BASE_URL="https://YOUR_DOMAIN"
-export OPENAI_API_KEY="sk_your_key"
-codex "your prompt"
+export OPENAI_BASE_URL="http://localhost:20128/v1"
+export OPENAI_API_KEY="API_KEY_DARI_DASHBOARD"
 ```
 
-### Cline / Continue / RooCode
+### Cursor, Cline, Continue, Roo Code, dan klien lain
 
-```
-Provider: OpenAI Compatible
-Base URL: https://YOUR_DOMAIN/v1
-API Key: sk_your_key
-```
+Pilih **OpenAI-compatible** atau konfigurasi provider yang sesuai di aplikasi:
 
----
+| Pengaturan | Nilai |
+| --- | --- |
+| Base URL | `http://localhost:20128/v1` |
+| API key | API key dari dashboard 9Router |
+| Model | ID model yang tersedia pada koneksi 9Router-mu |
 
-## 🧠 Fitur Unggulan
+Pada instance remote, gunakan URL HTTPS milikmu. Nama pengaturan dapat berbeda antar-aplikasi; lihat panduan aplikasi bila diperlukan.
 
-### RTK Token Saver
+## Deployment
 
-Tool outputs (git diff, grep, find, ls, tree...) sering makan 30-50% token. RTK compress otomatis:
+Pilih panduan sesuai platform. Paket gratis, batas penggunaan, dan ketersediaan layanan ditentukan oleh masing-masing platform dan dapat berubah.
 
-```
-Tanpa RTK: 47K tokens → LLM
-Dengan RTK: 28K tokens → LLM  (hemat 40%)
-```
+| Platform | Panduan |
+| --- | --- |
+| Docker | [DOCKER.md](./DOCKER.md) |
+| Vercel | [VERCEL.md](./VERCEL.md) |
+| Netlify | [NETLIFY.md](./NETLIFY.md) |
+| Railway | [RAILWAY.md](./RAILWAY.md) |
+| Render | [RENDER.md](./RENDER.md) |
+| Google Cloud Run | [CLOUDRUN.md](./CLOUDRUN.md) |
+| Koyeb | [KOYEB.md](./KOYEB.md) |
+| Zeabur | [ZEABUR.md](./ZEABUR.md) |
+| Replit | [REPLIT.md](./REPLIT.md) |
+| Glitch | [GLITCH.md](./GLITCH.md) |
 
-- Auto-detect tipe content
-- Filter: git-diff, grep, find, ls, tree, dedup-log, smart-truncate
-- Fail-open: kalau error, skip aja. Gak pernah break request.
+### Catatan untuk deployment serverless
 
-### Auto-Fallback
+Filesystem pada platform serverless biasanya tidak persisten. Konfigurasikan penyimpanan yang didukung agar data dashboard tetap ada setelah cold start; lihat `.env.example.vercel` dan panduan deployment platform. Beberapa fitur yang memerlukan proses berjalan terus-menerus mungkin tidak tersedia di serverless.
 
-```
-Claude Opus (limit) → Claude Sonnet (limit) → DeepSeek (gratis) → Groq (gratis)
-```
+## Konfigurasi penting
 
-Setup sekali, jalan terus. Zero downtime.
+Salin `.env.example` menjadi `.env` untuk konfigurasi lokal. Untuk Vercel atau Netlify, lihat `.env.example.vercel`.
 
-### Multi-Akun
+| Variabel | Fungsi |
+| --- | --- |
+| `JWT_SECRET` | Secret untuk menandatangani sesi dashboard. Tetapkan nilai acak yang panjang di production. |
+| `INITIAL_PASSWORD` | Password awal dashboard. Ganti nilai default sebelum membuka akses remote. |
+| `PORT` | Port server; default `20128`. |
+| `DATA_DIR` | Direktori data lokal; default `~/.9router`. Pada Docker, gunakan `/app/data` dan mount volume. |
+| `API_KEY_SECRET` | Secret untuk API key yang dikelola 9Router. |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Opsi penyimpanan persisten untuk deployment yang mendukung Upstash. |
 
-Punya 3 akun OpenAI? Round-robin otomatis. Limit per akun = 3x lebih banyak.
+Tambahkan kredensial provider melalui **Dashboard → Settings → Providers**. Jangan masukkan API key provider ke README atau commit ke repository.
 
-### Dashboard
-
-- iOS/macOS design system: Apple system colors, vibrancy glass, spring motion
-- Monitor usage & token consumption
-- Setup provider connections
-- Buat model combos
-- Toggle RTK on/off
-
----
-
-## 🏗️ Platform Support
-
-| Platform | Command | Memory | Notes |
-|----------|---------|--------|-------|
-| 💻 Localhost | `npx 9router` | Auto | Default |
-| 🐳 Docker | `docker run decolua/9router` | Container | Multi-arch |
-| ☁️ VPS | `npm run start:vps` | Auto | Systemd service |
-| 🪟 Windows | `start-windows.bat` | Auto | Native |
-| 📱 Termux | `npm run start:termux` | Low RAM | Android |
-| 🧩 Any platform | `npm run start:platform` | Auto | Auto-detect (Termux/Windows/WSL/VPS/PaaS) |
-| 🚂 Railway | Push to deploy | Auto | Persistent |
-| ▲ Vercel | Push to deploy | Serverless | Edge |
-| 🔷 Netlify | Push to deploy | Serverless | Edge |
-| 🌐 Render | Push to deploy | Auto | Free 750h |
-| 🐳 Cloud Run | `gcloud run deploy` | Container | Auto-scale |
-| 🎮 Replit | Import from GitHub | Auto | Browser |
-| 🎭 Glitch | Import from GitHub | 200MB | Browser, paling gampang |
-| ⚡ Koyeb | Push to deploy | 512MB | Docker/Node.js, gak sleep |
-| 🚀 Zeabur | Push to deploy | Auto | Mirip Railway |
-
----
-
-## 📁 Struktur Project
-
-```
-9router/
-├── src/                    # Next.js app + dashboard
-│   ├── app/               # Pages & API routes
-│   ├── sse/               # SSE handlers (chat, completions)
-│   ├── lib/               # DB, auth, utils
-│   └── shared/            # Shared components
-├── open-sse/              # Provider-agnostic routing engine
-│   ├── handlers/          # Chat, embedding, image handlers
-│   ├── executors/         # Per-provider upstream calls
-│   ├── translator/        # Format translation (OpenAI ↔ Claude ↔ Gemini)
-│   └── providers/         # Provider registry & config
-├── cli/                   # npm package (9router CLI)
-├── tests/                 # Vitest test suite
-├── custom-server.js       # HTTP server wrapper (IP sanitization)
-├── start-platform.js      # Cross-platform launcher (Termux/Windows/VPS/PaaS)
-├── start-vps.sh           # Linux VPS / systemd
-├── start-windows.bat      # Windows
-├── start-termux.sh        # Android Termux
-├── Dockerfile             # Docker build
-└── next.config.mjs        # Next.js config
-```
-
----
-
-## 🔧 Environment Variables
+## Pengembangan
 
 ```bash
-# Wajib
-JWT_SECRET=your-random-secret-min-32-chars
-INITIAL_PASSWORD=your-password
-
-# Opsional
-API_KEY_SECRET=sk_your_api_key        # Untuk CLI auth
-REQUIRE_API_KEY=true                   # Enforce API key
-PORT=20128                            # Default port
-DATA_DIR=/var/lib/9router             # Data directory
-
-# Provider keys: SELALU lewat dashboard (Settings → Providers), di semua deploy.
-# Tidak ada kontrak env PROVIDER_*_API_KEY — jalur seeding-nya sudah dihapus,
-# jadi key yang ditaruh di env tidak akan terbaca.
-
-# Persistence (untuk Vercel/Netlify)
-UPSTASH_REDIS_REST_URL=https://xxx.upstash.io
-UPSTASH_REDIS_REST_TOKEN=xxx
+npm ci
+npm run dev
 ```
 
-Lihat `.env.example` untuk list lengkap.
-
----
-
-## 🧪 Testing
+Server development berjalan di [http://localhost:20127](http://localhost:20127). Untuk build production:
 
 ```bash
-# Install deps
-npm install
-cd tests && npm install
+npm run build
+```
 
-# Run all tests
+Untuk konfigurasi lokal, salin `.env.example` ke `.env` lalu sesuaikan nilainya dengan lingkunganmu.
+
+## Pengujian
+
+Suite Vitest berada di paket terpisah dalam `tests/`. Instal dependensi root terlebih dahulu:
+
+```bash
+npm ci
+npm --prefix tests install
+cd tests
 npx vitest run
+```
 
-# Run single file
+Jalankan satu berkas tes dengan:
+
+```bash
 npx vitest run unit/capabilities.test.js
 ```
 
-> Suite ini 2667 test, 2553 pass, 0 fail, 114 skip pada plain checkout (diukur 2026-10-10, fully green). Pakai `tests/__baseline__/verify-no-regression.mjs` untuk cek regression, bukan raw run.
+## Struktur repository
 
----
+```text
+src/                 Aplikasi Next.js, dashboard, dan API
+open-sse/            Engine routing, executor, dan penerjemahan format
+cli/                 Paket npm untuk menjalankan dan mengelola server
+tests/               Suite pengujian Vitest
+docs/                Dokumentasi arsitektur
+```
 
-## 📄 License
+## Lisensi dan kredit
 
-MIT — gratis dipakai, dimodif, dan didistribute.
-
----
-
-## 🙏 Credits
-
-Dibuat oleh [decolua](https://github.com/decolua/9router) & kontributor open source.
-
-Kalau berguna, kasih ⭐ di GitHub ya!
+9Router menggunakan lisensi [MIT](./LICENSE). Dibuat oleh [decolua](https://github.com/decolua/9router) dan kontributor open source.
