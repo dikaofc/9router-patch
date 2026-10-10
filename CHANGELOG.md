@@ -1,3 +1,20 @@
+# v0.5.99 (2026-10-08)
+
+Sync penuh dengan npm `9router@0.5.99` (latest). Patch layer Vercel tetap utuh di
+atas release upstream: `vercelAdapter` (in-memory sql.js + KV persistence),
+per-deployment API key derivation, JWT fallback, `/tmp` paths, vercel.json
+rewrites/headers, dan seluruh shared components iOS/macOS.
+
+## Features
+- **iOS/macOS design system**: Apple system colors (blue `#007aff`/`#0a84ff`),
+  grouped backgrounds, separator borders, vibrancy `backdrop-blur + saturate(180%)`,
+  iOS green toggle, macOS traffic lights, spring motion, SF Pro typography
+- **Dashboard pages**: chat bubble iOS, focus ring `blue-500/20`, glass-card
+  vibrancy, rounded corners Apple (10–20px)
+
+## Docs
+- Semua `.md` di-update ke v0.5.99 (README, CLAUDE.md, ARCHITECTURE, deploy guides)
+
 # Unreleased (on top of v0.5.82)
 
 ## Fixes

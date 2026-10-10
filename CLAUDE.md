@@ -48,13 +48,13 @@ npx vitest run unit/capabilities.test.js   # single file (path relative to tests
 ```
 > The committed `tests/package.json` `test` script hardcodes Unix paths (`NODE_PATH=/tmp/node_modules …`) — a shared-install workaround from upstream. On Windows (or anywhere), ignore it and use the `npx vitest` form above; `vitest.config.js` resolves the `open-sse`/`@/` aliases from the repo root regardless of where vitest lives.
 >
-> **The suite is fully green.** Current state (2026-09-20): 2667 tests, 2553 pass, **0 fail**, 114 skipped, 0 broken suites. Judge regressions with the gate, not a raw run:
+> **The suite is fully green.** Current state (2026-10-10): 2667 tests, 2553 pass, **0 fail**, 114 skipped, 0 broken suites. Judge regressions with the gate, not a raw run:
 > ```bash
 > cd tests
 > npx vitest run --reporter=json --outputFile=/tmp/current.json
 > node __baseline__/verify-no-regression.mjs /tmp/current.json   # fails on pass→fail and on suites that stopped collecting
 > ```
-> `tests/__baseline__/known-fails.txt` is the allow-list of expected reds (`tests/<path> :: <test name>`, `#` for comments) and is **empty as of v0.5.82** — every previously-catalogued red has been fixed at the source (stale contracts updated, node:test files ported to vitest, `cloud/`-dependent suite skipped when the worker dir is absent). Do not re-add entries to silence the gate; fix the cause, or document why a test cannot run here by skipping it inside the test file.
+> `tests/__baseline__/known-fails.txt` is the allow-list of expected reds (`tests/<path> :: <test name>`, `#` for comments) and is **empty as of v0.5.99** — every previously-catalogued red has been fixed at the source (stale contracts updated, node:test files ported to vitest, `cloud/`-dependent suite skipped when the worker dir is absent). Do not re-add entries to silence the gate; fix the cause, or document why a test cannot run here by skipping it inside the test file.
 > - `*.real.test.js` under `tests/translator/real/` make live provider calls — opt in with `RUN_REAL=1`.
 > - `*.live.test.js` hit live endpoints — opt in with `RUN_LIVE_TESTS=1` (skipped by default).
 > - `unit/cursor-agent-proto.test.js` is `describe.skip`ped: it specifies the Cursor AgentService MCP tool protocol, which is not implemented in this tree (`open-sse/executors/cursor.js` keeps tool conversations on the legacy path). Re-enable it in the commit that lands that codec.

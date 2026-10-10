@@ -154,6 +154,7 @@ Punya 3 akun OpenAI? Round-robin otomatis. Limit per akun = 3x lebih banyak.
 
 ### Dashboard
 
+- iOS/macOS design system: Apple system colors, vibrancy glass, spring motion
 - Monitor usage & token consumption
 - Setup provider connections
 - Buat model combos
@@ -250,7 +251,7 @@ npx vitest run
 npx vitest run unit/capabilities.test.js
 ```
 
-> Suite ini 2667 test, 2553 pass, 0 fail, 114 skip pada plain checkout (diukur 2026-09-20, fully green). Pakai `tests/__baseline__/verify-no-regression.mjs` untuk cek regression, bukan raw run.
+> Suite ini 2667 test, 2553 pass, 0 fail, 114 skip pada plain checkout (diukur 2026-10-10, fully green). Pakai `tests/__baseline__/verify-no-regression.mjs` untuk cek regression, bukan raw run.
 
 ---
 
