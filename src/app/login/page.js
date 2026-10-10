@@ -238,7 +238,15 @@ export default function LoginPage() {
                   />
                   {error && <p className="text-xs text-red-500">{error}</p>}
                 </div>
-                <Button type="submit" variant="primary" className="w-full" loading={loading} disabled={!newPassword}>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  className="auth-submit-button w-full"
+                  iconRight="arrow_forward"
+                  loading={loading}
+                  disabled={!newPassword}
+                >
                   Set password
                 </Button>
               </form>
@@ -298,11 +306,13 @@ export default function LoginPage() {
                     <Button
                       type="submit"
                       variant="primary"
-                      className="w-full"
+                      size="lg"
+                      className="auth-submit-button w-full"
+                      iconRight="arrow_forward"
                       loading={loading}
                       disabled={retryAfter > 0}
                     >
-                      {retryAfter > 0 ? `Wait ${retryAfter}s` : "Login"}
+                      {retryAfter > 0 ? `Wait ${retryAfter}s` : "Sign in"}
                     </Button>
 
                     <p className="text-[11px] text-center text-text-muted">
