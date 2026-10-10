@@ -97,7 +97,7 @@ export default function Sidebar({ onClose, isMobile = false }) {
   };
 
   const navLinkClass = (active) => cn(
-    "flex min-h-10 items-center gap-2.5 px-3 py-2 rounded-xl transition-all group text-[13px] font-medium",
+    "flex min-h-11 items-center gap-2.5 px-3 py-2 rounded-md transition-colors group text-[13px] font-medium",
     active
       ? "bg-primary/10 text-primary"
       : "text-text-muted hover:bg-surface-2 hover:text-text-main"
@@ -105,11 +105,11 @@ export default function Sidebar({ onClose, isMobile = false }) {
 
   return (
     <>
-      <aside className={`glass-sidebar flex w-60 flex-col border-r border-border-subtle bg-surface/80 backdrop-blur-xl transition-colors duration-200 min-h-full${isMobile ? " mobile-sidebar-content" : ""}`}>
+      <aside className={`glass-sidebar flex w-60 flex-col border-r border-border-subtle bg-surface transition-colors duration-150 min-h-full${isMobile ? " mobile-sidebar-content" : ""}`}>
         {/* Logo */}
         <div className="px-4 py-4 flex flex-col gap-1.5">
           <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center size-7 rounded-lg bg-primary shadow-sm">
+            <div className="flex items-center justify-center size-7 rounded-md bg-primary text-white">
               <span className="material-symbols-outlined text-white text-[16px]">hub</span>
             </div>
             <div className="flex flex-col">
@@ -169,7 +169,7 @@ export default function Sidebar({ onClose, isMobile = false }) {
             <button
               onClick={() => setMediaOpen((v) => !v)}
               className={cn(
-                "w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg transition-all group text-[13px] font-medium",
+                "w-full min-h-11 flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors group text-[13px] font-medium",
                 pathname.startsWith("/dashboard/media-providers")
                   ? "bg-primary/10 text-primary"
                   : "text-text-muted hover:bg-surface-2 hover:text-text-main"
@@ -189,7 +189,7 @@ export default function Sidebar({ onClose, isMobile = false }) {
                     href={`/dashboard/media-providers/${kind.id}`}
                     onClick={onClose}
                     className={cn(
-                      "flex min-h-9 items-center gap-2.5 px-3 py-2 rounded-xl transition-all text-xs",
+                      "flex min-h-11 items-center gap-2.5 px-3 py-2 rounded-md transition-colors text-xs",
                       pathname.startsWith(`/dashboard/media-providers/${kind.id}`)
                         ? "bg-primary/10 text-primary"
                         : "text-text-muted hover:bg-surface-2 hover:text-text-main"
@@ -204,7 +204,7 @@ export default function Sidebar({ onClose, isMobile = false }) {
                   href={COMBINED_WEB_ITEM.href}
                   onClick={onClose}
                   className={cn(
-                    "flex min-h-9 items-center gap-2.5 px-3 py-2 rounded-xl transition-all text-xs",
+                    "flex min-h-11 items-center gap-2.5 px-3 py-2 rounded-md transition-colors text-xs",
                     pathname.startsWith(COMBINED_WEB_ITEM.href)
                       ? "bg-primary/10 text-primary"
                       : "text-text-muted hover:bg-surface-2 hover:text-text-main"
@@ -246,7 +246,7 @@ export default function Sidebar({ onClose, isMobile = false }) {
             {/* Remote */}
             <button
               onClick={() => setShowRemoteModal(true)}
-              className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg transition-all text-[13px] font-medium text-text-muted hover:bg-surface-2 hover:text-text-main"
+              className="w-full min-h-11 flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors text-[13px] font-medium text-text-muted hover:bg-surface-2 hover:text-text-main"
             >
               <span className="material-symbols-outlined text-[16px]">computer</span>
               9Remote
@@ -258,7 +258,7 @@ export default function Sidebar({ onClose, isMobile = false }) {
               target="_blank"
               rel="noreferrer"
               onClick={onClose}
-              className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg transition-all text-[13px] font-medium text-text-muted hover:bg-surface-2 hover:text-text-main"
+              className="w-full min-h-11 flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors text-[13px] font-medium text-text-muted hover:bg-surface-2 hover:text-text-main"
             >
               <span className="material-symbols-outlined text-[16px]">translate</span>
               9English

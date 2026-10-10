@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { cn } from "@/shared/utils/cn";
 
 export default function Select({
@@ -12,23 +13,31 @@ export default function Select({
   hint,
   disabled = false,
   required = false,
+  id,
   className,
   selectClassName,
   ...props
 }) {
+  const generatedId = useId();
+  const selectId = id || generatedId;
+  const messageId = error ? `${selectId}-error` : hint ? `${selectId}-hint` : undefined;
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
-        <label className="text-xs font-medium text-text-main">
+        <label htmlFor={selectId} className="text-xs font-medium text-text-main">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <div className="relative">
         <select
+          id={selectId}
           value={value}
           onChange={onChange}
           disabled={disabled}
+          aria-invalid={!!error}
+          aria-describedby={messageId}
           className={cn(
             "w-full min-h-11 py-2.5 px-3 pr-9 text-sm text-text-main rounded-xl appearance-none",
             "bg-surface/75 border border-border shadow-sm backdrop-blur-xl",
@@ -56,13 +65,13 @@ export default function Select({
         </div>
       </div>
       {error && (
-        <p className="text-xs text-red-500 flex items-center gap-1">
+        <p id={messageId} className="text-xs text-red-700 dark:text-red-300 flex items-center gap-1">
           <span className="material-symbols-outlined text-[12px]">error</span>
           {error}
         </p>
       )}
       {hint && !error && (
-        <p className="text-xs text-text-muted">{hint}</p>
+        <p id={messageId} className="text-xs text-text-muted">{hint}</p>
       )}
     </div>
   );

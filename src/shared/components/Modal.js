@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { cn } from "@/shared/utils/cn";
 import Button from "./Button";
-import Tooltip from "./Tooltip";
 
 export default function Modal({
   isOpen,
@@ -13,7 +12,6 @@ export default function Modal({
   footer,
   size = "md",
   closeOnOverlay = true,
-  showTrafficLights = true,
   className,
 }) {
   const sizes = {
@@ -47,14 +45,15 @@ export default function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-lg fade-in"
+        className="absolute inset-0 bg-black/45 fade-in"
         onClick={closeOnOverlay ? onClose : undefined}
+        aria-hidden="true"
       />
 
       {/* Modal content */}
       <div
         className={cn(
-          "glass-card relative flex max-h-[calc(100dvh-1rem)] w-full flex-col overflow-hidden rounded-[28px] border border-[var(--glass-border)]",
+          "glass-card relative flex max-h-[calc(100dvh-1rem)] w-full flex-col overflow-hidden rounded-[var(--radius-brand-lg)] border border-[var(--glass-border)]",
           "fade-in",
           sizes[size],
           className
@@ -64,38 +63,21 @@ export default function Modal({
         aria-label={title || "Dialog"}
       >
         {/* Header */}
-        {(title || showTrafficLights) && (
-          <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-3 border-b border-border-subtle sm:px-5">
-            <div className="flex min-w-0 items-center">
-              {showTrafficLights && (
-                <div className="hidden md:flex items-center gap-2 mr-4 ml-1">
-                  <Tooltip text="Close" position="top" color="#ff5f57">
-                    <button
-                      onClick={onClose}
-                      aria-label="Close"
-                      title="Close"
-                      className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all cursor-pointer flex items-center justify-center group/dot"
-                    >
-                      <span className="text-[8px] font-bold text-white opacity-0 group-hover/dot:opacity-100 transition-opacity leading-none">✕</span>
-                    </button>
-                  </Tooltip>
-                  <div className="w-3 h-3 rounded-full bg-[#febc2e] cursor-not-allowed" />
-                  <div className="w-3 h-3 rounded-full bg-[#28c840] cursor-not-allowed" />
-                </div>
-              )}
-              {title && (
-                <h2 className="truncate text-base font-semibold text-text-main">{title}</h2>
-              )}
-            </div>
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              className="md:hidden p-1.5 rounded-lg text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors"
-            >
-              <span className="material-symbols-outlined text-[18px]">close</span>
-            </button>
+        <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-3 border-b border-border-subtle sm:px-5">
+          <div className="flex min-w-0 items-center">
+            {title && (
+              <h2 className="truncate text-base font-semibold text-text-main">{title}</h2>
+            )}
           </div>
-        )}
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-brand)] text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
 
         {/* Body */}
         <div className="min-h-0 overflow-y-auto p-4 custom-scrollbar sm:p-5">{children}</div>

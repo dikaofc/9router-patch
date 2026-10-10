@@ -211,7 +211,7 @@ export default function TranslatorPage() {
   };
 
   return (
-    <div className="p-8 space-y-3">
+    <div className="space-y-3 p-4 sm:p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div>
@@ -239,7 +239,13 @@ export default function TranslatorPage() {
             <div className="p-4 space-y-3">
               {/* Step header */}
               <div className="flex items-center justify-between">
-                <button onClick={() => toggle(step.id)} className="flex items-center gap-2 flex-1 text-left group">
+                <button
+                  type="button"
+                  onClick={() => toggle(step.id)}
+                  className="flex min-h-11 min-w-0 flex-1 items-center gap-2 text-left group"
+                  aria-expanded={isExpanded}
+                  aria-controls={`translator-step-${step.id}-content`}
+                >
                   <span className="material-symbols-outlined text-[20px] text-text-muted group-hover:text-primary transition-colors">
                     {isExpanded ? "expand_more" : "chevron_right"}
                   </span>
@@ -258,7 +264,7 @@ export default function TranslatorPage() {
 
               {/* Expanded content */}
               {isExpanded && (
-                <>
+                <div id={`translator-step-${step.id}-content`} role="region" aria-label={`${step.label} content`} className="space-y-3">
                   <div className="border border-border rounded-lg overflow-hidden">
                     <Editor
                       height="400px"
@@ -273,12 +279,12 @@ export default function TranslatorPage() {
                     />
                   </div>
                   <div className="flex gap-2 flex-wrap">
-                    <Button size="sm" variant="outline" icon="folder_open" loading={loading[`load-${step.id}`]} onClick={() => handleLoad(step.id)}>Load</Button>
+                    <Button size="sm" variant="outline" icon="folder_open" loading={loading[`load-${step.id}`]} onClick={() => handleLoad(step.id)} aria-label={`Load ${step.label}`}>Load</Button>
                     <Button size="sm" variant="outline" icon="data_object" onClick={() => handleFormat(step.id)}>Format</Button>
                     <Button size="sm" variant="outline" icon="content_copy" onClick={() => handleCopy(step.id)}>Copy</Button>
                     {action}
                   </div>
-                </>
+                </div>
               )}
             </div>
           </Card>

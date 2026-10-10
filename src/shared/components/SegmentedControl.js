@@ -25,10 +25,12 @@ export default function SegmentedControl({
     >
       {options.map((option) => (
         <button
+          type="button"
           key={option.value}
+          aria-pressed={value === option.value}
           onClick={() => onChange(option.value)}
           className={cn(
-            "shrink-0 rounded-full font-medium transition-all duration-300",
+          "min-h-10 shrink-0 rounded-[var(--radius-brand)] font-medium transition-colors duration-150",
             sizes[size],
             value === option.value
               ? "bg-surface text-text-main shadow-md shadow-black/5 border border-border-subtle"

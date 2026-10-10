@@ -1,20 +1,20 @@
-# 9Router login direction
+# 9Router workbench direction
 
-This direction was drafted by the assistant for the login redesign from the requested mood: a sharp, utilitarian workbench. AI-generated direction can still drift toward generic defaults; treat this as the working brief for this screen, not a broader brand guide.
+This direction was drafted for the login redesign from the requested mood: a sharp, utilitarian workbench. The product owner approved extending that direction across every page.
 
 ## Reading
 
-Authentication screen for developers and operators managing a 9Router instance.
+Gateway and dashboard for developers and operators managing a 9Router instance.
 
 ## Visual language
 
 - **Identity:** a routing workbench, not a product-marketing page.
 - **Palette:** the existing 9Router theme neutrals with its established blue primary accent; keep the brand area graphite in both themes.
 - **Typography:** the existing system sans-serif for readable interface text; monospace is reserved for the real `/v1/*` endpoint.
-- **Composition:** one grounded split workspace on desktop. The brand side explains the actual client → endpoint → provider path; the form side is the only interactive focal point.
-- **Surface:** solid, low-contrast-neutral canvas and a single framed workspace; no glass blur, glow, decorative grid, or gradient.
-- **Controls:** flat, high-contrast primary action; neutral outlined SSO alternatives; clear focus, disabled, loading, and error states.
-- **Responsive behavior:** stack the workspace at tablet widths, then remove secondary route detail on narrow phones so the sign-in action remains prominent and reachable.
+- **Composition:** operational pages put the route-specific task and real data first. A narrow navigation rail and quiet page header frame the work without competing with it. The sign-in screen keeps its focused split workspace.
+- **Surface:** solid, theme-driven neutrals with restrained borders; no ambient blur, decorative grid, or unmotivated gradient. Theme presets remain selectable.
+- **Controls:** flat, high-contrast primary actions; neutral alternatives; clear focus, disabled, loading, empty, and error states.
+- **Responsive behavior:** page composition reflows around the task, with reachable navigation, full-width controls, and no clipped data or obstructed sheets.
 - **Motion:** short state transitions only; no ambient or looping motion.
 
 ## Dials
@@ -23,9 +23,10 @@ Authentication screen for developers and operators managing a 9Router instance.
 
 ## Decision reasons
 
-- The actual request path is the visual motif because routing is the product's job.
-- The split layout separates product context from the one decision required to sign in.
-- Existing neutral surfaces and blue action color preserve continuity with the dashboard instead of inventing a new palette.
-- A restrained system sans keeps the form easy to scan; `/v1/*` alone uses code styling because it is an endpoint.
-- One contained workspace gives the login a boundary without turning each form element into a floating card.
-- Motion is limited to control feedback because authentication should feel direct and predictable.
+- Route-specific data and actions lead each screen because operators come to complete configuration and diagnose traffic, not to read decoration.
+- A persistent compact navigation rail separates destinations from the active task while preserving room for the page itself.
+- Theme-derived neutral surfaces support long operational sessions; blue is reserved for real actions and selected state.
+- A system sans preserves familiar UI reading; monospace is reserved for actual endpoints, model IDs, and commands.
+- Flat surfaces and selective borders keep configuration groups legible without making every element appear elevated.
+- Motion is limited to control feedback because gateway configuration should feel direct and predictable.
+- Existing selectable theme presets remain functional; action foregrounds are chosen from the selected primary color to keep button text legible.

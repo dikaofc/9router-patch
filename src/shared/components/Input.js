@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { cn } from "@/shared/utils/cn";
 
 export default function Input({
@@ -13,14 +14,19 @@ export default function Input({
   icon,
   disabled = false,
   required = false,
+  id,
   className,
   inputClassName,
   ...props
 }) {
+  const generatedId = useId();
+  const inputId = id || generatedId;
+  const messageId = error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined;
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
-      <label className="text-xs font-medium text-text-main sm:text-sm">
+        <label htmlFor={inputId} className="text-xs font-medium text-text-main sm:text-sm">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
@@ -32,11 +38,14 @@ export default function Input({
           </div>
         )}
         <input
+          id={inputId}
           type={type}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
           disabled={disabled}
+          aria-invalid={!!error}
+          aria-describedby={messageId}
           className={cn(
             "w-full min-h-11 py-2.5 px-3.5 text-base text-text-main bg-surface/70 rounded-2xl",
             "border border-border/70 placeholder-text-muted/60 shadow-inner backdrop-blur-xl",
@@ -51,13 +60,13 @@ export default function Input({
         />
       </div>
       {error && (
-        <p className="text-xs text-red-500 flex items-center gap-1">
+        <p id={messageId} className="text-xs text-red-700 dark:text-red-300 flex items-center gap-1">
           <span className="material-symbols-outlined text-[12px]">error</span>
           {error}
         </p>
       )}
       {hint && !error && (
-        <p className="text-xs text-text-muted">{hint}</p>
+        <p id={messageId} className="text-xs text-text-muted">{hint}</p>
       )}
     </div>
   );

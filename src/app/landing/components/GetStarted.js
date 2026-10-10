@@ -49,26 +49,27 @@ export default function GetStarted() {
           </div>
 
           <div className="flex-1 w-full">
-            <div className="landing-panel overflow-hidden rounded-3xl border border-border-subtle shadow-2xl">
-              {/* macOS window chrome */}
-              <div className="flex items-center gap-1.5 px-4 py-3 bg-surface-2/70 border-b border-border-subtle">
-                <div className="size-3 rounded-full bg-red-500"></div>
-                <div className="size-3 rounded-full bg-amber-400"></div>
-                <div className="size-3 rounded-full bg-green-500"></div>
+            <div className="landing-panel overflow-hidden rounded-[var(--radius-brand-lg)] border border-border-subtle">
+              <div className="flex items-center gap-1.5 px-4 py-3 bg-surface-2 border-b border-border-subtle">
                 <div className="ml-3 text-[11px] text-text-muted font-mono">terminal</div>
               </div>
 
               <div className="p-5 font-mono text-xs leading-relaxed overflow-x-auto">
-                <div
-                  className="flex items-center gap-1.5 mb-3 group cursor-pointer"
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-1.5 mb-3 text-left group"
                   onClick={() => handleCopy(startCommand)}
+                  aria-label={`Copy command: ${startCommand}`}
                 >
                   <span className="text-green-600 dark:text-green-400">$</span>
                   <span className="text-text-main">{startCommand}</span>
-                  <span className="ml-auto text-text-muted text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="ml-auto text-text-muted text-[10px] group-hover:text-primary">
                     {copied === "landing" ? "✓ Copied" : "Copy"}
                   </span>
-                </div>
+                </button>
+                <span className="sr-only" role="status" aria-live="polite">
+                  {copied === "landing" ? "Command copied to clipboard" : ""}
+                </span>
 
                 <div className="text-text-muted mb-4">
                   <span className="text-primary">&gt;</span> Starting 9Router...<br/>

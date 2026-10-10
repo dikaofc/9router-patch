@@ -221,10 +221,11 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
         {showMenuButton && (
           <button
             onClick={onMenuClick}
-            className="flex size-10 items-center justify-center rounded-full border border-border/60 bg-surface/70 text-text-main shadow-sm backdrop-blur-xl hover:text-primary"
+            className="flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-brand-lg)] border border-border bg-surface px-3 text-text-main hover:border-primary hover:text-primary"
             aria-label="Open navigation menu"
           >
-            <span className="material-symbols-outlined text-[22px]">menu</span>
+            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">menu</span>
+            <span className="text-xs font-medium">Menu</span>
           </button>
         )}
       </div>
@@ -294,7 +295,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
       <div className="flex items-center gap-0.5 shrink-0">
         {displayName && (loginMethod === "OIDC" || loginMethod === "SAML") && (
           <div
-            className="hidden sm:flex items-center max-w-[180px] px-2 py-1 rounded-full border border-border bg-surface/60 text-[11px] text-text-muted truncate"
+            className="hidden sm:flex items-center max-w-[180px] px-2 py-1 rounded-md border border-border bg-surface text-[11px] text-text-muted truncate"
             title={displayName}
           >
             <span className="material-symbols-outlined text-[12px] mr-1 text-primary">person</span>
@@ -331,7 +332,7 @@ function HeaderSearch() {
   if (!visible) return null;
 
   return (
-    <div className="relative w-[clamp(7rem,20vw,140px)] sm:w-[180px]">
+    <div className="relative w-[clamp(6.5rem,20vw,140px)] sm:w-[180px]">
       <span className="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-text-muted text-[14px] pointer-events-none">
         search
       </span>
@@ -340,13 +341,13 @@ function HeaderSearch() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
-        className="w-full h-8 pl-6 pr-6 rounded-full border border-border bg-surface/60 text-xs focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/15 transition-colors"
+        className="w-full min-h-11 pl-7 pr-9 rounded-[var(--radius-brand-lg)] border border-border bg-surface text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
       />
       {query && (
         <button
           type="button"
           onClick={() => setQuery("")}
-          className="absolute right-1 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main p-0.5 rounded"
+          className="absolute right-0 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center text-text-muted hover:text-text-main"
           aria-label="Clear search"
         >
           <span className="material-symbols-outlined text-[14px]">close</span>

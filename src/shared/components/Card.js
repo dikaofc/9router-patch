@@ -64,7 +64,7 @@ Card.Section = function CardSection({ children, className, ...props }) {
     <div
       className={cn(
         "min-w-0 p-3 sm:p-4 rounded-2xl",
-        "bg-surface/55 border border-border-subtle backdrop-blur-xl",
+          "bg-surface-2 border border-border-subtle",
         className
       )}
       {...props}
@@ -101,14 +101,14 @@ Card.ListItem = function CardListItem({
       className={cn(
         "group flex items-center justify-between p-3 -mx-3 px-3",
         "border-b border-border-subtle last:border-b-0",
-        "hover:bg-surface-2/50 transition-colors",
+        "hover:bg-surface-2 transition-colors",
         className
       )}
       {...props}
     >
       <div className="flex-1 min-w-0">{children}</div>
       {actions && (
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity">
           {actions}
         </div>
       )}

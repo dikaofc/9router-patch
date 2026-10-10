@@ -170,8 +170,9 @@ export default function SmartIpPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="text-xs font-medium text-text-muted mb-1 block">Vercel API Token</label>
+            <label htmlFor="smart-ip-vercel-token" className="text-xs font-medium text-text-muted mb-1 block">Vercel API Token</label>
             <input
+              id="smart-ip-vercel-token"
               type="password"
               placeholder="vercel_token_xxx"
               value={vercelToken}
@@ -182,8 +183,9 @@ export default function SmartIpPage() {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-text-muted mb-1 block">Your 9Router Vercel URL</label>
+            <label htmlFor="smart-ip-target-url" className="text-xs font-medium text-text-muted mb-1 block">Your 9Router Vercel URL</label>
             <input
+              id="smart-ip-target-url"
               type="url"
               placeholder="https://your-project.vercel.app"
               value={targetUrl}
@@ -193,12 +195,15 @@ export default function SmartIpPage() {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-text-muted mb-2 block">Select Regions ({selectedRegions.length} selected)</label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <p className="text-xs font-medium text-text-muted mb-2" id="smart-ip-regions-label">Select Regions ({selectedRegions.length} selected)</p>
+            <div role="group" aria-labelledby="smart-ip-regions-label" className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {REGIONS.map((region) => (
                 <button
+                  type="button"
                   key={region.id}
                   onClick={() => toggleRegion(region.id)}
+                  aria-pressed={selectedRegions.includes(region.id)}
+                  aria-label={`${region.name}, ${selectedRegions.includes(region.id) ? "selected" : "not selected"}`}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
                     selectedRegions.includes(region.id)
                       ? "bg-primary/10 border-primary/30 text-primary"
@@ -213,6 +218,7 @@ export default function SmartIpPage() {
           </div>
 
           <button
+            type="button"
             onClick={handleDeploy}
             disabled={deploying || !targetUrl || selectedRegions.length === 0}
             className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
@@ -232,7 +238,7 @@ export default function SmartIpPage() {
         </div>
 
         {deployLog.length > 0 && (
-          <div className="mt-4 max-h-48 overflow-y-auto rounded-xl border border-border-subtle bg-surface-2/70 p-3">
+          <div role="log" aria-live="polite" className="mt-4 max-h-48 overflow-y-auto rounded-xl border border-border-subtle bg-surface-2/70 p-3">
             {deployLog.map((log, i) => (
               <p key={i} className={`text-xs font-mono mb-1 ${
                 log.type === "success" ? "text-green-600 dark:text-green-400" : log.type === "error" ? "text-rose-600 dark:text-rose-400" : "text-text-muted"
@@ -280,11 +286,13 @@ export default function SmartIpPage() {
                       <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-semibold">ACTIVE</span>
                     )}
                     <button
+                      type="button"
                       onClick={() => {
                         navigator.clipboard.writeText(relay.proxyUrl);
                       }}
                       className="text-text-muted hover:text-text-main transition-colors"
                       title="Copy relay URL"
+                      aria-label={`Copy relay URL for ${relay.name}`}
                     >
                       <span className="material-symbols-outlined text-[14px]">content_copy</span>
                     </button>
@@ -309,6 +317,7 @@ export default function SmartIpPage() {
                 <option value="least-used">Least Used</option>
               </select>
               <button
+                type="button"
                 onClick={() => {
                   const next = nextRelay();
                   if (next) alert(`Switched to: ${next.name}\n${next.proxyUrl}`);

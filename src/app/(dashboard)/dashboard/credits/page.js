@@ -6,14 +6,18 @@ import { APP_CONFIG } from "@/shared/constants/config";
 
 export default function App() {
   const [copied, setCopied] = useState(false);
+  const [shareError, setShareError] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
 
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
+      setShareError(false);
       setTimeout(() => setCopied(false), 2500);
-    } catch {}
+    } catch {
+      setShareError(true);
+    }
   };
 
   const tabs = [
@@ -43,6 +47,8 @@ export default function App() {
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
+              type="button"
+              aria-pressed={active}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
                 active
                   ? "border-primary text-primary"
@@ -172,6 +178,11 @@ export default function App() {
               {copied ? "Link Copied!" : "Copy Page URL"}
             </Button>
           </div>
+          {shareError && (
+            <p className="mt-2 text-xs text-danger" role="alert">
+              Could not copy the page URL. Check clipboard permissions and try again.
+            </p>
+          )}
         </Card>
       )}
     </div>

@@ -93,7 +93,7 @@ export default function DashboardLayout({ children }) {
         <Sidebar />
       </div>
 
-      {/* Sidebar - Mobile bottom sheet */}
+      {/* Mobile navigation sheet */}
       <div
         aria-hidden={!sidebarOpen}
         inert={!sidebarOpen}

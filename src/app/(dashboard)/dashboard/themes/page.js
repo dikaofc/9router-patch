@@ -53,6 +53,45 @@ const FILTERS = [
 
 const getM = (t, dark) => dark ? t.d : t.l;
 
+function getPrimaryForeground(hex) {
+  const value = hex.replace("#", "");
+  const channels = value.length === 3
+    ? [...value].map((channel) => parseInt(channel + channel, 16))
+    : [0, 2, 4].map((index) => parseInt(value.slice(index, index + 2), 16));
+  const luminance = channels.map((channel) => {
+    const normalized = channel / 255;
+    return normalized <= 0.04045
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4;
+  }).reduce((total, channel, index) => total + channel * [0.2126, 0.7152, 0.0722][index], 0);
+
+  return luminance > 0.179 ? "#18232d" : "#ffffff";
+}
+
+function applyThemeTokens(theme, dark) {
+  const m = getM(theme, dark);
+  const root = document.documentElement;
+  const isGradient = m.bg?.includes?.("gradient");
+  const sets = [
+    ["--color-bg", m.bg], ["--color-bg-alt", m.bg], ["--color-surface", m.s],
+    ["--color-surface-2", m.s], ["--color-surface-3", m.s], ["--color-sidebar", m.sb],
+    ["--color-border", m.b], ["--color-border-subtle", m.b],
+    ["--color-text-main", m.t], ["--color-text", m.t],
+    ["--color-primary", m.a], ["--color-primary-hover", m.a],
+    ["--color-primary-action", m.a], ["--color-primary-action-text", getPrimaryForeground(m.a)],
+    ["--shadow-soft", theme.sh], ["--shadow-warm", theme.sh],
+    ["--shadow-elevated", theme.sh], ["--shadow-elev", theme.sh],
+    ["--radius-brand", theme.r], ["--radius-brand-lg", theme.r],
+    ["--font-sans", theme.f],
+  ];
+
+  requestAnimationFrame(() => {
+    for (const [key, value] of sets) root.style.setProperty(key, value);
+    document.body.style.background = isGradient ? m.bg : "";
+    document.body.style.backgroundAttachment = isGradient ? "fixed" : "";
+  });
+}
+
 const ThemeCard = memo(({ theme, active, dark, onPick }) => {
   const m = getM(theme, dark);
   return (
@@ -72,7 +111,7 @@ const ThemeCard = memo(({ theme, active, dark, onPick }) => {
         {active && <span className="ml-auto rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wide" style={{ color: m.a, background: `${m.a}18` }}>Active</span>}
       </div>
       <h3 className="mb-1 text-sm font-semibold" style={{ color: m.t }}>{theme.name}</h3>
-      <p className="text-xs leading-relaxed" style={{ color: m.t, opacity: 0.64 }}>{theme.desc}</p>
+      <p className="text-xs leading-relaxed" style={{ color: m.t }}>{theme.desc}</p>
     </button>
   );
 });
@@ -93,7 +132,7 @@ const Preview = memo(({ theme, dark }) => {
           borderRadius: theme.r === "0" ? "0" : "4px", color: m.t, fontFamily: theme.f }} />
       <div className="flex gap-1.5">
         <button className="min-h-9 rounded-xl px-4 py-2 text-xs font-semibold" style={{
-          background: m.a, color: m.t, border: `1px solid ${m.b}`,
+          background: m.a, color: getPrimaryForeground(m.a), border: `1px solid ${m.b}`,
           borderRadius: theme.r === "0" ? "0" : "4px", fontFamily: theme.f }}>Primary</button>
         <button className="min-h-9 rounded-xl px-4 py-2 text-xs font-semibold" style={{
           background: "transparent", color: m.a, border: `1px solid ${m.a}`,
@@ -111,10 +150,24 @@ export default function ThemesPage() {
   const [toast, setToast] = useState(false);
 
   useEffect(() => {
-    const t = localStorage.getItem("tid");
-    const d = localStorage.getItem("td");
-    if (t && THEMES.find((x) => x.id === t)) setActive(t);
-    if (d === "1") { setDark(true); document.documentElement.classList.add("dark"); }
+    let mounted = true;
+    const savedTheme = localStorage.getItem("tid");
+    const theme = THEMES.find((item) => item.id === savedTheme) || THEMES[0];
+    const savedMode = localStorage.getItem("td");
+    const isDark = savedMode === null
+      ? document.documentElement.classList.contains("dark")
+      : savedMode === "1";
+
+    document.documentElement.classList.toggle("dark", isDark);
+    applyThemeTokens(theme, isDark);
+    Promise.resolve().then(() => {
+      if (!mounted) return;
+      setActive(theme.id);
+      setDark(isDark);
+    });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const pick = useCallback((theme) => {
@@ -123,26 +176,7 @@ export default function ThemesPage() {
     setToast(true);
     setTimeout(() => setToast(false), 800);
 
-    const m = getM(theme, dark);
-    const r = document.documentElement;
-    const g = m.bg?.includes?.("gradient");
-
-    requestAnimationFrame(() => {
-      const sets = [
-        ["--color-bg", m.bg], ["--color-bg-alt", m.bg], ["--color-surface", m.s],
-        ["--color-surface-2", m.s], ["--color-surface-3", m.s], ["--color-sidebar", m.sb],
-        ["--color-border", m.b], ["--color-border-subtle", m.b],
-        ["--color-text-main", m.t], ["--color-text", m.t],
-        ["--color-primary", m.a], ["--color-primary-hover", m.a],
-        ["--shadow-soft", theme.sh], ["--shadow-warm", theme.sh],
-        ["--shadow-elevated", theme.sh], ["--shadow-elev", theme.sh],
-        ["--radius-brand", theme.r], ["--radius-brand-lg", theme.r],
-        ["--font-sans", theme.f],
-      ];
-      for (const [k, v] of sets) r.style.setProperty(k, v);
-      document.body.style.background = g ? m.bg : "";
-      document.body.style.backgroundAttachment = g ? "fixed" : "";
-    });
+    applyThemeTokens(theme, dark);
   }, [dark]);
 
   const toggleDark = useCallback(() => {
@@ -151,8 +185,8 @@ export default function ThemesPage() {
     localStorage.setItem("td", nd ? "1" : "0");
     document.documentElement.classList.toggle("dark", nd);
     const t = THEMES.find((x) => x.id === active);
-    if (t) pick(t);
-  }, [dark, active, pick]);
+    if (t) applyThemeTokens(t, nd);
+  }, [dark, active]);
 
   const cur = useMemo(() => THEMES.find((t) => t.id === active), [active]);
   const filtered = useMemo(() => {
