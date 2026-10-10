@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, Button, Input } from "@/shared/components";
+import { Button, Input } from "@/shared/components";
 import { APP_CONFIG } from "@/shared/constants/config";
 
 export default function LoginPage() {
@@ -144,106 +144,92 @@ export default function LoginPage() {
 
   if (hasPassword === null) {
     return (
-      <div className="liquid-auth-page auth-loading min-h-dvh flex items-center justify-center p-4">
+      <div className="liquid-auth-page auth-loading min-h-dvh">
         <div className="auth-loading-mark">
-          <span className="auth-brand-icon">
-            <span className="material-symbols-outlined" aria-hidden="true">hub</span>
-          </span>
-          <span className="material-symbols-outlined auth-loading-spinner" aria-hidden="true">progress_activity</span>
-          <p className="text-sm text-text-muted">Preparing your secure sign-in</p>
+          <span className="auth-brand-mark" aria-hidden="true">9</span>
+          <span className="auth-loading-spinner" role="status" aria-label="Loading" />
+          <p>Checking dashboard access</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="liquid-auth-page min-h-dvh flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
-      <div className="landing-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
-      <div className="auth-layout relative z-10 w-full max-w-5xl">
+    <div className="liquid-auth-page auth-page min-h-dvh">
+      <main className="auth-layout">
         <section className="auth-brand-panel" aria-label="About 9Router">
           <div className="auth-brand-lockup">
-            <span className="auth-brand-icon">
-              <span className="material-symbols-outlined" aria-hidden="true">hub</span>
-            </span>
-            <span>
-              <span className="auth-brand-name">{APP_CONFIG.name}</span>
-              <span className="auth-brand-caption">AI ROUTING GATEWAY</span>
-            </span>
+            <span className="auth-brand-mark" aria-hidden="true">9</span>
+            <span className="auth-brand-name">{APP_CONFIG.name}</span>
           </div>
 
           <div className="auth-brand-copy">
-            <span className="auth-kicker">
-              <span className="auth-kicker-dot" />
-              YOUR AI WORKSPACE
-            </span>
-            <h1>One gateway.<br /><span>Every model.</span></h1>
-            <p>Bring your AI providers together in one place. Sign in to manage connections, route requests, and keep an eye on usage.</p>
+            <p className="auth-brand-label">AI model routing</p>
+            <h1>One endpoint.<br /><span>Your providers.</span></h1>
+            <p>Manage provider connections, model routes, and usage from one dashboard.</p>
           </div>
 
-          <ul className="auth-highlights">
-            <li>
-              <span className="material-symbols-outlined" aria-hidden="true">hub</span>
-              <span><strong>Unified endpoint</strong><small>One place to connect your tools</small></span>
-            </li>
-            <li>
-              <span className="material-symbols-outlined" aria-hidden="true">alt_route</span>
-              <span><strong>Flexible routing</strong><small>Choose how requests reach providers</small></span>
-            </li>
-            <li>
-              <span className="material-symbols-outlined" aria-hidden="true">monitoring</span>
-              <span><strong>Usage at a glance</strong><small>Keep track of requests and activity</small></span>
-            </li>
-          </ul>
-
-          <div className="auth-brand-footer">
-            <span className="material-symbols-outlined" aria-hidden="true">lock</span>
-            Your gateway. Your configuration.
-          </div>
+          <figure className="auth-route-map" aria-labelledby="auth-route-caption">
+            <figcaption id="auth-route-caption">Request path</figcaption>
+            <ol className="auth-route-flow">
+              <li><span>Client</span><strong>AI tool</strong></li>
+              <li><span>Endpoint</span><code>/v1/*</code></li>
+              <li><span>Destination</span><strong>Provider</strong></li>
+            </ol>
+          </figure>
         </section>
 
         <section className="auth-form-panel" aria-label="Sign in">
-          <Card glass className="auth-form-card w-full rounded-3xl p-5 sm:p-7">
+          <div className="auth-form-card">
             <div className="auth-form-heading">
-              <div className="auth-form-icon">
-                <span className="material-symbols-outlined" aria-hidden="true">{mustChange ? "key" : "lock"}</span>
-              </div>
-              <div>
-                <p className="auth-form-eyebrow">{mustChange ? "ACCOUNT SECURITY" : "SECURE ACCESS"}</p>
-                <h2>{mustChange ? "Set a new password" : "Welcome back"}</h2>
-                <p>
-                  {mustChange
-                    ? "Choose a new password to continue."
-                    : samlAvailable
-                      ? "Continue with your organization’s SAML sign-in."
-                      : oidcAvailable
-                        ? "Sign in with your identity provider or password."
-                        : "Sign in to open your 9Router dashboard."}
-                </p>
-              </div>
+              <p className="auth-form-eyebrow">{mustChange ? "Account security" : "Dashboard access"}</p>
+              <h2>{mustChange ? "Set a new password" : "Sign in"}</h2>
+              <p>
+                {mustChange
+                  ? "Choose a new password to continue."
+                  : samlAvailable
+                    ? "Continue with your organization’s SAML sign-in."
+                    : oidcAvailable
+                      ? "Use your identity provider or dashboard password."
+                      : "Enter the password for this 9Router instance."}
+              </p>
             </div>
+
+            {error && (
+              <p className="auth-message auth-message-error" role="alert">
+                <span className="material-symbols-outlined" aria-hidden="true">error</span>
+                {error}
+              </p>
+            )}
+
+            {resetHint && (
+              <p className="auth-message auth-message-note" role="status">{resetHint}</p>
+            )}
+
             {mustChange ? (
-              <form onSubmit={handleSetNewPassword} className="flex flex-col gap-4">
-                <p className="text-xs text-orange-500 text-center">
+              <form onSubmit={handleSetNewPassword} className="auth-form-fields" aria-busy={loading}>
+                <p className="auth-message auth-message-warning">
                   Set a new password before accessing the dashboard remotely.
                 </p>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-medium text-text-main">New password</label>
+                <div className="auth-field">
+                  <label className="auth-field-label" htmlFor="new-password">New password</label>
                   <Input
+                    id="new-password"
                     type="password"
-                    placeholder="Enter new password"
+                    autoComplete="new-password"
+                    placeholder="Enter a new password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
                     autoFocus
+                    inputClassName="auth-password-input"
                   />
-                  {error && <p className="text-xs text-red-500">{error}</p>}
                 </div>
                 <Button
                   type="submit"
                   variant="primary"
                   size="lg"
                   className="auth-submit-button w-full"
-                  iconRight="arrow_forward"
                   loading={loading}
                   disabled={!newPassword}
                 >
@@ -251,54 +237,53 @@ export default function LoginPage() {
                 </Button>
               </form>
             ) : (
-              <div className="flex flex-col gap-4">
+              <div className="auth-form-fields">
                 {samlAvailable && (
-                  <Button type="button" variant="primary" className="w-full" onClick={handleSamlLogin}>
+                  <Button type="button" variant="secondary" size="lg" className="auth-sso-button w-full" onClick={handleSamlLogin}>
                     {samlLoginLabel}
                   </Button>
                 )}
 
                 {oidcAvailable && (
-                  <Button type="button" variant="primary" className="w-full" onClick={handleOidcLogin}>
+                  <Button type="button" variant="secondary" size="lg" className="auth-sso-button w-full" onClick={handleOidcLogin}>
                     {oidcLoginLabel}
                   </Button>
                 )}
 
-                {ssoAvailable && passwordAvailable && <div className="h-px bg-border-subtle" />}
+                {ssoAvailable && passwordAvailable && (
+                  <div className="auth-divider"><span>Or use your dashboard password</span></div>
+                )}
 
                 {passwordAvailable ? (
-                  <form onSubmit={handleLogin} className="flex flex-col gap-4">
+                  <form onSubmit={handleLogin} className="auth-form-fields" aria-busy={loading}>
                     {isSsoEnabled && !ssoAvailable && (
-                      <p className="text-[11px] text-orange-500 text-center">
+                      <p className="auth-message auth-message-warning">
                         {activeSsoType === "saml" ? "SAML SSO" : "OIDC"} login is enabled, but configuration is incomplete. Password login is still available for recovery.
                       </p>
                     )}
 
                     {authMode === "both" && ssoAvailable && (
-                      <p className="text-[11px] text-text-muted text-center">
+                      <p className="auth-message auth-message-note">
                         Password and {activeSsoType === "saml" ? "SAML SSO" : "OIDC"} login are both enabled.
                       </p>
                     )}
 
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-text-main">Password</label>
+                    <div className="auth-field">
+                      <label className="auth-field-label" htmlFor="password">Password</label>
                       <Input
+                        id="password"
                         type="password"
-                        placeholder="Enter password"
+                        autoComplete="current-password"
+                        placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         autoFocus={!oidcAvailable}
+                        inputClassName="auth-password-input"
                       />
-                      {error && <p className="text-xs text-red-500">{error}</p>}
                       {retryAfter > 0 && (
-                        <p className="text-xs text-orange-500">
+                        <p className="auth-message auth-message-warning">
                           Locked. Retry in <span className="font-mono">{retryAfter}s</span>.
-                        </p>
-                      )}
-                      {resetHint && (
-                        <p className="text-xs text-text-muted">
-                          Forgot password? Open <code className="bg-surface-2 px-1 rounded">9router</code> CLI on the host → <b>Settings</b> → <b>Reset Password to Default</b>.
                         </p>
                       )}
                     </div>
@@ -308,34 +293,26 @@ export default function LoginPage() {
                       variant="primary"
                       size="lg"
                       className="auth-submit-button w-full"
-                      iconRight="arrow_forward"
                       loading={loading}
                       disabled={retryAfter > 0}
                     >
-                      {retryAfter > 0 ? `Wait ${retryAfter}s` : "Sign in"}
+                      {retryAfter > 0 ? `Try again in ${retryAfter}s` : "Sign in"}
                     </Button>
 
-                    <p className="text-[11px] text-center text-text-muted">
-                      Default password is <code className="bg-surface-2 px-1 rounded">123456</code>
-                    </p>
                     {hasPassword === false && (
-                      <p className="text-[11px] text-center text-orange-500">
+                      <p className="auth-message auth-message-warning">
                         Security risk: no password set. You will be asked to set one when logging in remotely.
                       </p>
                     )}
                   </form>
                 ) : (
-                  error && <p className="text-xs text-red-500">{error}</p>
+                  null
                 )}
               </div>
             )}
-          </Card>
-          <p className="auth-form-footnote">
-            <span className="material-symbols-outlined" aria-hidden="true">verified_user</span>
-            Private access to your {APP_CONFIG.name} dashboard
-          </p>
+          </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }

@@ -45,22 +45,4 @@ export default {
   ],
   modelsFetcher: { url: "https://opencode.ai/zen/v1/models", type: "opencode-free" },
   passthroughModels: true,
-  serviceKinds: ["llm","systemone"],
-  systemoneConfig: {
-    baseUrl: "https://opencode.ai/zen/v1/systemone",
-    headers: {
-      "x-opencode-client": "desktop",
-      "User-Agent": "opencode/1.18.31"
-    }
-  },
-  models: [
-    { id: "muse-spark-1.2-contributor-free", name: "Muse Spark 1.2 Contributor Free", targetFormat: "openai-responses" },
-    { id: "muse-spark-1.3-contributor-free", name: "Muse Spark 1.3 Contributor Free", targetFormat: "openai-responses" },
-    { id: "jev-1.13-free", name: "Jev 1.13 Free", kind: "systemone" },
-    { id: "nemotron-3-ultra-free", name: "Nemotron 3 Ultra Free" },
-    { id: "nemotron-3.5-lightning-free", name: "Nemotron 3.5 Lightning Free" },
-    { id: "mimo-v2.5-free", name: "MiMo V2.5 Free" },
-    { id: "ling-3.0-flash-fin-free", name: "Ling 3.0 Flash Fin Free" },
-    { id: "big-pickle", name: "Big Pickle Free" },
-  ],
 };

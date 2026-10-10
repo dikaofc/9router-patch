@@ -10,3 +10,13 @@ Rules:
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+<!-- antislop:start -->
+## antislop
+For UI, copy, accessibility, or responsive work, read `.agents/skills/antislop/SKILL.md` and the relevant installed skill:
+- UI / visual: `.agents/skills/antislop-ui/SKILL.md`
+- Accessibility: `.agents/skills/antislop-human/SKILL.md`
+- Mobile / responsive: `.agents/skills/antislop-layoutmobile/SKILL.md`
+
+Resolve antislop's usage mode before work: explicit session choice, then global preference, then ask. A session choice overrides the global preference. Installed skills load at session start.
+<!-- antislop:end -->
