@@ -51,7 +51,4 @@ export default {
     authType: "apikey",
     authHeader: "bearer",
   },
-  models: [
-    { id: "systemone-decision", name: "OpenCode System One Decision", kind: "systemone" },
-  ],
 };

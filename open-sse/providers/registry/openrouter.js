@@ -74,7 +74,4 @@ export default {
     authHeader: "bearer",
     headers: {"HTTP-Referer":"https://endpoint-proxy.local","X-Title":"Endpoint Proxy"},
   },
-  models: [
-    { id: "systemone-decision", name: "OpenRouter System One Decision", kind: "systemone" },
-  ],
 };

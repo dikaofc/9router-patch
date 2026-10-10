@@ -60,6 +60,6 @@ export default {
     authHeader: "bearer",
   },
   models: [
-    { id: "systemone-decision", name: "Cloudflare System One Decision", kind: "systemone" },
+    { id: "@cf/cloudflare/clef-flash", name: "Clef Flash", kind: "systemone", upstreamModelId: "clef-flash" },
   ],
 };
