@@ -10,6 +10,7 @@ const TARGETS_NEED_BASE64 = new Set([
   FORMATS.ANTIGRAVITY, FORMATS.OLLAMA, FORMATS.KIRO,
   FORMATS.COMMANDCODE,
 ]);
+const MAX_CONCURRENT_IMAGE_PREFETCHES = 4;
 
 function isRemoteUrl(url) {
   return typeof url === "string" && (url.startsWith("http://") || url.startsWith("https://"));
@@ -83,15 +84,22 @@ export async function prefetchRemoteImages(body, sourceFormat, targetFormat, opt
   if (!refs.length) return 0;
 
   let converted = 0;
-  for (const ref of refs) {
-    const url = ref.get();
-    if (parseDataUri(url)) continue; // already inline
-    const fetched = await fetchImageAsBase64(url, options);
-    if (!fetched) continue;
-    if (ref.set) ref.set(fetched.url);
-    else if (ref.part) { delete ref.part.fileData; ref.part.inlineData = { mimeType: fetched.mimeType, data: fetched.url.split(",")[1] }; }
-    else if (ref.claudeBlock) ref.claudeBlock.source = { type: "base64", media_type: fetched.mimeType, data: fetched.url.split(",")[1] };
-    converted++;
-  }
+  let nextIndex = 0;
+  const prefetchNext = async () => {
+    while (nextIndex < refs.length) {
+      const ref = refs[nextIndex++];
+      const url = ref.get();
+      if (parseDataUri(url)) continue;
+      const fetched = await fetchImageAsBase64(url, options);
+      if (!fetched) continue;
+      if (ref.set) ref.set(fetched.url);
+      else if (ref.part) { delete ref.part.fileData; ref.part.inlineData = { mimeType: fetched.mimeType, data: fetched.url.split(",")[1] }; }
+      else if (ref.claudeBlock) ref.claudeBlock.source = { type: "base64", media_type: fetched.mimeType, data: fetched.url.split(",")[1] };
+      converted++;
+    }
+  };
+  await Promise.all(
+    Array.from({ length: Math.min(refs.length, MAX_CONCURRENT_IMAGE_PREFETCHES) }, prefetchNext)
+  );
   return converted;
 }

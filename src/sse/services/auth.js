@@ -6,8 +6,8 @@ import { resolveProviderId, FREE_PROVIDERS } from "@/shared/constants/providers.
 import { getAntigravityQuotaCache } from "./antigravityQuota.js";
 import * as log from "../utils/logger.js";
 
-// Mutex to prevent race conditions during account selection
-let selectionMutex = Promise.resolve();
+// Serialize account selection per provider without blocking unrelated providers.
+const selectionMutexes = new Map();
 
 const GITHUB_MONTHLY_USAGE_LIMIT = "you've reached your additional usage limit for your plan";
 
@@ -31,16 +31,14 @@ export async function getProviderCredentials(provider, excludeConnectionIds = nu
     ? excludeConnectionIds
     : (excludeConnectionIds ? new Set([excludeConnectionIds]) : new Set());
   const preferredConnectionId = options?.preferredConnectionId || null;
-  // Acquire mutex to prevent race conditions
-  const currentMutex = selectionMutex;
+  const providerId = resolveProviderId(provider);
+  const currentMutex = selectionMutexes.get(providerId) || Promise.resolve();
   let resolveMutex;
-  selectionMutex = new Promise(resolve => { resolveMutex = resolve; });
+  const nextMutex = new Promise(resolve => { resolveMutex = resolve; });
+  selectionMutexes.set(providerId, nextMutex);
 
   try {
     await currentMutex;
-
-    // Resolve alias to provider ID (e.g., "kc" -> "kilocode")
-    const providerId = resolveProviderId(provider);
 
     // Inject a virtual connection for no-auth free providers (with optional proxy pool from settings)
     // Exception: opencode accepts an optional user token (from `opencode /login`).
@@ -247,6 +245,9 @@ export async function getProviderCredentials(provider, excludeConnectionIds = nu
     };
   } finally {
     if (resolveMutex) resolveMutex();
+    if (selectionMutexes.get(providerId) === nextMutex) {
+      selectionMutexes.delete(providerId);
+    }
   }
 }
 

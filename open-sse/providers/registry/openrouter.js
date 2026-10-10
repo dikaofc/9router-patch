@@ -44,7 +44,7 @@ export default {
     { id: "openai/sora-2-pro", name: "Sora 2 Pro (via OpenRouter)", params: ["duration","aspect_ratio","resolution"], kind: "video" },
     { id: "bytedance/seedance-2.0", name: "Seedance 2.0 (via OpenRouter)", params: ["duration","aspect_ratio","resolution"], kind: "video" },
   ],
-  serviceKinds: ["llm","embedding","tts","imageToText","video"],
+  serviceKinds: ["llm","embedding","tts","imageToText","video","systemone"],
   ttsConfig: {
     baseUrl: "https://openrouter.ai/api/v1/chat/completions",
     defaultModel: "openai/gpt-4o-mini-tts",
@@ -68,4 +68,10 @@ export default {
   },
   modelsFetcher: { url: "https://openrouter.ai/api/v1/models", type: "openrouter-free" },
   passthroughModels: true,
+  systemoneConfig: {
+    baseUrl: "https://openrouter.ai/api/v1/systemone",
+    authType: "apikey",
+    authHeader: "bearer",
+    headers: {"HTTP-Referer":"https://endpoint-proxy.local","X-Title":"Endpoint Proxy"},
+  },
 };

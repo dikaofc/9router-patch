@@ -45,4 +45,10 @@ export default {
   ],
   modelsFetcher: { url: "https://opencode.ai/zen/v1/models", type: "opencode-free" },
   passthroughModels: true,
+  serviceKinds: ["llm","systemone"],
+  systemoneConfig: {
+    baseUrl: "https://opencode.ai/zen/v1/systemone",
+    authType: "apikey",
+    authHeader: "bearer",
+  },
 };

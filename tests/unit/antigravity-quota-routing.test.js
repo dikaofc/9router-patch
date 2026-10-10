@@ -81,6 +81,27 @@ describe("Antigravity quota-aware routing", () => {
     }
   });
 
+  it("selects credentials for different providers concurrently", async () => {
+    let activeSelections = 0;
+    let maxActiveSelections = 0;
+    mocks.getProviderConnections.mockImplementation(async ({ provider }) => {
+      activeSelections++;
+      maxActiveSelections = Math.max(maxActiveSelections, activeSelections);
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      activeSelections--;
+      return [{ id: `${provider}-connection`, isActive: true }];
+    });
+
+    const [openai, anthropic] = await Promise.all([
+      getProviderCredentials("openai"),
+      getProviderCredentials("anthropic"),
+    ]);
+
+    expect(maxActiveSelections).toBe(2);
+    expect(openai.connectionId).toBe("openai-connection");
+    expect(anthropic.connectionId).toBe("anthropic-connection");
+  });
+
   it("reports retry time when every account is cache-blocked", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-08-26T00:00:00.000Z"));

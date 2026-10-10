@@ -64,6 +64,30 @@ describe("prefetchRemoteImages", () => {
     expect(fetchImageAsBase64).toHaveBeenCalled();
   });
 
+  it("prefetches multiple images concurrently with bounded fan-out", async () => {
+    let activeFetches = 0;
+    let maxActiveFetches = 0;
+    fetchImageAsBase64.mockImplementation(async () => {
+      activeFetches++;
+      maxActiveFetches = Math.max(maxActiveFetches, activeFetches);
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      activeFetches--;
+      return { url: "data:image/png;base64,QUJD", mimeType: "image/png" };
+    });
+    const images = Array.from({ length: 7 }, (_, index) => ({
+      type: "image_url",
+      image_url: { url: `https://x/${index}.png` },
+    }));
+    const body = { messages: [{ role: "user", content: images }] };
+
+    const converted = await prefetchRemoteImages(body, FORMATS.OPENAI, FORMATS.OLLAMA);
+
+    expect(converted).toBe(7);
+    expect(maxActiveFetches).toBeGreaterThan(1);
+    expect(maxActiveFetches).toBeLessThanOrEqual(4);
+    expect(images.every(({ image_url }) => image_url.url.startsWith("data:image/png;base64,"))).toBe(true);
+  });
+
   it("claude source -> commandcode target: source.url -> base64", async () => {
     const body = { messages: [{ role: "user", content: [
       { type: "image", source: { type: "url", url: "https://x/a.png" } },
